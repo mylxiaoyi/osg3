@@ -93,8 +93,8 @@ highlight_language = 'cpp'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# html_theme = 'default'
-html_theme = 'agogo'
+html_theme = 'default'
+# html_theme = 'agogo'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -124,6 +124,7 @@ html_theme = 'agogo'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_style = 'labibi.css'
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -290,3 +291,8 @@ epub_copyright = u'2013, mylxiaoyi'
 
 # Example configuration for intersphinx: refer to the Python standard library.
 # intersphinx_mapping = {'http://docs.python.org/': None}
+
+disqus_shortname = 'osg3'
+
+github_base_account = 'mylxiaoyi'
+github_project = 'osg3'
