@@ -1,57 +1,236 @@
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Chapter 8: Animating Scene Objects &mdash; OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation</title>
+  
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
     
-    <title>Chapter 8: Animating Scene Objects &mdash; OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation</title>
-    
+
+  
+
+  
+  
     <link rel="stylesheet" href="_static/labibi.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
+        <link rel="next" title="Chatper 9: Interacting with Outside Elements" href="ch09.html"/>
+        <link rel="prev" title="Chapter 7: Viewing the World" href="ch07.html"/>
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.01',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html" />
-    <link rel="next" title="Chatper 9: Interacting with Outside Elements" href="ch09.html" />
-    <link rel="prev" title="Chapter 7: Viewing the World" href="ch07.html" />
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> OpenSceneGraph 3.0 Beginner's Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ch01.html">Chapter 1: The Journey into OpenSceneGraph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ch02.html">Chapter 2: Compilation and Installation of OpenSceneGraph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ch03.html">Chapter 3: Creating Your First OSG Program</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#constructing-your-own-projects">Constructing your own projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#using-a-root-node">Using a root node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#understanding-memory-management">Understanding memory management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#ref-ptr-and-referenced-classes">ref_ptr&lt;&gt; and Referenced classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#collecting-garbage-why-and-how">Collecting garbage: why and how</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#tracing-the-managed-entities">Tracing the managed entities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#parsing-command-line-arguments">Parsing command-line arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#tracing-with-the-notifier">Tracing with the notifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#redirecting-the-notifier">Redirecting the notifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch03.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch04.html">Chapter 4: Building Geometry Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#how-opengl-draws-objects">How OpenGL draws objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#geode-and-drawable-classes">Geode and Drawable classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#rendering-basic-shapes">Rendering basic shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#storing-array-data">Storing array data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#vertices-and-vertex-attributes">Vertices and vertex attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#specifying-drawing-types">Specifying drawing types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#indexing-primitives">Indexing primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#using-polygonal-techniques">Using polygonal techniques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#rereading-geometry-attributes">Rereading geometry attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#customizing-a-primitive-functor">Customizing a primitive functor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#implementing-your-own-drawables">Implementing your own drawables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#using-opengl-drawing-calls">Using OpenGL drawing calls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch04.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch05.html">Chapter 5: Managing Scene Graph</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#the-group-interface">The Group interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#managing-parent-nodes">Managing parent nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#traversing-the-scene-graph">Traversing the scene graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#transformation-nodes">Transformation nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#understanding-the-matrix">Understanding the matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#the-matrix-transform-class">The Matrix Transform class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#switch-nodes">Switch nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#level-of-detail-nodes">Level-of-detail nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#proxy-and-paging-nodes">Proxy and paging nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#customizing-your-own-nodekits">Customizing your own NodeKits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#the-visitor-design-pattern">The visitor design pattern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#visiting-scene-graph-structures">Visiting scene graph structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch05.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch06.html">Chapter 6: Creating Realistic Rendering Effects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#encapsulating-the-opengl-state-machine">Encapsulating the OpenGL state machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#attributes-and-modes">Attributes and modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#inheriting-render-states">Inheriting render states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#playing-with-fixed-function-effects">Playing with fixed-function effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#lights-and-light-sources">Lights and light sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#the-image-class">The Image class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#the-basis-of-texture-mapping">The basis of texture mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#handling-rendering-order">Handling rendering order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#understanding-graphics-shaders">Understanding graphics shaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#using-uniforms">Using uniforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#working-with-the-geometry-shader">Working with the geometry shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch06.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch07.html">Chapter 7: Viewing the World</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#from-world-to-screen">From world to screen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#the-camera-class">The Camera class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#rendering-order-of-cameras">Rendering order of cameras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#using-a-single-viewer">Using a single viewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#digging-into-the-simulation-loop">Digging into the simulation loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#using-a-composite-viewer">Using a composite viewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#changing-global-display-settings">Changing global display settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#stereo-visualization">Stereo visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#rendering-to-textures">Rendering to textures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#frame-buffer-pixel-buffer-and-fbo">Frame buffer, pixel buffer, and FBO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch07.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 8: Animating Scene Objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#taking-references-to-functions">Taking references to functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-of-callbacks">List of callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#avoding-confilicting-modifications">Avoding confilicting modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-ease-motions">Understanding ease motions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#animating-the-transformation-nodes">Animating the transformation nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changing-rendering-states">Changing rendering states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#playing-movies-on-textures">Playing movies on textures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-complex-key-frame-animations">Creating complex key-frame animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#channels-and-animation-managers">Channels and animation managers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-and-rendering-characters">Loading and rendering characters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch09.html">Chatper 9: Interacting with Outside Elements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#various-events">Various events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#handling-mouse-and-keyboard-inputs">Handling mouse and keyboard inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#adding-customized-events">Adding customized events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#picking-objects">Picking objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#intersection">Intersection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#windows-graphics-contexts-and-cameras">Windows, graphics contexts, and cameras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#the-traits-class">The Traits class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#integrating-osg-into-a-window">Integrating OSG into a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch09.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch10.html">Chapter 10: Saving and Loading Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#understanding-file-i-o-plugins">Understanding file I/O plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#discovery-of-specified-extension">Discovery of specified extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#supported-file-formats">Supported file formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#the-pseudo-loader">The pseudo-loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#configuring-third-party-dependencies">Configuring third-party dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#writing-your-own-plugins">Writing your own plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#handling-the-data-stream">Handling the data stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#serializing-osg-native-scenes">Serializing OSG native scenes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#creating-serializers">Creating serializers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch10.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch11.html">Chapter 11: Developing Visual Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#creating-billboards-in-a-scene">Creating billboards in a scene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#creating-texts">Creating texts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#creating-3d-texts">Creating 3D texts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#creating-particle-animations">Creating particle animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#creating-shadows-on-the-ground">Creating shadows on the ground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#implementing-special-effects">Implementing special effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#playing-with-more-nodekits">Playing with more NodeKits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch11.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch12.html">Chapter 12: Improving Rendering Efficiency</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#open-threads-basics">Open Threads basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#understanding-multithreaded-readering">Understanding multithreaded readering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#dynamic-scene-culling">Dynamic scene culling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#occluders-and-occludees">Occluders and occludees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#improving-your-application">Improving your application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#paging-huge-scene-data">Paging huge scene data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#making-use-of-the-quad-tree">Making use of the quad-tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch12.html#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">OpenSceneGraph 3.0 Beginner's Guide</a>
+      </nav>
 
 
-  </head>
-  <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="ch09.html" title="Chatper 9: Interacting with Outside Elements"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="ch07.html" title="Chapter 7: Viewing the World"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Chapter 8: Animating Scene Objects</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/ch08.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
             
   
   <div class="section" id="chapter-8-animating-scene-objects">
@@ -979,109 +1158,68 @@ path-&gt;insert(t2, …);</pre>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Chapter 8: Animating Scene Objects</a><ul>
-<li><a class="reference internal" href="#taking-references-to-functions">Taking references to functions</a></li>
-<li><a class="reference internal" href="#list-of-callbacks">List of callbacks</a><ul>
-<li><a class="reference internal" href="#time-for-action-switching-nodes-in-the-update-traversal">Time for action - switching nodes in the update traversal</a></li>
-<li><a class="reference internal" href="#what-just-happened">What just happened?</a></li>
-<li><a class="reference internal" href="#pop-quiz-adding-or-setting-callbacks">Pop quiz - adding or setting callbacks</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#avoding-confilicting-modifications">Avoding confilicting modifications</a><ul>
-<li><a class="reference internal" href="#time-for-action-drawing-a-geometry-dynamically">Time for action - drawing a geometry dynamically</a></li>
-<li><a class="reference internal" href="#id1">What just happened?</a></li>
-<li><a class="reference internal" href="#have-a-go-hero-dirtying-geometry-objects">Have a go hero - dirtying geometry objects</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#understanding-ease-motions">Understanding ease motions</a></li>
-<li><a class="reference internal" href="#animating-the-transformation-nodes">Animating the transformation nodes</a><ul>
-<li><a class="reference internal" href="#time-for-action-making-use-of-the-animation-path">Time for action - making use of the animation path</a></li>
-<li><a class="reference internal" href="#id2">What just happened?</a></li>
-<li><a class="reference internal" href="#have-a-go-hero-more-controls-over-the-animation-path">Have a go hero - more controls over the animation path</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#changing-rendering-states">Changing rendering states</a><ul>
-<li><a class="reference internal" href="#id3">What just happened?</a></li>
-<li><a class="reference internal" href="#pop-quiz-choosing-the-alpha-setter-and-the-callback">Pop quiz - choosing the alpha setter and the callback</a></li>
-<li><a class="reference internal" href="#have-a-go-hero-animating-in-graphics-shaders">Have a go hero - animating in graphics shaders</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#playing-movies-on-textures">Playing movies on textures</a><ul>
-<li><a class="reference internal" href="#time-for-action-rendering-a-flashing-spotlight">Time for action - rendering a flashing spotlight</a></li>
-<li><a class="reference internal" href="#id4">What just happened?</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#creating-complex-key-frame-animations">Creating complex key-frame animations</a></li>
-<li><a class="reference internal" href="#channels-and-animation-managers">Channels and animation managers</a><ul>
-<li><a class="reference internal" href="#time-for-action-managing-animation-channels">Time for action - managing animation channels</a></li>
-<li><a class="reference internal" href="#id5">What just happened?</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#loading-and-rendering-characters">Loading and rendering characters</a><ul>
-<li><a class="reference internal" href="#time-for-action-creating-and-driving-a-character-system">Time for action - creating and driving a character system</a></li>
-<li><a class="reference internal" href="#id6">What just happened?</a></li>
-<li><a class="reference internal" href="#have-a-go-hero-analyzing-the-structure-of-your-character">Have a go hero - analyzing the structure of your character</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#summary">Summary</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="ch07.html"
-                        title="previous chapter">Chapter 7: Viewing the World</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="ch09.html"
-                        title="next chapter">Chatper 9: Interacting with Outside Elements</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/ch08.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ch09.html" class="btn btn-neutral float-right" title="Chatper 9: Interacting with Outside Elements"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ch07.html" class="btn btn-neutral" title="Chapter 7: Viewing the World"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="ch09.html" title="Chatper 9: Interacting with Outside Elements"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="ch07.html" title="Chapter 7: Viewing the World"
-             >previous</a> |</li>
-        <li><a href="index.html">OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
+  
 
-    <div class="footer">
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
         &copy; Copyright 2013, mylxiaoyi.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
-    </div>
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'',
+            VERSION:'0.01',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
 
 
 
@@ -1101,5 +1239,6 @@ path-&gt;insert(t2, …);</pre>
 </script>
 
 
-  </body>
+
+</body>
 </html>
