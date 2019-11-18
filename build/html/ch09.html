@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -29,6 +28,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
         <link rel="next" title="Chapter 10: Saving and Loading Files" href="ch10.html"/>
         <link rel="prev" title="Chapter 8: Animating Scene Objects" href="ch08.html"/>
@@ -151,7 +153,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ch08.html#summary">Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Chatper 9: Interacting with Outside Elements</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chatper 9: Interacting with Outside Elements</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#various-events">Various events</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#handling-mouse-and-keyboard-inputs">Handling mouse and keyboard inputs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adding-customized-events">Adding customized events</a></li>
@@ -224,7 +226,7 @@
     <li>Chatper 9: Interacting with Outside Elements</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ch09.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/ch09.rst.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -238,11 +240,11 @@
 <p>OSG提供了一个集中各种不同窗口系统（MFC，Qt，GLUT等）实现方式的图形用户界面（GUI）抽象库。他处理GUI事件，其中最常见的就是与外围设备，例如鼠标与键盘，的用户实时交互。另外，osgViewer库封装了用于构建渲染环境的不同窗口系统的图形环境。这些构成了本章的主题：OSG如何与其他元素交互－例如，输入设备与窗口系统。</p>
 <p>在本章中，我们将会介绍：</p>
 <ul class="simple">
-<li>如何使用自定义事件处理器处理键盘与杂志事件</li>
-<li>如何创建并处理用户定义事件</li>
-<li>如何理解场景对象的交互测试</li>
-<li>如何配置窗口特点从创建图形环境</li>
-<li>如何将渲染的场景集成到窗口系统</li>
+<li><p>如何使用自定义事件处理器处理键盘与鼠标事件</p></li>
+<li><p>如何创建并处理用户定义事件</p></li>
+<li><p>如何理解场景对象的交互测试</p></li>
+<li><p>如何配置窗口特点从创建图形环境</p></li>
+<li><p>如何将渲染的场景集成到窗口系统</p></li>
 </ul>
 <div class="section" id="various-events">
 <h2>Various events<a class="headerlink" href="#various-events" title="Permalink to this headline">¶</a></h2>
@@ -251,7 +253,7 @@
 <p>不幸的是，大多数框架，包括Windows下的MFC与.NET，Linux下的GTK+，Mac OSX下的Cocoa，以及如Qt和wxWidgets这样的跨平台系统，彼此之间不是兼容的。所以在OSG程序中直接使用非常不方便。相反，OSG为希望处理GUI事件的用户了一个基本接口，名为osgGA::GUIEventHandler。</p>
 <p>事件处理器应使用查看器的addEventHandler()方法将其关联到场景查看器，并通过removeEventHandler()方法移除。这是一种在事件遍历过程中会被自动调用的回调类型，我们在第5章中对回调进行了介绍。</p>
 <p>当继承osgGA::GUIEventHandler来实现我们自己的事件处理器时，最重要的工作是重写handle()方法。这个方法有两个参数：提供所接收事件的osgGA::GUIEventAdapter参数，以及用于回馈的osgGA::GUIActionAdapter参数。该方法可以写为如下形式：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">bool</span> <span class="nf">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
              <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIActionAdapter</span><span class="o">&amp;</span> <span class="n">aa</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="c1">// concrete operations</span>
@@ -259,7 +261,7 @@
 </pre></div>
 </div>
 <p>osgGA::GUIEventAdapter类将会在下一节进行介绍。osgGA::GUIActionAdapter允许处理器请求GUI执行某种动作以响应所接收的事件。大多数情况下，这实际上可以被看作查看器对象。这是因为osgViewer::Viewer类也是由osgGA::GUIActionAdapter派生。dynamic_cast&lt;&gt;操作符可以用在这里以安全的方式执行转换：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">*</span> <span class="n">viewer</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">aa</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">*</span> <span class="n">viewer</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">aa</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>这里，aa是osgGA::GUIEventHandler的handle()方法的输入参数。</p>
@@ -271,7 +273,7 @@
 <img alt="_images/osg_keyboard_event.png" src="_images/osg_keyboard_event.png" />
 <img alt="_images/osg_keyboard_event2.png" src="_images/osg_keyboard_event2.png" />
 <p>还有另一个getModKeyMask()方法可以在用来在移动或点击鼠标或在键盘上按下键时用来获取当前的修饰符键。返回值是与相应值的位或结果，包括MODKEY_CTRL，MODKEY_SHIFT，MODKEY_AT，等。所以我们可以使用下面的代码片段来检测Ctrl键是否被按下：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span> <span class="n">ea</span><span class="p">.</span><span class="n">getModKeyMask</span><span class="p">()</span><span class="o">&amp;</span><span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="n">MODKEY_CTRL</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span> <span class="n">ea</span><span class="p">.</span><span class="n">getModKeyMask</span><span class="p">()</span><span class="o">&amp;</span><span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="n">MODKEY_CTRL</span> <span class="p">)</span>
 <span class="p">{</span>
    <span class="c1">// Related operations</span>
 <span class="p">}</span>
@@ -282,35 +284,35 @@
 <h3>Time for action - driving the Cessna<a class="headerlink" href="#time-for-action-driving-the-cessna" title="Permalink to this headline">¶</a></h3>
 <p>我们已经了解了如何通过osg::MatrixTransform节点来修改节点的变换矩阵。借助于osg::AnimationPath类与osgAnimation名字空间，我们可甚至可以在这些可变换的对象上创建动画效果。但是这对于交互场景来说并不够。我们进一步的要求是通过用户输入设备控制场景图节点。想像一下在现代的战争游戏中，我们有一个潜水艇，一辆坦克或是熟悉的Cessna。如要我们能够通过键盘，鼠标来模拟驱动这些设备，那才是真正令人激动的。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgGA/GUIEventHandler&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgGA/GUIEventHandler&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们的任务是通过某些按键控制Cessna模型。要处理这些用户事件，我们需要声明一个ModelController类，该类派生自osgGA::GUIEventHandler基类，并重写handle()方法来确保所有的用户事件被作为osgGA::GUIEventAdapter对象传递进来。模型指针也被包含在处理器类中；否则没有办法来区别要控制哪一个模型：</li>
+<li><p>我们的任务是通过某些按键控制Cessna模型。要处理这些用户事件，我们需要声明一个ModelController类，该类派生自osgGA::GUIEventHandler基类，并重写handle()方法来确保所有的用户事件被作为osgGA::GUIEventAdapter对象传递进来。模型指针也被包含在处理器类中；否则没有办法来区别要控制哪一个模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">ModelController</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventHandler</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ModelController</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventHandler</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="n">ModelController</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">*</span> <span class="n">node</span> <span class="p">)</span>
 <span class="o">:</span> <span class="n">_model</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 <span class="p">{}</span>
     <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
                          <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIActionAdapter</span><span class="o">&amp;</span> <span class="n">aa</span> <span class="p">);</span>
 
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">_model</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>在handle()方法的实现中，我们要修改成员变量_model的欧拉角，这可以变换表示Cessna或是其他模型的节点。特征按键w，s，a与d通过KEYDOWN事很描述战机的前进与旋转。当然，功能按键与浏览按键，包括KEY_LEFT，KEY_RIGHT等，也可以在这里使用：</li>
+<li><p>在handle()方法的实现中，我们要修改成员变量_model的欧拉角，这可以变换表示Cessna或是其他模型的节点。特征按键w，s，a与d通过KEYDOWN事很描述战机的前进与旋转。当然，功能按键与浏览按键，包括KEY_LEFT，KEY_RIGHT等，也可以在这里使用：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">bool</span> <span class="n">ModelController</span><span class="o">::</span><span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">ModelController</span><span class="o">::</span><span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
                               <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIActionAdapter</span><span class="o">&amp;</span> <span class="n">aa</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">_model</span> <span class="p">)</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
@@ -318,27 +320,27 @@
 
     <span class="k">switch</span> <span class="p">(</span> <span class="n">ea</span><span class="p">.</span><span class="n">getEventType</span><span class="p">()</span> <span class="p">)</span>
     <span class="p">{</span>
-    <span class="k">case</span> <span class="n">osgGA</span>:<span class="o">:</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="n">KEYDOWN</span><span class="o">:</span>
+    <span class="k">case</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="nl">KEYDOWN</span><span class="p">:</span>
         <span class="k">switch</span> <span class="p">(</span> <span class="n">ea</span><span class="p">.</span><span class="n">getKey</span><span class="p">()</span> <span class="p">)</span>
         <span class="p">{</span>
-        <span class="k">case</span> <span class="sc">&#39;a&#39;</span>: <span class="k">case</span> <span class="sc">&#39;A&#39;</span>:
+        <span class="k">case</span> <span class="sc">&#39;a&#39;</span><span class="o">:</span> <span class="k">case</span> <span class="sc">&#39;A&#39;</span><span class="o">:</span>
             <span class="n">matrix</span> <span class="o">*=</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1f</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Z_AXIS</span><span class="p">);</span>
             <span class="k">break</span><span class="p">;</span>
-        <span class="k">case</span> <span class="sc">&#39;d&#39;</span>: <span class="k">case</span> <span class="sc">&#39;D&#39;</span>:
+        <span class="k">case</span> <span class="sc">&#39;d&#39;</span><span class="o">:</span> <span class="k">case</span> <span class="sc">&#39;D&#39;</span><span class="o">:</span>
             <span class="n">matrix</span> <span class="o">*=</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Z_AXIS</span><span class="p">);</span>
             <span class="k">break</span><span class="p">;</span>
-        <span class="k">case</span> <span class="sc">&#39;w&#39;</span>: <span class="k">case</span> <span class="sc">&#39;W&#39;</span>:
+        <span class="k">case</span> <span class="sc">&#39;w&#39;</span><span class="o">:</span> <span class="k">case</span> <span class="sc">&#39;W&#39;</span><span class="o">:</span>
             <span class="n">matrix</span> <span class="o">*=</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1f</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">X_AXIS</span><span class="p">);</span>
             <span class="k">break</span><span class="p">;</span>
-        <span class="k">case</span> <span class="sc">&#39;s&#39;</span>: <span class="k">case</span> <span class="sc">&#39;S&#39;</span>:
+        <span class="k">case</span> <span class="sc">&#39;s&#39;</span><span class="o">:</span> <span class="k">case</span> <span class="sc">&#39;S&#39;</span><span class="o">:</span>
             <span class="n">matrix</span> <span class="o">*=</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="mf">0.1f</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">X_AXIS</span><span class="p">);</span>
             <span class="k">break</span><span class="p">;</span>
-        <span class="nl">default:</span>
+        <span class="k">default</span><span class="o">:</span>
             <span class="k">break</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="n">_model</span><span class="o">-&gt;</span><span class="n">setMatrix</span><span class="p">(</span> <span class="n">matrix</span> <span class="p">);</span>
         <span class="k">break</span><span class="p">;</span>
-    <span class="nl">default:</span>
+    <span class="k">default</span><span class="o">:</span>
         <span class="k">break</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
@@ -346,9 +348,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>在主函数中，我们首先载入Cessna模型并将其添加到osg::MatrixTransform父节点。父节点将会被用作被控对象，并传递给ModelController处理器实例：</li>
+<li><p>在主函数中，我们首先载入Cessna模型并将其添加到osg::MatrixTransform父节点。父节点将会被用作被控对象，并传递给ModelController处理器实例：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span>
 <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">mt</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
 <span class="n">mt</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
@@ -357,16 +359,16 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>初始化模型控制器并传递变换节点作为参数：</li>
+<li><p>初始化模型控制器并传递变换节点作为参数：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">ModelController</span><span class="o">&gt;</span> <span class="n">ctrler</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">ModelController</span><span class="o">&gt;</span> <span class="n">ctrler</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">ModelController</span><span class="p">(</span> <span class="n">mt</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>我们并不希望在该示例中使用相机操作器，因为当使用键盘与鼠标时，他也会影响查看器的模型视图矩阵，并且混肴GUI事件的处理结果。所以，除了添加所创建的事件处理器之外，我们通过setAllowEventFocus()方法来阻止主相机接收任何用户事件，并由我们自己来设置合适的视图矩阵（因为现在操作器不能联系到相机）：</li>
+<li><p>我们并不希望在该示例中使用相机操作器，因为当使用键盘与鼠标时，他也会影响查看器的模型视图矩阵，并且混肴GUI事件的处理结果。所以，除了添加所创建的事件处理器之外，我们通过setAllowEventFocus()方法来阻止主相机接收任何用户事件，并由我们自己来设置合适的视图矩阵（因为现在操作器不能联系到相机）：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addEventHandler</span><span class="p">(</span> <span class="n">ctrler</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">getCamera</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setViewMatrixAsLookAt</span><span class="p">(</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">100.0f</span><span class="p">,</span><span class="mf">0.0f</span><span class="p">),</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(),</span> <span class="n">osg</span><span class="o">::</span><span class="n">Z_AXIS</span> <span class="p">);</span>
@@ -374,14 +376,14 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>现在启动查看器：</li>
+<li><p>现在启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>我们将会发现相机操作器（其默认行为类似于轨迹球）失去对主相机的控制，并且现在鼠标按钮不能浏览场景图。然而，现在按下四个按键将会影响Cessna模型。注意，这里的键盘事件仅作用于模型节点，而不会作用于整个场景图。我们可以向根节点添加另一个固定节点并看一下他是否会发生变化：</li>
+<li><p>我们将会发现相机操作器（其默认行为类似于轨迹球）失去对主相机的控制，并且现在鼠标按钮不能浏览场景图。然而，现在按下四个按键将会影响Cessna模型。注意，这里的键盘事件仅作用于模型节点，而不会作用于整个场景图。我们可以向根节点添加另一个固定节点并看一下他是否会发生变化：</p></li>
 </ol>
 <img alt="_images/osg_keyboard_cessna.png" src="_images/osg_keyboard_cessna.png" />
 </div>
@@ -393,7 +395,7 @@
 <div class="section" id="pop-quiz-handling-events-within-nodes">
 <h3>Pop quiz - handling events within nodes<a class="headerlink" href="#pop-quiz-handling-events-within-nodes" title="Permalink to this headline">¶</a></h3>
 <p>类似于更新回调，OSG同时会使用setEventCallback()与addEventCallback()方法允许事件回调被发送到节点与可绘制元素，两个方法都会接受一个osg::NodeCallback指针作为唯一参数。要在重写的operator()方法中获取事件变量，我们仅需要将节点访问器转换为osg::EventVisitor指针：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osgGA/EventVisitor&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osgGA/EventVisitor&gt;</span><span class="cp"></span>
 
 <span class="kt">void</span> <span class="nf">operator</span><span class="p">()(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">node</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span><span class="o">*</span> <span class="n">nv</span> <span class="p">)</span>
 <span class="p">{</span>
@@ -417,7 +419,7 @@
 <p>OSG使用内部事件队列在先进先出（FIFO）列表中管理到来的GUI事件。列表头的事件将会被首先处理，然后由列表中删除。也就是，每一个所添加的事件处理器的handle()方法的执行次数与事件队列的大小相同。事件队列类，名为;osgGA::EventQueue，允许新事件在任何时刻使用addEvent()方法被压入。其参数是一个osgGA::GUIEventAdapter指针，该参数使用设置方法，如setEventType()与setButton()来定义其行为。</p>
 <p>还有一些其他的osgGA::EventQueue类的方法可以被用来快速设置与添加新GUI事件。其中一个就是userEvent()方法，该方法使用用户数据指针作为参数来适配用户定义事件。这个用户数据可以用来表示任意的自定义事件类型，例如，在下一节中将要描述的计时器事件。</p>
 <p>并没有必要创建一个全新的事件队列对象。查看器类已经定义了一个可以进行操作的事件队列：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">viewer</span><span class="p">.</span><span class="n">getEventQueue</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">userEvent</span><span class="p">(</span> <span class="n">data</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span><span class="p">.</span><span class="n">getEventQueue</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">userEvent</span><span class="p">(</span> <span class="n">data</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>这里，变量data是一个由osg::Referenced派生的对象。在添加这个新事件之后，事件处理器将会接收一个USER事件，而开发者可以由处理器的getUserData()方法进行读取并执行所希望的操作。</p>
@@ -426,19 +428,19 @@
 <p>当内部计数器到达指定的时间间隔时会触发计时器事件。这常见于各种GUI系统中，并且允许用户设置一个自定义的计时器回调来接收计时消息并实现相关的操作。</p>
 <p>现在我们在OSG中能够实现相同的任务。因为在osgGA::GUIEventAdapter类中并没有定义标准的计时器事件，我们需要利用USER事件类型以及额外的数据指针。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Switch&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgGA/GUIEventHandler&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
-<span class="cp">#include &lt;iostream&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Switch&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgGA/GUIEventHandler&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>首先定义TimerInfo结构来管理计时器事件的参数（主要是计时器的触发时机）。我们需要将这个osg::Referenced派生指针关联到userEvent()方法，因为他是区分不同自定义事件的唯一元素：</li>
+<li><p>首先定义TimerInfo结构来管理计时器事件的参数（主要是计时器的触发时机）。我们需要将这个osg::Referenced派生指针关联到userEvent()方法，因为他是区分不同自定义事件的唯一元素：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">struct</span> <span class="n">TimerInfo</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">Referenced</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nl">TimerInfo</span> <span class="p">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">Referenced</span>
 <span class="p">{</span>
     <span class="n">TimerInfo</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">c</span> <span class="p">)</span> <span class="o">:</span> <span class="n">_count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{}</span>
     <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">_count</span><span class="p">;</span>
@@ -446,30 +448,30 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>TimerHandler被用于处理计时器对象与计时器事件。我们希望在每次接收到该事件时在Cessna模型的正常与燃烧状态之间进行切换。在第5章与第8章中，这是通过自定义osg::Node类与更新回调来实现的。但是这次我们将会尝试使用以osg::Switch指针作为参数的事件处理器来实现：</li>
+<li><p>TimerHandler被用于处理计时器对象与计时器事件。我们希望在每次接收到该事件时在Cessna模型的正常与燃烧状态之间进行切换。在第5章与第8章中，这是通过自定义osg::Node类与更新回调来实现的。但是这次我们将会尝试使用以osg::Switch指针作为参数的事件处理器来实现：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">TimerHandler</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventHandler</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TimerHandler</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventHandler</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="n">TimerHandler</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="o">*</span> <span class="n">sw</span> <span class="p">)</span> <span class="o">:</span> <span class="n">_switch</span><span class="p">(</span><span class="n">sw</span><span class="p">),</span> <span class="n">_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{}</span>
     <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
                          <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIActionAdapter</span><span class="o">&amp;</span> <span class="n">aa</span> <span class="p">);</span>
 
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="o">&gt;</span> <span class="n">_switch</span><span class="p">;</span>
     <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">_count</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>在重写的handle()方法有两种类型的事件需要处理。FRAME事件会自动为每一帧所触发，并且可以用来管理与增加内部计数器，当时机成熟时会向事件队列发送userEvent()。在该示例中，我们假定计时器事件在计数到100时触发。另一个是USER事件，该事件除了作为“用户数据”来指示计时器及其计数的TimerInfo对象以外不包含任何其他信息。这里，我们将会输出计数值并在变量_switch的子节点之间切换：</li>
+<li><p>在重写的handle()方法有两种类型的事件需要处理。FRAME事件会自动为每一帧所触发，并且可以用来管理与增加内部计数器，当时机成熟时会向事件队列发送userEvent()。在该示例中，我们假定计时器事件在计数到100时触发。另一个是USER事件，该事件除了作为“用户数据”来指示计时器及其计数的TimerInfo对象以外不包含任何其他信息。这里，我们将会输出计数值并在变量_switch的子节点之间切换：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">bool</span> <span class="n">TimerHandler</span><span class="o">::</span><span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TimerHandler</span><span class="o">::</span><span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
                            <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIActionAdapter</span><span class="o">&amp;</span> <span class="n">aa</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="k">switch</span> <span class="p">(</span> <span class="n">ea</span><span class="p">.</span><span class="n">getEventType</span><span class="p">()</span> <span class="p">)</span>
     <span class="p">{</span>
-    <span class="k">case</span> <span class="n">osgGA</span>:<span class="o">:</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="n">FRAME</span><span class="o">:</span>
+    <span class="k">case</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="nl">FRAME</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">_count</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
         <span class="p">{</span>
             <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">*</span> <span class="n">viewer</span> <span class="o">=</span>
@@ -482,7 +484,7 @@
         <span class="p">}</span>
         <span class="n">_count</span><span class="o">++</span><span class="p">;</span>
         <span class="k">break</span><span class="p">;</span>
-    <span class="k">case</span> <span class="n">osgGA</span>:<span class="o">:</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="n">USER</span><span class="o">:</span>
+    <span class="k">case</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="nl">USER</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span> <span class="n">_switch</span><span class="p">.</span><span class="n">valid</span><span class="p">()</span> <span class="p">)</span>
         <span class="p">{</span>
             <span class="k">const</span> <span class="n">TimerInfo</span><span class="o">*</span> <span class="n">ti</span> <span class="o">=</span>
@@ -495,7 +497,7 @@
             <span class="n">_switch</span><span class="o">-&gt;</span><span class="n">setValue</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="o">!</span><span class="n">_switch</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">);</span>
         <span class="p">}</span>
         <span class="k">break</span><span class="p">;</span>
-    <span class="nl">default:</span>
+    <span class="k">default</span><span class="o">:</span>
         <span class="k">break</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
@@ -503,9 +505,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>在主函数中，我们简单创建一个切换节点，该节点包含一个正常的Cessna模型与一个燃烧的Cessna模型：</li>
+<li><p>在主函数中，我们简单创建一个切换节点，该节点包含一个正常的Cessna模型与一个燃烧的Cessna模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model2</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessnafire.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model1</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">false</span> <span class="p">);</span>
@@ -513,16 +515,16 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>将计时器事件发送与处理器添加到查看器，并启动：</li>
+<li><p>将计时器事件发送与处理器添加到查看器，并启动：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addEventHandler</span><span class="p">(</span> <span class="k">new</span> <span class="n">TimerHandler</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">())</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>正如我们多次看到的，Cessna在完整与燃烧之间切换。另外，在控制台屏幕上会有消息输出，通知我们计时器何时被触发：</li>
+<li><p>正如我们多次看到的，Cessna在完整与燃烧之间切换。另外，在控制台屏幕上会有消息输出，通知我们计时器何时被触发：</p></li>
 </ol>
 <img alt="_images/osg_timer_event.png" src="_images/osg_timer_event.png" />
 </div>
@@ -549,7 +551,7 @@
 <p>osgUtil::IntersectionVisitor对象使用osgUtil::Intersector派生对象作为其构建函数的参数。他可以配置为使用多种交集器进行相交测试，包括线段，面板与多边形。一个交集器可以作用在四种类型的坐标系统中，其中的每一个都具有不同的输入参数，并且使用不同的转换矩阵将其转换为世界空间。在下表中，我们将会使用线段交集器类osgUtil::LinearSegmentIntersector来作为示例：</p>
 <img alt="_images/osg_intersection.png" src="_images/osg_intersection.png" />
 <p>假定我们要在一个事件处理器的handle()方法中进行交集测试。在这里WINDOW坐标系统可以用来获取一条由鼠标位置到3D场景的光线。下面的代码片段显示了如何在一个相机节点camera上来实现：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgUtil</span><span class="o">::</span><span class="n">LineSegmentIntersector</span><span class="o">&gt;</span> <span class="n">intersector</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgUtil</span><span class="o">::</span><span class="n">LineSegmentIntersector</span><span class="o">&gt;</span> <span class="n">intersector</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgUtil</span><span class="o">::</span><span class="n">LineSegmentIntersector</span><span class="p">(</span>
         <span class="n">osgUtil</span><span class="o">::</span><span class="n">Intersector</span><span class="o">::</span><span class="n">WINDOW</span><span class="p">,</span> <span class="n">ea</span><span class="p">.</span><span class="n">getX</span><span class="p">(),</span> <span class="n">ea</span><span class="p">.</span><span class="n">getY</span><span class="p">()</span>
     <span class="p">);</span>
@@ -558,13 +560,13 @@
 </pre></div>
 </div>
 <p>交集器的containsIntersections()方法可以被用来检测是否存在交集结果。osgUtil::LineSegmentIntersector的getIntersections()方法返回一个Intersection集合变量，依据距离查看器的远近进行排序。交集指针可以通过调用一个结果变量的getLocalIntersectPoint()方法或getWorlIntersectPoint()方法获得，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgUtil</span><span class="o">::</span><span class="n">LineSegmentIntersector</span><span class="o">::</span><span class="n">Intersection</span><span class="o">&amp;</span> <span class="n">result</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgUtil</span><span class="o">::</span><span class="n">LineSegmentIntersector</span><span class="o">::</span><span class="n">Intersection</span><span class="o">&amp;</span> <span class="n">result</span> <span class="o">=</span>
     <span class="o">*</span><span class="p">(</span> <span class="n">intersector</span><span class="o">-&gt;</span><span class="n">getIntersections</span><span class="p">().</span><span class="n">begin</span><span class="p">());</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span> <span class="n">point</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="n">getWorldIntersectPoint</span><span class="p">();</span>  <span class="c1">// in world space</span>
 </pre></div>
 </div>
 <p>第一行也可以重写为：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgUtil</span><span class="o">::</span><span class="n">LineSegmentIntersector</span><span class="o">::</span><span class="n">Intersection</span><span class="o">&amp;</span> <span class="n">result</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgUtil</span><span class="o">::</span><span class="n">LineSegmentIntersector</span><span class="o">::</span><span class="n">Intersection</span><span class="o">&amp;</span> <span class="n">result</span> <span class="o">=</span>
     <span class="n">intersector</span><span class="o">-&gt;</span><span class="n">getIntersections</span><span class="p">().</span><span class="n">front</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -573,35 +575,35 @@
 <h3>Time for action - clicking and selecting geometries<a class="headerlink" href="#time-for-action-clicking-and-selecting-geometries" title="Permalink to this headline">¶</a></h3>
 <p>这次我们的任务是实现3D软件中常见的一个任务－点击来选择空间中的一个对象并且在对象周围显示一个选取框。所选几何体的边界框非常适于表示选取框，而osg::ShapeDrawable类可以快速生成一个用于显示目的的方框。然后osg::PolygonMode属性将会使得渲染管线只绘制盒子的边框，从而有助于将选取框显示为边框。这就是我们生成一个实际选择对象功能所需要的全部知识。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osg/ShapeDrawable&gt;</span>
-<span class="cp">#include &lt;osg/PolygonMode&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgUtil/LineSegmentIntersector&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/ShapeDrawable&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/PolygonMode&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgUtil/LineSegmentIntersector&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>PickHandler将会完成我们任务所需要的所有操作，包括鼠标光标与场景图的相交测试，创建并返回选取方框节点（该示例中的_selectionBox变量），以及当按下鼠标按钮时将方框放置在所选择对象的周围：</li>
+<li><p>PickHandler将会完成我们任务所需要的所有操作，包括鼠标光标与场景图的相交测试，创建并返回选取方框节点（该示例中的_selectionBox变量），以及当按下鼠标按钮时将方框放置在所选择对象的周围：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">PickHandler</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventHandler</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PickHandler</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventHandler</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">getOrCreateSelectionBox</span><span class="p">();</span>
     <span class="k">virtual</span> <span class="kt">bool</span> <span class="nf">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
                          <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIActionAdapter</span><span class="o">&amp;</span> <span class="n">aa</span> <span class="p">);</span>
 
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">_selectionBox</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>在下面的方法中，我们将会分配并向主函数返回一个可用的选取方框节点。这里有需要注意的几点：首先，osg::Box对象不会在运行时变化，但出于简化操作的目的，将会使用父变换节点并修改；其次，GL_LIGHTING模式与osg::PolygonMode属性会被用来使得选择方框更为自然；最后，还有一个会让人迷惑的setNodeMask()调用，我们会在稍后进行解释：</li>
+<li><p>在下面的方法中，我们将会分配并向主函数返回一个可用的选取方框节点。这里有需要注意的几点：首先，osg::Box对象不会在运行时变化，但出于简化操作的目的，将会使用父变换节点并修改；其次，GL_LIGHTING模式与osg::PolygonMode属性会被用来使得选择方框更为自然；最后，还有一个会让人迷惑的setNodeMask()调用，我们会在稍后进行解释：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">PickHandler</span><span class="o">::</span><span class="n">getOrCreateSelectionBox</span><span class="p">()</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">PickHandler</span><span class="o">::</span><span class="n">getOrCreateSelectionBox</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">_selectionBox</span> <span class="p">)</span>
     <span class="p">{</span>
@@ -620,9 +622,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>我们将会严格限制选择场景对象的时机以确保相机操作可以正常工作。只有当用户持续按下Ctrl按键并释放鼠标左键时他才会被调用。然后，我们通过转换osgGA::GUIActionAdapter对象来获得查看器，并创建相交访问器来查找可以为鼠标光标所选择的节点（这里要注意setTraversalMask()方法，该方法将会与setNodeMask()方法一同介绍）。所得到的可绘制元素对象及其父节点路径可以用来描述选取框的空间位置与编写：</li>
+<li><p>我们将会严格限制选择场景对象的时机以确保相机操作可以正常工作。只有当用户持续按下Ctrl按键并释放鼠标左键时他才会被调用。然后，我们通过转换osgGA::GUIActionAdapter对象来获得查看器，并创建相交访问器来查找可以为鼠标光标所选择的节点（这里要注意setTraversalMask()方法，该方法将会与setNodeMask()方法一同介绍）。所得到的可绘制元素对象及其父节点路径可以用来描述选取框的空间位置与编写：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">bool</span> <span class="n">PickHandler</span><span class="o">::</span><span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">PickHandler</span><span class="o">::</span><span class="n">handle</span><span class="p">(</span> <span class="k">const</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">&amp;</span> <span class="n">ea</span><span class="p">,</span>
                           <span class="n">osgGA</span><span class="o">::</span><span class="n">GUIActionAdapter</span><span class="o">&amp;</span> <span class="n">aa</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="n">ea</span><span class="p">.</span><span class="n">getEventType</span><span class="p">()</span><span class="o">!=</span><span class="n">osgGA</span><span class="o">::</span><span class="n">GUIEventAdapter</span><span class="o">::</span><span class="n">RELEASE</span> <span class="o">||</span>
@@ -665,9 +667,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>其他的工作并不难理解。我们首先通过将两个模型添加到根节点来构建场景图：</li>
+<li><p>其他的工作并不难理解。我们首先通过将两个模型添加到根节点来构建场景图：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span>
 <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model2</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cow.osg&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
@@ -676,30 +678,30 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>我们创建选取处理器，同时将getOrCreateSelectionBox()的值添加到根节点。这将会使得选取方框在场景图中可见：</li>
+<li><p>我们创建选取处理器，同时将getOrCreateSelectionBox()的值添加到根节点。这将会使得选取方框在场景图中可见：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">PickHandler</span><span class="o">&gt;</span> <span class="n">picker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PickHandler</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">PickHandler</span><span class="o">&gt;</span> <span class="n">picker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PickHandler</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">picker</span><span class="o">-&gt;</span><span class="n">getOrCreateSelectionBox</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>好了，现在使用PickHandler对象作为自定义的事件处理器启动查看器：</li>
+<li><p>好了，现在使用PickHandler对象作为自定义的事件处理器启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addEventHandler</span><span class="p">(</span> <span class="n">picker</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>按下Ctrl键并点击牛。我们将会看到出现一个白色的选取框。试着移动鼠标并点击Cessna而不松开Ctrl键。现在选取框移动到Cessna模型，覆盖其所有顶点。如果Ctrl键没有被持续按下，那么所有其他的操作都不会有影响：</li>
+<li><p>按下Ctrl键并点击牛。我们将会看到出现一个白色的选取框。试着移动鼠标并点击Cessna而不松开Ctrl键。现在选取框移动到Cessna模型，覆盖其所有顶点。如果Ctrl键没有被持续按下，那么所有其他的操作都不会有影响：</p></li>
 </ol>
 <img alt="_images/osg_selection_box.png" src="_images/osg_selection_box.png" />
 </div>
 <div class="section" id="id2">
 <h3>What just happened?<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>osg::Node类的setNodeMask()方法出于某些特殊的目的而介绍。他使用特定的场景控制器来执行位逻辑与操作来指示节点对于控制器是否可用。例如，要使得某个节点及其子场景图对相交访问器不可访问，我们可以修改两个操作符，其中一个由setNodeMask()来定义，而另一个则由osg::NodeVisitor类的setTraversalMask()方法来定义，从而使得逻辑与的结果为零。这就是在前面的示例中有这两行代码的原因：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">_selectionBox</span><span class="o">-&gt;</span><span class="n">setNodeMask</span><span class="p">(</span> <span class="mh">0x1</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">_selectionBox</span><span class="o">-&gt;</span><span class="n">setNodeMask</span><span class="p">(</span> <span class="mh">0x1</span> <span class="p">);</span>
 <span class="n">iv</span><span class="p">.</span><span class="n">setTraversalMask</span><span class="p">(</span> <span class="o">~</span><span class="mh">0x1</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -724,7 +726,7 @@
 <img alt="_images/osg_traits_table1.png" src="_images/osg_traits_table1.png" />
 <img alt="_images/osg_traits_table2.png" src="_images/osg_traits_table2.png" />
 <p>要创建一个新的Traits指针并设置一个或多个成员变量，我们可以输入下面的代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">::</span><span class="n">Traits</span><span class="o">&gt;</span> <span class="n">traits</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">::</span><span class="n">Traits</span><span class="o">&gt;</span> <span class="n">traits</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">::</span><span class="n">Traits</span><span class="p">;</span>
 <span class="n">traits</span><span class="o">-&gt;</span><span class="n">x</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
 </pre></div>
@@ -733,17 +735,17 @@
 <h3>Time for action - configuring the traits of a rendering window<a class="headerlink" href="#time-for-action-configuring-the-traits-of-a-rendering-window" title="Permalink to this headline">¶</a></h3>
 <p>我们将创建一个固定尺寸的窗口来包含OSG场景的渲染结果。主要步骤包括：配置渲染窗口的特性（trait），依据特性创建一个图形环境，将图形环境关联到相机，最后将相机设置为查看器的主相机。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/GraphicsContext&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/GraphicsContext&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>创建一个特性结构并设置其属性。这里的采样值被设置来允许当前窗口的多重采样功能，但使其他窗口保持默认值（非多重采样）。这不同于osg::DisplaySettings类的setNumMultiSamples()方法：</li>
+<li><p>创建一个特性结构并设置其属性。这里的采样值被设置来允许当前窗口的多重采样功能，但使其他窗口保持默认值（非多重采样）。这不同于osg::DisplaySettings类的setNumMultiSamples()方法：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">::</span><span class="n">Traits</span><span class="o">&gt;</span> <span class="n">traits</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">::</span><span class="n">Traits</span><span class="o">&gt;</span> <span class="n">traits</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">::</span><span class="n">Traits</span><span class="p">;</span>
 <span class="n">traits</span><span class="o">-&gt;</span><span class="n">x</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
 <span class="n">traits</span><span class="o">-&gt;</span><span class="n">y</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
@@ -755,16 +757,16 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>使用createGraphicsContext()函数创建图形环境。在这里注意，不要使用new操作符创建新的图形环境，否则OSG不能为其确定底层窗口平台：</li>
+<li><p>使用createGraphicsContext()函数创建图形环境。在这里注意，不要使用new操作符创建新的图形环境，否则OSG不能为其确定底层窗口平台：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">&gt;</span> <span class="n">gc</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">&gt;</span> <span class="n">gc</span> <span class="o">=</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">GraphicsContext</span><span class="o">::</span><span class="n">createGraphicsContext</span><span class="p">(</span> <span class="n">traits</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>然后图形环境被关联到新创建的相机节点。他将会被用作整个场景的主相机，所以我们需要指定清除掩码与颜色使其功能类似于普通的OSG相机。在这里表示投影矩阵也同样非常重要。但是我们并不需要总是修改投影矩阵，因为他会由渲染后端在合适的时机进行重新计算与更新：</li>
+<li><p>然后图形环境被关联到新创建的相机节点。他将会被用作整个场景的主相机，所以我们需要指定清除掩码与颜色使其功能类似于普通的OSG相机。在这里表示投影矩阵也同样非常重要。但是我们并不需要总是修改投影矩阵，因为他会由渲染后端在合适的时机进行重新计算与更新：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">&gt;</span> <span class="n">camera</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">&gt;</span> <span class="n">camera</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="p">;</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setGraphicsContext</span><span class="p">(</span> <span class="n">gc</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setViewport</span><span class="p">(</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Viewport</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">traits</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">,</span> <span class="n">traits</span><span class="o">-&gt;</span><span class="n">height</span><span class="p">)</span> <span class="p">);</span>
@@ -776,23 +778,23 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>载入模型作为场景图：</li>
+<li><p>载入模型作为场景图：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
   <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>将相机设置到查看器并像平时一样启动：</li>
+<li><p>将相机设置到查看器并像平时一样启动：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setCamera</span><span class="p">(</span> <span class="n">camera</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>现在我们使得Cessna模型显示在渲染窗口中。我们依然可以在窗口中浏览，运行前面的示例，并测试代码。要再次以全屏幕模式渲染，将width与height属性设置为屏幕尺寸，并将windowDecoration设置为false。</li>
+<li><p>现在我们使得Cessna模型显示在渲染窗口中。我们依然可以在窗口中浏览，运行前面的示例，并测试代码。要再次以全屏幕模式渲染，将width与height属性设置为屏幕尺寸，并将windowDecoration设置为false。</p></li>
 </ol>
 <img alt="_images/osg_render_in_window.png" src="_images/osg_render_in_window.png" />
 </div>
@@ -805,36 +807,36 @@
 <h2>Integrating OSG into a window<a class="headerlink" href="#integrating-osg-into-a-window" title="Permalink to this headline">¶</a></h2>
 <p>界面开发者也许工作在各种GUI系统下，并且需要将OSG场景图集成到其UI部件中。依据不同的GUI工作策略，在技术上很难有嵌入OSG查看器的通用方法。然而，确实存在一个我们可以用来使得集成更为简单的技巧：</p>
 <ul class="simple">
-<li>将窗口句柄关联到osg::GraphicsContext::Traits类的inheritedWindowData。窗口句柄类型可以是一个WIN32的HWND，X11的Window以及Cocoa的WindowRef。之后，OSG将会在继承的窗口上管理OpenGL渲染环境以及绘制调用，从而将整个场景渲染到窗口表面。</li>
-<li>osgViewer::Viewer类的frame()方法应被连续执行。出于此目的，我们或者可以使用一个单独的线程，或者是使用一个间隔足够短的GUI计时器处理器。</li>
-<li>对于支持直接OpenGL绘制调用的部件（Qt的QGLWidget，GLUT，FLTK，等），使用osgViewer::GraphicsWindowEmbedded类来创建图像环境，而无需担心渲染环境与相关的缓冲区属性。OSG查看器的frame()方法必须在部件类的一个连续更新方法中执行。</li>
-<li>绝不要在GUI回调或事件处理器中修改场景图（动态修改节点与状态属性，添加或是移除子节点，等）。相反，使用OSG原生的方法可以避免线程冲突。另一个低效的方法是强制查看器使用单线程模式，我们将会在第12章中进行介绍。</li>
+<li><p>将窗口句柄关联到osg::GraphicsContext::Traits类的inheritedWindowData。窗口句柄类型可以是一个WIN32的HWND，X11的Window以及Cocoa的WindowRef。之后，OSG将会在继承的窗口上管理OpenGL渲染环境以及绘制调用，从而将整个场景渲染到窗口表面。</p></li>
+<li><p>osgViewer::Viewer类的frame()方法应被连续执行。出于此目的，我们或者可以使用一个单独的线程，或者是使用一个间隔足够短的GUI计时器处理器。</p></li>
+<li><p>对于支持直接OpenGL绘制调用的部件（Qt的QGLWidget，GLUT，FLTK，等），使用osgViewer::GraphicsWindowEmbedded类来创建图像环境，而无需担心渲染环境与相关的缓冲区属性。OSG查看器的frame()方法必须在部件类的一个连续更新方法中执行。</p></li>
+<li><p>绝不要在GUI回调或事件处理器中修改场景图（动态修改节点与状态属性，添加或是移除子节点，等）。相反，使用OSG原生的方法可以避免线程冲突。另一个低效的方法是强制查看器使用单线程模式，我们将会在第12章中进行介绍。</p></li>
 </ul>
 <div class="section" id="time-for-action-attaching-osg-with-a-window-handle-in-win32">
 <h3>Time for action - attaching OSG with a window handle in Win32<a class="headerlink" href="#time-for-action-attaching-osg-with-a-window-handle-in-win32" title="Permalink to this headline">¶</a></h3>
 <p>Win32程序中的窗口句柄（HWND）使得系统资源知道他所引用的是哪种类型的窗口对象。HWND变量也许会封装对话框，按钮，MDI或SDI窗口等。在这种情况下，将句柄关联到OSG特性，然后关联到图形环境将会使得OSG与Win32 GUI控件集成在一起成为可能，因而可以在各种用户界面对象中显示3D屏幕。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;windows.h&gt;</span>
-<span class="cp">#include &lt;process.h&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgGA/TrackballManipulator&gt;</span>
-<span class="cp">#include &lt;osgViewer/api/win32/GraphicsWindowWin32&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;windows.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;process.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgGA/TrackballManipulator&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/api/win32/GraphicsWindowWin32&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>在这里声明两个全局变量；我们会在稍后进行解释：</li>
+<li><p>在这里声明两个全局变量；我们会在稍后进行解释：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">&gt;</span> <span class="n">g_viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">&gt;</span> <span class="n">g_viewer</span><span class="p">;</span>
 <span class="kt">bool</span> <span class="n">g_finished</span><span class="p">;</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>我们希望使用Win32 API中的CreateWindow()函数来创建一个典型的弹出窗口。他必须使用WNDCLASS结构来定义风格以及自定义的窗口程序（procedure）。在大多数情况下，程序是一个指向处理传递给窗口的窗口信息的静态函数：</li>
+<li><p>我们希望使用Win32 API中的CreateWindow()函数来创建一个典型的弹出窗口。他必须使用WNDCLASS结构来定义风格以及自定义的窗口程序（procedure）。在大多数情况下，程序是一个指向处理传递给窗口的窗口信息的静态函数：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">static</span> <span class="n">TCHAR</span> <span class="n">szAppName</span><span class="p">[]</span> <span class="o">=</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;gui&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TCHAR</span> <span class="n">szAppName</span><span class="p">[]</span> <span class="o">=</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;gui&quot;</span><span class="p">);</span>
 <span class="n">WNDCLASS</span> <span class="n">wndclass</span><span class="p">;</span>
 <span class="n">wndclass</span><span class="p">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">CS_HREDRAW</span> <span class="o">|</span> <span class="n">CS_VREDRAW</span><span class="p">;</span>
 <span class="n">wndclass</span><span class="p">.</span><span class="n">lpfnWndProc</span> <span class="o">=</span> <span class="n">WndProc</span><span class="p">;</span>
@@ -851,9 +853,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>在(100,100)位置处创建一个800x600的窗口。如果成功则返回窗口句柄，OSG渲染窗口特性将其用于集成处理。我们可以将图形环境的初始化代码放置在这里，或是放在WM_CREATE语句中：</li>
+<li><p>在(100,100)位置处创建一个800x600的窗口。如果成功则返回窗口句柄，OSG渲染窗口特性将其用于集成处理。我们可以将图形环境的初始化代码放置在这里，或是放在WM_CREATE语句中：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">HWND</span> <span class="n">hwnd</span> <span class="o">=</span> <span class="n">CreateWindow</span><span class="p">(</span> <span class="n">szAppName</span><span class="p">,</span> <span class="c1">// window class name</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HWND</span> <span class="n">hwnd</span> <span class="o">=</span> <span class="n">CreateWindow</span><span class="p">(</span> <span class="n">szAppName</span><span class="p">,</span> <span class="c1">// window class name</span>
                           <span class="n">TEXT</span><span class="p">(</span><span class="s">&quot;OSG and Win32 Window&quot;</span><span class="p">),</span>
                           <span class="c1">// caption</span>
                           <span class="n">WS_OVERLAPPEDWINDOW</span><span class="p">,</span> <span class="c1">// window style</span>
@@ -870,9 +872,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>创建一个消息循环由内部队列获取消息并将其分发给相应的窗口过程：</li>
+<li><p>创建一个消息循环由内部队列获取消息并将其分发给相应的窗口过程：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">MSG</span> <span class="n">msg</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">MSG</span> <span class="n">msg</span><span class="p">;</span>
 <span class="k">while</span> <span class="p">(</span> <span class="n">GetMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">TranslateMessage</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">msg</span> <span class="p">);</span>
@@ -882,9 +884,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>现在，在WndProc()处理的实现中，我们将会试着初始化OSG查看器并将其嵌入到所创建的窗口中。这可以在WM_CREATE语句中完成。首先，创建一个WindowData结构来包含HWND句柄。然后将其应用于特性以及所创建的平台特定的图形环境。之后，相机与查看器依次被初始化。在这里setKeyEventSetsDonw()被用来禁止使用Esc键退出OSG程序。最后，我们启动一个新的渲染线程用于查看器中的帧。这也正是我们在开始处声明两个全局变量的原因：</li>
+<li><p>现在，在WndProc()处理的实现中，我们将会试着初始化OSG查看器并将其嵌入到所创建的窗口中。这可以在WM_CREATE语句中完成。首先，创建一个WindowData结构来包含HWND句柄。然后将其应用于特性以及所创建的平台特定的图形环境。之后，相机与查看器依次被初始化。在这里setKeyEventSetsDonw()被用来禁止使用Esc键退出OSG程序。最后，我们启动一个新的渲染线程用于查看器中的帧。这也正是我们在开始处声明两个全局变量的原因：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">case</span> <span class="n">WM_CREATE</span>:
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">case</span> <span class="nl">WM_CREATE</span><span class="p">:</span>
 <span class="p">{</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Referenced</span><span class="o">&gt;</span> <span class="n">windata</span> <span class="o">=</span>
         <span class="k">new</span> <span class="n">osgViewer</span><span class="o">::</span><span class="n">GraphicsWindowWin32</span><span class="o">::</span><span class="n">WindowData</span><span class="p">(</span> <span class="n">hwnd</span> <span class="p">);</span>
@@ -927,9 +929,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>在WM_DESTROY中，我们需要在释放窗口句柄之前强制退出OSG渲染。setDone()方法通知OSG停止所有的处理并等待程序退出。在这里Sleep()方法非常适用于处理多线程，他会在其完成之前将当前时间片颁给渲染线程：</li>
+<li><p>在WM_DESTROY中，我们需要在释放窗口句柄之前强制退出OSG渲染。setDone()方法通知OSG停止所有的处理并等待程序退出。在这里Sleep()方法非常适用于处理多线程，他会在其完成之前将当前时间片颁给渲染线程：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">case</span> <span class="n">WM_DESTROY</span>:
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">case</span> <span class="nl">WM_DESTROY</span><span class="p">:</span>
     <span class="n">g_viewer</span><span class="o">-&gt;</span><span class="n">setDone</span><span class="p">(</span> <span class="nb">true</span> <span class="p">);</span>
     <span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">g_finished</span> <span class="p">)</span> <span class="n">Sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
     <span class="n">PostQuitMessage</span><span class="p">(</span> <span class="mi">0</span> <span class="p">);</span>
@@ -937,9 +939,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>开启额外渲染线程执行的例程只有做一件事，也就是，他会继续渲染新帧直到查看器通知其停止：</li>
+<li><p>开启额外渲染线程执行的例程只有做一件事，也就是，他会继续渲染新帧直到查看器通知其停止：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">render</span><span class="p">(</span> <span class="kt">void</span><span class="o">*</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">render</span><span class="p">(</span> <span class="kt">void</span><span class="o">*</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">g_viewer</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">()</span> <span class="p">)</span>
         <span class="n">g_viewer</span><span class="o">-&gt;</span><span class="n">frame</span><span class="p">();</span>
@@ -948,7 +950,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>现在启动程序。我们将会看到Cessna模型出现在一个新窗口中。osgViewer::Viewer的run()并没有被直接使用，而是使用一个单独的渲染线程将OSG场景图绘制到窗口的图形环境。当然，如果时间间隔对于模拟3D世界足够短，WM_TIMER信息对于帧的连续运行同样可用：</li>
+<li><p>现在启动程序。我们将会看到Cessna模型出现在一个新窗口中。osgViewer::Viewer的run()并没有被直接使用，而是使用一个单独的渲染线程将OSG场景图绘制到窗口的图形环境。当然，如果时间间隔对于模拟3D世界足够短，WM_TIMER信息对于帧的连续运行同样可用：</p></li>
 </ol>
 <img alt="_images/osg_integrate_with_window.png" src="_images/osg_integrate_with_window.png" />
 </div>
@@ -960,12 +962,12 @@
 <div class="section" id="have-a-go-hero-embedding-into-gui-systems">
 <h3>Have a go hero - embedding into GUI systems<a class="headerlink" href="#have-a-go-hero-embedding-into-gui-systems" title="Permalink to this headline">¶</a></h3>
 <p>在OSG中有一个特殊的图形环境，名为osgViewer::GraphicsWindowEmbedded。他假定包含图形环境的窗口支持OpenGL而无需其他的操作。在这种情况下，我们可以直接分配一个新的嵌套图形窗口并将其关联到相机，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">gw</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgViewer</span><span class="o">::</span><span class="n">GraphicsWindowEmbedded</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">gw</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgViewer</span><span class="o">::</span><span class="n">GraphicsWindowEmbedded</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span> <span class="n">setGraphicsContext</span><span class="p">(</span> <span class="n">gw</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>然后，当GUI运行时我们需要以一定的速率绘制帧，并随时将键盘与鼠标事件发送到图形环境的事件队列，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">gw</span><span class="o">-&gt;</span><span class="n">getEventQueue</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">keyPress</span><span class="p">(</span> <span class="sc">&#39;W&#39;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">gw</span><span class="o">-&gt;</span><span class="n">getEventQueue</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">keyPress</span><span class="p">(</span> <span class="sc">&#39;W&#39;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>用于测试嵌套图形环境的GUI就是GLUT库，该库直接支持OpenGL调用。试着使用osgViewer::GraphicsWindowEmbedded类实现OSG与GLUT的集成。examples子目录下的osgviewerGLUT示例也会为我们提供极大的帮助。</p>
@@ -978,11 +980,11 @@
 <p>同时我们介绍了将OSG场景图集成到2D窗口系统中的常见解决方案。这里的关键点是使用相应的窗口特征来创建图像环境，包括尺寸，显示设置以及窗口处理参数。</p>
 <p>在本章中，我们特别讨论了：</p>
 <ul class="simple">
-<li>使用osgGA::GUIEventHandler类处理普通的用户事件，该类使用osgGA::GUIEventAdapter来传入事件，以及osgGA::GUIActionAdapter来接收额外的请求（实际上，大多数情况下为查看器对象）。</li>
-<li>使用osgGA::EventQueue自定义并发送用户定义的GUI事件。</li>
-<li>使用osgUtil::IntersectionVisitor访问器以及如osgUtil::LineSegmentIntersector的操作符进行场景对象测试。</li>
-<li>如何使用osg::GraphicsContext::Traits来设置要被渲染窗口的特性。</li>
-<li>用于渲染场景的图像环境嵌入到窗口系统中，例如，一个Win32 API窗口句柄。在源码的examples目标可以找到更多的示例。</li>
+<li><p>使用osgGA::GUIEventHandler类处理普通的用户事件，该类使用osgGA::GUIEventAdapter来传入事件，以及osgGA::GUIActionAdapter来接收额外的请求（实际上，大多数情况下为查看器对象）。</p></li>
+<li><p>使用osgGA::EventQueue自定义并发送用户定义的GUI事件。</p></li>
+<li><p>使用osgUtil::IntersectionVisitor访问器以及如osgUtil::LineSegmentIntersector的操作符进行场景对象测试。</p></li>
+<li><p>如何使用osg::GraphicsContext::Traits来设置要被渲染窗口的特性。</p></li>
+<li><p>用于渲染场景的图像环境嵌入到窗口系统中，例如，一个Win32 API窗口句柄。在源码的examples目标可以找到更多的示例。</p></li>
 </ul>
 </div>
 </div>
@@ -1044,7 +1046,7 @@
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'',
+            URL_ROOT:'./',
             VERSION:'0.01',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -1054,6 +1056,7 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
 
   
 

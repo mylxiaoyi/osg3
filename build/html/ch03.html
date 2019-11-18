@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -29,6 +28,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
         <link rel="next" title="Chapter 4: Building Geometry Models" href="ch04.html"/>
         <link rel="prev" title="Chapter 2: Compilation and Installation of OpenSceneGraph" href="ch02.html"/>
@@ -63,7 +65,7 @@
             <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="ch01.html">Chapter 1: The Journey into OpenSceneGraph</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ch02.html">Chapter 2: Compilation and Installation of OpenSceneGraph</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 3: Creating Your First OSG Program</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 3: Creating Your First OSG Program</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#constructing-your-own-projects">Constructing your own projects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-a-root-node">Using a root node</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#understanding-memory-management">Understanding memory management</a></li>
@@ -224,7 +226,7 @@
     <li>Chapter 3: Creating Your First OSG Program</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ch03.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/ch03.rst.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -255,23 +257,23 @@
 <p>幸运的是，OSG也提供了一个原生的智能指针，osg::ref_ptr&lt;&gt;，用于自动垃圾收集与释放。为了使其正确工作，OSG同时提供了osg::Referenced类来管理引用计数的内存块，该类被用作扮演模板参数角色的所有类的基类。</p>
 <p>osg::ref_ptr&lt;&gt;类模板重新实现了大量的C++操作符以及成员函数，从而为开发者提供了方便的方法。其主要组成部分如下：</p>
 <ul class="simple">
-<li>get()：该公共方法返回被管理的指针，例如，如果我们使用osg::Node作为模板参数则会返回osg::Node* 指针。</li>
-<li>operator*()：这实际上是一个解引用操作符，该操作符会返回指针地址处的左值，例如，osg::Node&amp;引用变量。</li>
-<li>operator-&gt;()与operator=()：这两个操作符允许用户程序将osg::ref_ptr&lt;&gt;用作普通指针。前者调用被管理对象的成员函数，而后者使用一个新指针来替换当前被管理的指针。</li>
-<li>operator==()，operator!=()与operator!()：这几个操作符用于比较智能指针，或是检测特定的指针是否正确。被赋值为NULL值或是没有任何赋值的osg::ref_ptr&lt;&gt;对象被认为是不正确的。</li>
-<li>valid()：如果被管理的指针不为NULL，该公共方法会返回真。如果some_ptr被定义为智能指针，则表达式some_ptr.valid()等同于some_ptr!=NULL。</li>
-<li>release()：当由函数中返回被管理的地址时，这个公共方法会非常有用。我们会在稍后进行讨论。</li>
+<li><p>get()：该公共方法返回被管理的指针，例如，如果我们使用osg::Node作为模板参数则会返回osg::Node* 指针。</p></li>
+<li><p>operator*()：这实际上是一个解引用操作符，该操作符会返回指针地址处的左值，例如，osg::Node&amp;引用变量。</p></li>
+<li><p>operator-&gt;()与operator=()：这两个操作符允许用户程序将osg::ref_ptr&lt;&gt;用作普通指针。前者调用被管理对象的成员函数，而后者使用一个新指针来替换当前被管理的指针。</p></li>
+<li><p>operator==()，operator!=()与operator!()：这几个操作符用于比较智能指针，或是检测特定的指针是否正确。被赋值为NULL值或是没有任何赋值的osg::ref_ptr&lt;&gt;对象被认为是不正确的。</p></li>
+<li><p>valid()：如果被管理的指针不为NULL，该公共方法会返回真。如果some_ptr被定义为智能指针，则表达式some_ptr.valid()等同于some_ptr!=NULL。</p></li>
+<li><p>release()：当由函数中返回被管理的地址时，这个公共方法会非常有用。我们会在稍后进行讨论。</p></li>
 </ul>
 <p>osg::Referenced类是所有场景图中所有元素的纯基类，例如节点，几何体，渲染状态以及所有其他可分配的场景对象。osg::Node类实际上间接派生自osg::Refereced。这也正是我们可以编写如下语句的原因：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">root</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">root</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>osg::Referenced类包含一个整数用来处理所分配的内存块。在类的构造函数中引用计数被初始化为0，如果osg::Referenced对象被一个osg::ref_ptr&lt;&gt;智能指针引用时，引用计数会增加1。相对的，如果对象被由特定的智能指针移除时，引用计数会减1。当不再为任何智能指针引用时，对象本身将会被自动销毁。</p>
 <p>osg::Referenced类提供了三个主要成员方法：</p>
 <ul class="simple">
-<li>公共方法ref()将引用计数值增加1</li>
-<li>公共方法unref()将引用计数值减少1</li>
-<li>公共方法referenceCount()返回当前的引用计数值，这对于代码调试非常有用</li>
+<li><p>公共方法ref()将引用计数值增加1</p></li>
+<li><p>公共方法unref()将引用计数值减少1</p></li>
+<li><p>公共方法referenceCount()返回当前的引用计数值，这对于代码调试非常有用</p></li>
 </ul>
 <p>这些方法同样可以作用于由osg::Referenced派生的类。注意，在用户程序中无需直接调用ref()与unref()方法，这意味着引用计数是由手动进行管理的，且也许会与osg::ref_ptr&lt;&gt;的操作产生冲突。否则，OSG的内部垃圾回收系统将会获得错误的正在使用中的智能指针数目，甚至在以不正确的方式管理内存块会导致程序崩溃。</p>
 </div>
@@ -279,9 +281,9 @@
 <h2>Collecting garbage: why and how<a class="headerlink" href="#collecting-garbage-why-and-how" title="Permalink to this headline">¶</a></h2>
 <p>下面是一些在程序中使用智能指针与垃圾回收系统的原因：</p>
 <ul class="simple">
-<li>更少的错误：使用智能指针意味着指针的自动初始化与清除。不会产生野指针，因为他们总是引用计数的。</li>
-<li>高效管理：当对象不再被引用时他们会被立即回收，从而在有限的资源下为程序提供更多可用的内存。</li>
-<li>调试容易：我们可以很容易获取对象的引用计数以及其他信息，然后应用其他的优化与实验。</li>
+<li><p>更少的错误：使用智能指针意味着指针的自动初始化与清除。不会产生野指针，因为他们总是引用计数的。</p></li>
+<li><p>高效管理：当对象不再被引用时他们会被立即回收，从而在有限的资源下为程序提供更多可用的内存。</p></li>
+<li><p>调试容易：我们可以很容易获取对象的引用计数以及其他信息，然后应用其他的优化与实验。</p></li>
 </ul>
 <p>例如，场景图是由一个根节点与多层子节点构成的。假定所有的子节点都是由osg::ref_ptr&lt;&gt;进行管理的，用户程序只需要保存指向根节点的指针。如下图所示，删除根节点指针的操作将会导致销毁整个节点层次结构的级联效果：</p>
 <img alt="_images/osg_ref_ptr.png" src="_images/osg_ref_ptr.png" />
@@ -290,21 +292,22 @@
 <p>智能指针可以被用作局部变量，全局变量或是类变量，并且会在重新赋值给其他对象或是超出智能指针声明的范围时自动减少引用计数。</p>
 <p>强烈推荐用户程序总是使用智能指针来管理其场景，但是仍然有一些需要特别注意的问题：</p>
 <ul class="simple">
-<li>osg::Referenced及其派生类只能由堆上生成。他们不能被用作局部变量，因为出于安全考虑类析构函数在内部被声明为proteced。例如：</li>
+<li><p>osg::Referenced及其派生类只能由堆上生成。他们不能被用作局部变量，因为出于安全考虑类析构函数在内部被声明为proteced。例如：</p></li>
 </ul>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">node</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="p">;</span> <span class="c1">// this is legal</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">node</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="p">;</span> <span class="c1">// this is legal</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Node</span> <span class="n">node</span><span class="p">;</span> <span class="c1">// this is illegal!</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>普通的C++指针可以临时起作用。但是用户程序应记得将其赋值给osg::ref_ptr&lt;&gt;，或是在最后将其添加到场景图元素（几乎所有的OSG场景类都使用智能指外域来管理子对象），因为他总是最安全的方法。</li>
+<li><p>普通的C++指针可以临时起作用。但是用户程序应记得将其赋值给osg::ref_ptr&lt;&gt;，或是在最后将其添加到场景图元素（几乎所有的OSG场景类都使用智能指外域来管理子对象），因为他总是最安全的方法。</p></li>
 </ul>
-<div class="highlight-cpp"><pre>osg::Node* tmpNode = new osg::Node; // this is OK
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>osg::Node* tmpNode = new osg::Node; // this is OK
 …
-osg::ref_ptr&lt;osg::Node&gt; node = tmpNode; // Good finish!</pre>
+osg::ref_ptr&lt;osg::Node&gt; node = tmpNode; // Good finish!
+</pre></div>
 </div>
 <ul class="simple">
-<li>不要使用循环引用，因为垃圾回收机制不能处理。循环引用意味着一个对象直接或是间接引用其自身，从而会导致错误的引用计数的计算。</li>
+<li><p>不要使用循环引用，因为垃圾回收机制不能处理。循环引用意味着一个对象直接或是间接引用其自身，从而会导致错误的引用计数的计算。</p></li>
 </ul>
 <p>下图中所示的场景图包含两种类型的循环引用，这两种类型都是错误的。节点Child 1.1添加其自身作为子节点，从而会导致遍历子节点时的死循环，因为他也是其自身的子节点。节点Child 2.2是一个间接循环引用，当运行时会导致相同的问题：</p>
 <img alt="_images/osg_reference_cycle.png" src="_images/osg_reference_cycle.png" />
@@ -317,7 +320,7 @@ osg::ref_ptr&lt;osg::Node&gt; node = tmpNode; // Good finish!</pre>
 <div class="section" id="parsing-command-line-arguments">
 <h2>Parsing command-line arguments<a class="headerlink" href="#parsing-command-line-arguments" title="Permalink to this headline">¶</a></h2>
 <p>主函数的命令行参数为用户程序定义了不同的参数。主函数的声明总是如下面的样子：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>argc与argv参数构成了一个包含程序名与其他必须参数的字符串数组。OSG提供了一个快速与安全的osg::ArgumentParser来读取并使用这些参数。</p>
@@ -326,7 +329,7 @@ osg::ref_ptr&lt;osg::Node&gt; node = tmpNode; // Good finish!</pre>
 <h2>Tracing with the notifier<a class="headerlink" href="#tracing-with-the-notifier" title="Permalink to this headline">¶</a></h2>
 <p>OSG通知器机制为由OSG渲染后端或是由用户级别输出可视的调试信息提供了理想方法。对于跟踪与调试程序这确实是一个重要而省时的方法。另外，通知器也被用在OSG核心功能与插件中来显示错误，警告信息或是过程信息。开发者也许仅是简单的在源代码中插入调试输出函数，输出函数，osg::notify()，被设计来接受不同的信息级别并将其发送到控制台划用户定义的控制器。</p>
 <p>osg::nofiy()函数可以被用作标准输出流std::cout。他需要一个NotifyServerity参数来指示消息级别，该参数可以为ALWAYS，FATAL，WARN，NOTICE，INFO，DEBUG_INFO与DEBUG_FP，依次由最严重级别到最轻级别。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">notify</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">WARN</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Some warn message.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">notify</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">WARN</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Some warn message.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>默认情况下这会输出一条警告信息。这里osg::WARN被用于向OSG通知系统指示通知级别。</p>
@@ -342,10 +345,10 @@ osg::ref_ptr&lt;osg::Node&gt; node = tmpNode; // Good finish!</pre>
 <p>本章提供了一个简单的指南来使用CMake工具创建我们自己的简单OSG程序，并且介绍了一些实用程序。OSG使用智能指针用于在运行时分配给场景节点的操作系统资源的高效管理，这对于这些要求安全的程序的性能非常重要。为了有助于理解智能指针的工作原则，我们花费了大量的章节来解释osg::ref_ptr&lt;&gt;的使用以及如何计算引用计数，并且探讨了当管理OSG场景元素时可能会出现的各种情况。</p>
 <p>在本章中，我们特别讨论了：</p>
 <ul class="simple">
-<li>如何编写简单的CMake脚本文件并且使其与我们自己的源码和OSG依赖配合工作</li>
-<li>OSG智能指针与垃圾回收机制的原则</li>
-<li>在场景图对象上使用智能指针的优点与注意事项</li>
-<li>用于解析命令行参数以及跟踪与调试我们源代码的其他有用类与函数</li>
+<li><p>如何编写简单的CMake脚本文件并且使其与我们自己的源码和OSG依赖配合工作</p></li>
+<li><p>OSG智能指针与垃圾回收机制的原则</p></li>
+<li><p>在场景图对象上使用智能指针的优点与注意事项</p></li>
+<li><p>用于解析命令行参数以及跟踪与调试我们源代码的其他有用类与函数</p></li>
 </ul>
 </div>
 </div>
@@ -407,7 +410,7 @@ osg::ref_ptr&lt;osg::Node&gt; node = tmpNode; // Good finish!</pre>
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'',
+            URL_ROOT:'./',
             VERSION:'0.01',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -417,6 +420,7 @@ osg::ref_ptr&lt;osg::Node&gt; node = tmpNode; // Good finish!</pre>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
 
   
 

@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -29,6 +28,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
         <link rel="prev" title="Chapter 11: Developing Visual Components" href="ch11.html"/>
 
@@ -186,7 +188,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ch11.html#summary">Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 12: Improving Rendering Efficiency</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 12: Improving Rendering Efficiency</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#open-threads-basics">Open Threads basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#understanding-multithreaded-readering">Understanding multithreaded readering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dynamic-scene-culling">Dynamic scene culling</a></li>
@@ -223,7 +225,7 @@
     <li>Chapter 12: Improving Rendering Efficiency</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ch12.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/ch12.rst.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -237,41 +239,41 @@
 <p>在本书的最后一章，我们将介绍用于构建快速，实时渲染系统所需要的技术，从而以一种高效的方式帮助用户载入，组织与渲染大规模数据集。理解一个较大API调用集合的所有类，方法与全局变量相对较为容易，但是将我们所学的内容应用实际应用，正确且高效的方式，则是另一回事。这里改善渲染效率的方法也许有助于解决我们时不时会遇到的某些引擎问题。</p>
 <p>在本章中，我们将会了解：</p>
 <ul class="simple">
-<li>在OSG中实现多线程操作与渲染的基本原则</li>
-<li>场景裁剪与闭塞裁剪的概念</li>
-<li>通过修改与共享几何体与纹理改善渲染性的不同方法</li>
-<li>在处理大数据集时的动态分页机制及其应用</li>
+<li><p>在OSG中实现多线程操作与渲染的基本原则</p></li>
+<li><p>场景裁剪与闭塞裁剪的概念</p></li>
+<li><p>通过修改与共享几何体与纹理改善渲染性的不同方法</p></li>
+<li><p>在处理大数据集时的动态分页机制及其应用</p></li>
 </ul>
 <div class="section" id="open-threads-basics">
 <h2>Open Threads basics<a class="headerlink" href="#open-threads-basics" title="Permalink to this headline">¶</a></h2>
 <p>OpenThreads是一个用于OSG类与应用的一个轻量级，跨平台的API。他支持一个多线程程序所需要的基本元素，也就是，线程对象（OpenThreads::Thread），用于锁住不同线程共享数据的信号量（OpenThreads::Mutex），边界（OpenThreads::Barrier），以及条件（OpenThreads::Condition）。后两者经常用于线程同步。</p>
 <p>为某一目的创建新线程，我们需要派生OpenThreads::Thread基类并重新实现其虚方法。还有一些方便处理线程与线程属性的全局函数，例如：</p>
 <ul class="simple">
-<li>GetNumberOfProcessors()函数获取可用的处理器数量</li>
-<li>SetProcessorAffinityOfCurrentThread()函数设置处理与当前线程的关系（也就是，哪一个处理器用来执行当前线程）。他应在线程当前运行时调用。</li>
-<li>OpenThreads::Thread的CurrentThread()静态函数返回指向当前运行线程实例的指针。</li>
-<li>OpenThreads::Thread的YieldCurrentThread()静态函数获取当前线程并且让其他线程接管处理器的控制。</li>
-<li>OpenThreads::Thread的microSleep()静态方法使得当前线程睡眠指定的毫秒数。他也可以用在单线程程序中。</li>
+<li><p>GetNumberOfProcessors()函数获取可用的处理器数量</p></li>
+<li><p>SetProcessorAffinityOfCurrentThread()函数设置处理与当前线程的关系（也就是，哪一个处理器用来执行当前线程）。他应在线程当前运行时调用。</p></li>
+<li><p>OpenThreads::Thread的CurrentThread()静态函数返回指向当前运行线程实例的指针。</p></li>
+<li><p>OpenThreads::Thread的YieldCurrentThread()静态函数获取当前线程并且让其他线程接管处理器的控制。</p></li>
+<li><p>OpenThreads::Thread的microSleep()静态方法使得当前线程睡眠指定的毫秒数。他也可以用在单线程程序中。</p></li>
 </ul>
 <div class="section" id="time-for-action-using-a-separate-data-receiver-thread">
 <h3>Time for action - using a separate data receiver thread<a class="headerlink" href="#time-for-action-using-a-separate-data-receiver-thread" title="Permalink to this headline">¶</a></h3>
 <p>在该示例中，我们将使用OpenThreads库设计一个新线程，并用来由标准输入读取字符。同时，主进程，也就是，OSG查看器与渲染后端将会接收输入字符并使用osgText库在屏幕上进行显示。只有当数据线程与主进程同时完成时，整个程序才会正常退出。</p>
 <ol class="arabic simple">
-<li>包含必须的头文件：</li>
+<li><p>包含必须的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Geode&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgText/Text&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
-<span class="cp">#include &lt;iostream&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Geode&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgText/Text&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>声明一个新的DataReceiverThread类作为OpenThread::Thread类的派生类。在该类中需要实现两个新方法以确保线程可以正常工作：cancel()方法定义了线程的关闭处理，而run()方法定义了由线程的开始到结束所发生的动作。我们同时定义了一个mutex变量用于线程间同步，并有为了方便使用单例模式：</li>
+<li><p>声明一个新的DataReceiverThread类作为OpenThread::Thread类的派生类。在该类中需要实现两个新方法以确保线程可以正常工作：cancel()方法定义了线程的关闭处理，而run()方法定义了由线程的开始到结束所发生的动作。我们同时定义了一个mutex变量用于线程间同步，并有为了方便使用单例模式：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">DataReceiverThread</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpenThreads</span><span class="o">::</span><span class="n">Thread</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DataReceiverThread</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpenThreads</span><span class="o">::</span><span class="n">Thread</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="k">static</span> <span class="n">DataReceiverThread</span><span class="o">*</span> <span class="n">instance</span><span class="p">()</span>
     <span class="p">{</span>
         <span class="k">static</span> <span class="n">DataReceiverThread</span> <span class="n">s_thread</span><span class="p">;</span>
@@ -282,7 +284,7 @@
 
     <span class="kt">void</span> <span class="nf">addToContent</span><span class="p">(</span> <span class="kt">int</span> <span class="n">ch</span> <span class="p">);</span>
     <span class="kt">bool</span> <span class="nf">getContent</span><span class="p">(</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">str</span> <span class="p">);</span>
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
     <span class="n">OpenThreads</span><span class="o">::</span><span class="n">Mutex</span> <span class="n">_mutex</span><span class="p">;</span>
     <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">_content</span><span class="p">;</span>
     <span class="kt">bool</span> <span class="n">_done</span><span class="p">;</span>
@@ -291,9 +293,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>关闭处理非常简单：设置变量_done（在run()实现中重复检测直到为true）并等待线程完成：</li>
+<li><p>关闭处理非常简单：设置变量_done（在run()实现中重复检测直到为true）并等待线程完成：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">int</span> <span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">cancel</span><span class="p">()</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">cancel</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">_done</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
     <span class="k">while</span><span class="p">(</span> <span class="n">isRunning</span><span class="p">()</span> <span class="p">)</span> <span class="n">YieldCurrentThread</span><span class="p">();</span>
@@ -302,9 +304,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>run()方法是线程类的核心。他通常包含一个循环，在其中执行实际的处理动作。在我们的数据接收线程中，我们使用std::cin.get()来由键盘输入读取字符并且确定是否可以添加到成员字符串_content中。当_done被设置为true时，run()方法结束生命周期，而整个线程也同样如此：</li>
+<li><p>run()方法是线程类的核心。他通常包含一个循环，在其中执行实际的处理动作。在我们的数据接收线程中，我们使用std::cin.get()来由键盘输入读取字符并且确定是否可以添加到成员字符串_content中。当_done被设置为true时，run()方法结束生命周期，而整个线程也同样如此：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">run</span><span class="p">()</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">run</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">_done</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
     <span class="n">_dirty</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
@@ -316,19 +318,19 @@
         <span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">ch</span><span class="p">);</span>
         <span class="k">switch</span> <span class="p">(</span><span class="n">ch</span><span class="p">)</span>
         <span class="p">{</span>
-        <span class="k">case</span> <span class="mi">0</span>: <span class="k">break</span><span class="p">;</span>  <span class="c1">// We don&#39;t want &#39;\0&#39; to be added</span>
-        <span class="k">case</span> <span class="mi">9</span>: <span class="n">_done</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>  <span class="c1">// ASCII code of Tab = 9</span>
-        <span class="nl">default:</span> <span class="n">addToContent</span><span class="p">(</span><span class="n">ch</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">0</span><span class="o">:</span> <span class="k">break</span><span class="p">;</span>  <span class="c1">// We don&#39;t want &#39;\0&#39; to be added</span>
+        <span class="k">case</span> <span class="mi">9</span><span class="o">:</span> <span class="n">_done</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>  <span class="c1">// ASCII code of Tab = 9</span>
+        <span class="k">default</span><span class="o">:</span> <span class="n">addToContent</span><span class="p">(</span><span class="n">ch</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
         <span class="p">}</span>
     <span class="p">}</span> <span class="k">while</span><span class="p">(</span> <span class="o">!</span><span class="n">_done</span> <span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>在这里要小心std::cin.get()函数：他首先由用户输入读取一个或多个字符，直到回车键被按下并接收到&#8217;n&#8217;为止。然后，他由缓冲区中一次选取一个字符，并连续将其添加到成员字符串中。当缓冲区中的所有字符都遍历完成后，他会清空缓冲区并再次等待用户输入。</li>
-<li>自定义的addToContent()方法向_content添加新字符。该方法当然是在数据接收者线程中被调用的，所以当我们改变_content变量时，我们必须锁定mutex对象，来避免其他线程与主进程污染该变量：</li>
+<li><p>在这里要小心std::cin.get()函数：他首先由用户输入读取一个或多个字符，直到回车键被按下并接收到’n’为止。然后，他由缓冲区中一次选取一个字符，并连续将其添加到成员字符串中。当缓冲区中的所有字符都遍历完成后，他会清空缓冲区并再次等待用户输入。</p></li>
+<li><p>自定义的addToContent()方法向_content添加新字符。该方法当然是在数据接收者线程中被调用的，所以当我们改变_content变量时，我们必须锁定mutex对象，来避免其他线程与主进程污染该变量：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">addToContent</span><span class="p">(</span> <span class="kt">int</span> <span class="n">ch</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">addToContent</span><span class="p">(</span> <span class="kt">int</span> <span class="n">ch</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">OpenThreads</span><span class="o">::</span><span class="n">ScopedLock</span><span class="o">&lt;</span><span class="n">OpenThreads</span><span class="o">::</span><span class="n">Mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">_mutex</span><span class="p">);</span>
     <span class="n">_content</span> <span class="o">+=</span> <span class="n">ch</span><span class="p">;</span>
@@ -337,9 +339,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>自定义的getContent()方法被用来获取_content变量并将其添加到输入字符串参数。该方法是前面addToContent()方法的逆操作，只能在后续的OSG回调实现中调用。互斥（mutex）对象的作用域锁定操作将会使得整个处理是线程安全的，就如是addToContent()中的处理一样：</li>
+<li><p>自定义的getContent()方法被用来获取_content变量并将其添加到输入字符串参数。该方法是前面addToContent()方法的逆操作，只能在后续的OSG回调实现中调用。互斥（mutex）对象的作用域锁定操作将会使得整个处理是线程安全的，就如是addToContent()中的处理一样：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">bool</span> <span class="nf">getContent</span><span class="p">(</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">str</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">getContent</span><span class="p">(</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">str</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">OpenThreads</span><span class="o">::</span><span class="n">ScopedLock</span><span class="o">&lt;</span><span class="n">OpenThreads</span><span class="o">::</span><span class="n">Mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">_mutex</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span> <span class="n">_dirty</span> <span class="p">)</span>
@@ -353,11 +355,11 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>线程实现完成了。现在让我们回到渲染。这里我们所希望的是一个可以依据由主进程中接收到的字符串而动态改变其内容的文本对象。文本对象的更新回调对于实现该功能是必须的。在自定义的更新回调的虚update()方法中（用于可绘制元素，所以这里不需要osg::NodeCallback），我们简单的接收osgText::Text对象以及接收器线程实例，然后重置所显示的文本：</li>
+<li><p>线程实现完成了。现在让我们回到渲染。这里我们所希望的是一个可以依据由主进程中接收到的字符串而动态改变其内容的文本对象。文本对象的更新回调对于实现该功能是必须的。在自定义的更新回调的虚update()方法中（用于可绘制元素，所以这里不需要osg::NodeCallback），我们简单的接收osgText::Text对象以及接收器线程实例，然后重置所显示的文本：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">UpdateTextCallback</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">Drawable</span><span class="o">::</span><span class="n">UpdateCallback</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UpdateTextCallback</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">Drawable</span><span class="o">::</span><span class="n">UpdateCallback</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="k">virtual</span> <span class="kt">void</span> <span class="n">update</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span><span class="o">*</span> <span class="n">nv</span><span class="p">,</span>
                          <span class="n">osg</span><span class="o">::</span><span class="n">Drawable</span><span class="o">*</span> <span class="n">drawable</span> <span class="p">)</span>
     <span class="p">{</span>
@@ -374,9 +376,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>在主体部分，我们首先创建osgText::Text可绘制元素，并且应我们文本更新回调的实例。这里setAxisAlignment()将文本定义为场景中的公告板，而setDataVariance()确保文本对象在更新与绘制过程中是动态更新的。同时还有一个setInitialBound()方法，该方法接受osg::BoundingBox变量作为参数。他会强制可绘制元素最小边界框的定义，并依此计算初始视图矩阵：</li>
+<li><p>在主体部分，我们首先创建osgText::Text可绘制元素，并且应我们文本更新回调的实例。这里setAxisAlignment()将文本定义为场景中的公告板，而setDataVariance()确保文本对象在更新与绘制过程中是动态更新的。同时还有一个setInitialBound()方法，该方法接受osg::BoundingBox变量作为参数。他会强制可绘制元素最小边界框的定义，并依此计算初始视图矩阵：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgText</span><span class="o">::</span><span class="n">Text</span><span class="o">&gt;</span> <span class="n">text</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgText</span><span class="o">::</span><span class="n">Text</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgText</span><span class="o">::</span><span class="n">Text</span><span class="o">&gt;</span> <span class="n">text</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgText</span><span class="o">::</span><span class="n">Text</span><span class="p">;</span>
 <span class="n">text</span><span class="o">-&gt;</span><span class="n">setFont</span><span class="p">(</span> <span class="s">&quot;fonts/arial.ttf&quot;</span> <span class="p">);</span>
 <span class="n">text</span><span class="o">-&gt;</span><span class="n">setAxisAlignment</span><span class="p">(</span> <span class="n">osgText</span><span class="o">::</span><span class="n">TextBase</span><span class="o">::</span><span class="n">SCREEN</span> <span class="p">);</span>
 <span class="n">text</span><span class="o">-&gt;</span><span class="n">setDataVariance</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Object</span><span class="o">::</span><span class="n">DYNAMIC</span> <span class="p">);</span>
@@ -387,9 +389,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="10">
-<li>将文本对象添加到osg::Geode节点并关闭灯光。在启动查看器之前，我们同时需要确保场景被渲染到固定尺寸的窗口中。这是因为我们同时需要使用控制台窗口用于键盘输入：</li>
+<li><p>将文本对象添加到osg::Geode节点并关闭灯光。在启动查看器之前，我们同时需要确保场景被渲染到固定尺寸的窗口中。这是因为我们同时需要使用控制台窗口用于键盘输入：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">geode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">geode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
 <span class="n">geode</span><span class="o">-&gt;</span><span class="n">addDrawable</span><span class="p">(</span> <span class="n">text</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">geode</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span>
     <span class="n">GL_LIGHTING</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OFF</span> <span class="p">);</span>
@@ -399,20 +401,20 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="11">
-<li>在查看器运行之前启动数据接收器，并在之后退出：</li>
+<li><p>在查看器运行之前启动数据接收器，并在之后退出：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">startThread</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">startThread</span><span class="p">();</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 <span class="n">DataReceiverThread</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">cancel</span><span class="p">();</span>
 <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="12">
-<li>如果我们使用子系统控制台编译我们的工程，则会出现两个窗口。将焦点放在控制台窗口中并输入一些字符。当我们完成时输入回车，并在回车后按下Tab以退出接收者线程：</li>
+<li><p>如果我们使用子系统控制台编译我们的工程，则会出现两个窗口。将焦点放在控制台窗口中并输入一些字符。当我们完成时输入回车，并在回车后按下Tab以退出接收者线程：</p></li>
 </ol>
 <img alt="_images/osg_threads_console.png" src="_images/osg_threads_console.png" />
 <ol class="arabic simple" start="13">
-<li>我们将会注意到相同的字符出现在OSG渲染窗口中。这可以被看作一个非常基本的文本编辑器，文本源位于一个单独的接收线程中，而绘制界面则是在OSG场景图中实现的：</li>
+<li><p>我们将会注意到相同的字符出现在OSG渲染窗口中。这可以被看作一个非常基本的文本编辑器，文本源位于一个单独的接收线程中，而绘制界面则是在OSG场景图中实现的：</p></li>
 </ol>
 <img alt="_images/osg_threads_window.png" src="_images/osg_threads_window.png" />
 </div>
@@ -436,18 +438,18 @@
 <h3>Time for action - switching between different threading models<a class="headerlink" href="#time-for-action-switching-between-different-threading-models" title="Permalink to this headline">¶</a></h3>
 <p>OSG提供了非常方便的接口用于选择线程模型。不同的线程模型可以用于不同的环境，并有不同的效率。在此示例中，我们将会显示当运行一个具有大量四边形几何体的场景，在osgViewer::CompisteViewer的三个渲染窗口同时运行时，三个常用线程模型之间的区别。</p>
 <ol class="arabic simple">
-<li>包含必须的头文件：</li>
+<li><p>包含必须的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Group&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/ViewerEventHandlers&gt;</span>
-<span class="cp">#include &lt;osgViewer/CompositeViewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Group&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/ViewerEventHandlers&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/CompositeViewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>四边形可以使用osg::createTexturedQuadGeometry()函数生成。其位置简单的通过一个随机数生成器确定。这样的一个四边形不会占用过多的系统资源。但是大量没有使用对象共享机制的四边形将会很快耗尽系统与视频卡内存（由于每一个几何体显示列表的构建），这对于测试系统负载容量非常有帮助：</li>
+<li><p>四边形可以使用osg::createTexturedQuadGeometry()函数生成。其位置简单的通过一个随机数生成器确定。这样的一个四边形不会占用过多的系统资源。但是大量没有使用对象共享机制的四边形将会很快耗尽系统与视频卡内存（由于每一个几何体显示列表的构建），这对于测试系统负载容量非常有帮助：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#define RAND(min, max) \</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define RAND(min, max) \</span>
 <span class="cp">        ((min) + (float)rand()/(RAND_MAX+1) * ((max)-(min)))</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">*</span> <span class="n">createMassiveQuads</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">number</span> <span class="p">)</span>
 <span class="p">{</span>
@@ -472,9 +474,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>组合查看器对于每个渲染窗口需要一个单独的osgViewer::View实例。窗口的位置与大小是由setUpViewInWindow()方法确定的：</li>
+<li><p>组合查看器对于每个渲染窗口需要一个单独的osgViewer::View实例。窗口的位置与大小是由setUpViewInWindow()方法确定的：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">createView</span><span class="p">(</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">w</span><span class="p">,</span> <span class="kt">int</span> <span class="n">h</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">createView</span><span class="p">(</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">w</span><span class="p">,</span> <span class="kt">int</span> <span class="n">h</span><span class="p">,</span>
                              <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">scene</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="p">;</span>
@@ -485,23 +487,23 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>在主体部分，我们首先使用一个参数解析器来选择线程模型。默认情况下，OSG会依据处理器与程序的渲染窗口的数量自动选择最佳的线程策略，也就是AutomaticSelection。但是我们仍然由内建值中指定一种处理多线程渲染的方法，包括SingleThreaded，ThreadPerContext与ThreadPerCamera：</li>
+<li><p>在主体部分，我们首先使用一个参数解析器来选择线程模型。默认情况下，OSG会依据处理器与程序的渲染窗口的数量自动选择最佳的线程策略，也就是AutomaticSelection。但是我们仍然由内建值中指定一种处理多线程渲染的方法，包括SingleThreaded，ThreadPerContext与ThreadPerCamera：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ArgumentParser</span> <span class="n">arguments</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ArgumentParser</span> <span class="n">arguments</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">ViewerBase</span><span class="o">::</span><span class="n">ThreadingModel</span> <span class="n">th</span> <span class="o">=</span>
     <span class="n">osgViewer</span><span class="o">::</span><span class="n">ViewerBase</span><span class="o">::</span><span class="n">AutomaticSelection</span><span class="p">;</span>
 <span class="k">if</span> <span class="p">(</span> <span class="n">arguments</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&quot;--single&quot;</span><span class="p">)</span> <span class="p">)</span> <span class="n">th</span> <span class="o">=</span>
     <span class="n">osgViewer</span><span class="o">::</span><span class="n">ViewerBase</span><span class="o">::</span><span class="n">SingleThreaded</span><span class="p">;</span>
-<span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="n">arguments</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&quot;--useContext&quot;</span><span class="p">)</span> <span class="p">)</span> <span class="n">th</span> <span class="o">=</span>
+<span class="k">else</span> <span class="nf">if</span> <span class="p">(</span> <span class="n">arguments</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&quot;--useContext&quot;</span><span class="p">)</span> <span class="p">)</span> <span class="n">th</span> <span class="o">=</span>
     <span class="n">osgViewer</span><span class="o">::</span><span class="n">ViewerBase</span><span class="o">::</span><span class="n">ThreadPerContext</span><span class="p">;</span>
-<span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="n">arguments</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&quot;--useCamera&quot;</span><span class="p">)</span> <span class="p">)</span> <span class="n">th</span> <span class="o">=</span>
+<span class="k">else</span> <span class="nf">if</span> <span class="p">(</span> <span class="n">arguments</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&quot;--useCamera&quot;</span><span class="p">)</span> <span class="p">)</span> <span class="n">th</span> <span class="o">=</span>
     <span class="n">osgViewer</span><span class="o">::</span><span class="n">ViewerBase</span><span class="o">::</span><span class="n">ThreadPerCamera</span><span class="p">;</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>创建三个渲染视图并将大量的四边形几何体应用到其中的每一个。在该示例中总计分配了20000个四边形用于演示不同的线程模型：</li>
+<li><p>创建三个渲染视图并将大量的四边形几何体应用到其中的每一个。在该示例中总计分配了20000个四边形用于演示不同的线程模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">view1</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">view1</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span>
     <span class="n">createMassiveQuads</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">view2</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">550</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span>
     <span class="n">createMassiveQuads</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span> <span class="p">);</span>
@@ -511,9 +513,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>创建组合查看器并设置用户指定的线程模型。注意，这里的setThreadingModel()方法不仅能用于osgViewer::CompositeViewer，而且对于大多数普通的osgViewer::Viewer实例也是可用的：</li>
+<li><p>创建组合查看器并设置用户指定的线程模型。注意，这里的setThreadingModel()方法不仅能用于osgViewer::CompositeViewer，而且对于大多数普通的osgViewer::Viewer实例也是可用的：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">CompositeViewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">CompositeViewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setThreadingModel</span><span class="p">(</span> <span class="n">th</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addView</span><span class="p">(</span> <span class="n">view1</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addView</span><span class="p">(</span> <span class="n">view2</span> <span class="p">);</span>
@@ -522,21 +524,21 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>编译程序（假定其名字为MyProject.exe）并在控制台模式下输入下面命令：</li>
+<li><p>编译程序（假定其名字为MyProject.exe）并在控制台模式下输入下面命令：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp"># MyProject.exe --single</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp"># MyProject.exe --single</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>最终的结果如下图所示。注意对于单线程模型帧速率仅为20，其中，更新、裁剪与绘制阶段是在相同的线程中依次完成的：</li>
+<li><p>最终的结果如下图所示。注意对于单线程模型帧速率仅为20，其中，更新、裁剪与绘制阶段是在相同的线程中依次完成的：</p></li>
 </ol>
 <img alt="_images/osg_multithread_single.png" src="_images/osg_multithread_single.png" />
 <ol class="arabic simple" start="9">
-<li>将参数由&#8211;single改变&#8211;useContext并再次启动测试程序。这次我们将会发现帧速率增加了。这是因为OSG除了用户更新阶段，对于裁剪与绘制阶段使用单独的线程，从而大大的改进了渲染性能：</li>
+<li><p>将参数由–single改变–useContext并再次启动测试程序。这次我们将会发现帧速率增加了。这是因为OSG除了用户更新阶段，对于裁剪与绘制阶段使用单独的线程，从而大大的改进了渲染性能：</p></li>
 </ol>
 <img alt="_images/osg_multithread_context.png" src="_images/osg_multithread_context.png" />
 <ol class="arabic simple" start="10">
-<li>将命令行参数修改为&#8211;useCamera并再次启动测试程序。这际上是对于现令大多数多处理器计算机的默认策略。他甚至好于第二种线程模型，因为他对于相机与渲染窗口使用不同的线程，并在单独的CPU上运行线程以获得最大的效率：</li>
+<li><p>将命令行参数修改为–useCamera并再次启动测试程序。这际上是对于现令大多数多处理器计算机的默认策略。他甚至好于第二种线程模型，因为他对于相机与渲染窗口使用不同的线程，并在单独的CPU上运行线程以获得最大的效率：</p></li>
 </ol>
 <img alt="_images/osg_multithread_camera.png" src="_images/osg_multithread_camera.png" />
 </div>
@@ -552,7 +554,7 @@
 <p>然而，更好的解决方案是ThreadPerCamera模型。这会将每个视图的CULL阶段与DRAW阶段分开，同时在线程中实现。这意味着对于每个渲染窗口我们至少有一个CULL线程与一个DRAW线程，因而可以完全利用多处理器系统。因为裁剪操作一定与osg::Camera节点相关（他为视图截图裁剪管理视图与投影矩阵），我们将该线程模型称为“每个相机一个线程”模型，如下图所示：</p>
 <img alt="_images/osg_threads_camera.png" src="_images/osg_threads_camera.png" />
 <p>在线程模型中，DRAW阶段被看作两个并行处理，在CPU端分民命令，而在GPU端执行渲染缓冲区交换并执行。交换缓冲区操作的时间消耗可以是统一的，并且在所有的DRAW分发操作完成之后执行。但是在这之前，线程模型会预告启动下一帧的用户UPDATE阶段。这种处理再一次极大的改善了渲染性能，但是如果用户更新改变正在被分发的场景数据，也许会导致未预期的结果。这也正是我们为也许会被修改的场景对象设置动态标记的原因：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">node</span><span class="o">-&gt;</span><span class="n">setDataVariance</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Object</span><span class="o">::</span><span class="n">DYNAMIC</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">node</span><span class="o">-&gt;</span><span class="n">setDataVariance</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Object</span><span class="o">::</span><span class="n">DYNAMIC</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>默认情况，如果检测到多处理器系统，OSG将会支持ThreadPerCamera线程模型。</p>
@@ -563,13 +565,13 @@
 <p>裁剪技术可以进行简单的描述：不绘制我们看不见的东西。我们可以使用两种主要方法实现该目的：通过减少不需要进行细化的多边形面，以及忽略当前视口中不可见的对象。</p>
 <p>前者通常是由LOD（level-of-detail）算法实现的，在OSG中是通过osg::LOD类实现的。后者实际上是场景裁剪的定义，目的是查找场景图中根本不需要渲染的对象。在OSG中有多种裁剪技术类型：</p>
 <ul class="simple">
-<li>背面裁剪（Back face culling）：这是由osg::CullFace类实现的，该类封装了OpenGL的glCullFace()函数。他会由渲染管线的相机中移除所有多边形面，从而减少内存占用。这种技术很有用，特别是对于复杂的对象，但是对于透明的物体或是有洞的物体也许会有错误。</li>
-<li>小特性裁剪（Smallfeature culling）：该技术会基于可见性测试允许过小而看不见的对象的移除，结果导致如果绘制对象则会影响对象的像素数。如果该数目小于用户定义的最小像素阈值，则该对象会由渲染列表中移除。</li>
-<li>视图截面裁剪（View-frustum culling）：其思想只是简单的不渲染超出由渲染窗口的视图与投影矩阵所定义的视图截面的部分。这是现代渲染程序中最高效的方法。</li>
-<li>闭合裁剪（Occlusion culling）：该技术会确定由于隐藏在其他对象之后，哪些对象会完全不可见。我们很快会在下一节进行讨论。</li>
+<li><p>背面裁剪（Back face culling）：这是由osg::CullFace类实现的，该类封装了OpenGL的glCullFace()函数。他会由渲染管线的相机中移除所有多边形面，从而减少内存占用。这种技术很有用，特别是对于复杂的对象，但是对于透明的物体或是有洞的物体也许会有错误。</p></li>
+<li><p>小特性裁剪（Smallfeature culling）：该技术会基于可见性测试允许过小而看不见的对象的移除，结果导致如果绘制对象则会影响对象的像素数。如果该数目小于用户定义的最小像素阈值，则该对象会由渲染列表中移除。</p></li>
+<li><p>视图截面裁剪（View-frustum culling）：其思想只是简单的不渲染超出由渲染窗口的视图与投影矩阵所定义的视图截面的部分。这是现代渲染程序中最高效的方法。</p></li>
+<li><p>闭合裁剪（Occlusion culling）：该技术会确定由于隐藏在其他对象之后，哪些对象会完全不可见。我们很快会在下一节进行讨论。</p></li>
 </ul>
 <p>注意，小特性裁剪方法也许会导致实际的实际的几何体点不可渲染。要禁止该特性，我们可以使用相机节点的setCullingMode()方法：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setCullingMode</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setCullingMode</span><span class="p">(</span>
    <span class="n">camera</span><span class="o">-&gt;</span><span class="n">getCullingMode</span><span class="p">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">SMALL_FEATURE_CULLING</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -648,7 +650,7 @@
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'',
+            URL_ROOT:'./',
             VERSION:'0.01',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -658,6 +660,7 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
 
   
 

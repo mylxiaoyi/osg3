@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -29,6 +28,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
         <link rel="next" title="Chapter 7: Viewing the World" href="ch07.html"/>
         <link rel="prev" title="Chapter 5: Managing Scene Graph" href="ch05.html"/>
@@ -108,7 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ch05.html#summary">Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 6: Creating Realistic Rendering Effects</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 6: Creating Realistic Rendering Effects</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#encapsulating-the-opengl-state-machine">Encapsulating the OpenGL state machine</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#attributes-and-modes">Attributes and modes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#inheriting-render-states">Inheriting render states</a></li>
@@ -224,7 +226,7 @@
     <li>Chapter 6: Creating Realistic Rendering Effects</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ch06.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/ch06.rst.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -238,14 +240,14 @@
 <p>3D场景中的几何模型是顶点，纹理，光以及阴影信息的组合。在图像管线中，渲染是最后的重要一步，使用各种可视化效果，例如亮度，颜色以及用户可以看到的表面细节，由定义的模型中生成图像。OSG几乎封装了所有的OpenGL的渲染接口，包括光线，材质，纹理，Alpha测试，图像混合，雾效果以及OpenGL Shading Language中的顶点，几何以及帧渐变器的实现。</p>
 <p>本章将会详细介绍：</p>
 <ul class="simple">
-<li>理解状态机的概念及其在OSG中的封装</li>
-<li>如何为场景对象设置不同的渲染属性与模式</li>
-<li>如何在场景图中继承渲染状态</li>
-<li>在OSG中实现各种固定功能的渲染效果</li>
-<li>如何控制场景光线，这是一个位置状态</li>
-<li>如何添加纹理以及设置几何体的纹理坐标</li>
-<li>控制绘制透明以及半透明对象的渲染顺序</li>
-<li>通过统一变量使用顶点，几何体以及帧渐变器</li>
+<li><p>理解状态机的概念及其在OSG中的封装</p></li>
+<li><p>如何为场景对象设置不同的渲染属性与模式</p></li>
+<li><p>如何在场景图中继承渲染状态</p></li>
+<li><p>在OSG中实现各种固定功能的渲染效果</p></li>
+<li><p>如何控制场景光线，这是一个位置状态</p></li>
+<li><p>如何添加纹理以及设置几何体的纹理坐标</p></li>
+<li><p>控制绘制透明以及半透明对象的渲染顺序</p></li>
+<li><p>通过统一变量使用顶点，几何体以及帧渐变器</p></li>
 </ul>
 <div class="section" id="encapsulating-the-opengl-state-machine">
 <h2>Encapsulating the OpenGL state machine<a class="headerlink" href="#encapsulating-the-opengl-state-machine" title="Permalink to this headline">¶</a></h2>
@@ -253,12 +255,12 @@
 <p>当一个渲染状态被设置后，他就会持续作用直到其他的函数修改了渲染状态。OpenGL管线在内部维护一个状态栈，在任意时刻保存或是恢复渲染状态。</p>
 <p>状态机为开发者提供了对当前以及保存的渲染状态的精确控制。然而，他却并不适合于在一个场景图结构中直接使用。正因为如此，OSG使用osg::StateSet类来封装OpenGL状态机，并且管理场景图的裁剪与渲染遍历中各种渲染状态的push与pop操作。</p>
 <p>一个osg::StateSet实例包含一个不同OpenGL状态的子集，并且可以通过使用setStateSet()方法将其应用到osg::Node或是osg::Drawable对象。例如，我们可以向一个node变量添加一个新分配的状态集：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="p">;</span>
 <span class="n">node</span><span class="o">-&gt;</span><span class="n">setStateSet</span><span class="p">(</span> <span class="n">stateset</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>一个更安全的方法是使用getOrCreateStateSet()方法，这可以确保总是返回正确的状态集，并且如果需要会自动关联到节点或是可绘制元素：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>osg::Node或是osg::Drawable类使用智能指针osg::ref_ptr&lt;&gt;管理osg::StateSet成员变量。这意味着状态集可以为多个场景对象所共享，并且可以在不再需要时被销毁。</p>
@@ -269,16 +271,16 @@
 <p>渲染模式的作用类似于可以打开或是关闭的开关。另外，他包含一个用来指示OpenGL模式类型的枚举参数。因为简单，并没有必要为渲染模式定义一个StateMode基类。注意，有时渲染式与一个属性相关联，例如，当模式GL_LIGHTING被打开时，光线变量会被发送到OpenGL管线，相反则会关闭场景光线。</p>
 <p>osg::StateSet类将属性与模式分为两类：纹理与非纹理。有多种方法可以将非纹理属性与模式添加到状态集合本身：</p>
 <ol class="arabic simple">
-<li>公共方法setAttribute()将一个osg::StateAttribute派生对象添加到状态集。在一个状态集中不能存在相同类型的属性。前一个属性会被新属性所覆盖。</li>
-<li>公共方法setMode()将一个模型枚举关联到状态集，并将其值设置为osg::StateAttribute::ON或osg::StateAttribute::OFF，意味着打开或是关闭该模式。</li>
-<li>公共方法setAttributeAndModes()将一个渲染属性及其相关联的模式关联到状态集，同时设置开关值（默认为ON）。注意，并不是所有的属性都有相对应的模式，但是我们总是可以确定的使用该方法。</li>
+<li><p>公共方法setAttribute()将一个osg::StateAttribute派生对象添加到状态集。在一个状态集中不能存在相同类型的属性。前一个属性会被新属性所覆盖。</p></li>
+<li><p>公共方法setMode()将一个模型枚举关联到状态集，并将其值设置为osg::StateAttribute::ON或osg::StateAttribute::OFF，意味着打开或是关闭该模式。</p></li>
+<li><p>公共方法setAttributeAndModes()将一个渲染属性及其相关联的模式关联到状态集，同时设置开关值（默认为ON）。注意，并不是所有的属性都有相对应的模式，但是我们总是可以确定的使用该方法。</p></li>
 </ol>
 <p>要将属性attr及其相关的模式关联到stateset变量，我们可以使用下面的代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">attr</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">ON</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">attr</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">ON</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>纹理属性与模式需要赋值一个额外的单位参数来指定向应用的纹理映射单位，所以osg::StateSet提供了一些额外的公共方法，均以Texture为中缀，包括setTextureAttribute()，setTextureMode()与setTextureAttributeAndMode()。要将纹理属性texattr及其相关的模式关联到stateset变量，并指定纹理单位为0，可以输入下面代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setTextureAttributeAndModes</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setTextureAttributeAndModes</span><span class="p">(</span>
     <span class="mi">0</span><span class="p">,</span> <span class="n">texattr</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">ON</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -286,18 +288,18 @@
 <h3>Time for action - setting polygon modes of different nodes<a class="headerlink" href="#time-for-action-setting-polygon-modes-of-different-nodes" title="Permalink to this headline">¶</a></h3>
 <p>我们将要选择载入模型的多边形光栅模式。由osg::StateAttribute基类派生的osg::PolygonMode类将会用来实现该目的。他简单的封装了OpenGL的glPolygonMode()函数并且实现了用于指定面与绘制模式参数的接口，从而会改变所关联节点的最终光栅化效果。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/PolygonMode&gt;</span>
-<span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/PolygonMode&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们的工作以上一章的变换示例为基础。我们创建两个osg::MatrixTransform节点并使其共享同一个载入的Cessna模型。两个变换节点被放置在3D世界中的不同位置处，从而会显示两个Cessna模型：</li>
+<li><p>我们的工作以上一章的变换示例为基础。我们创建两个osg::MatrixTransform节点并使其共享同一个载入的Cessna模型。两个变换节点被放置在3D世界中的不同位置处，从而会显示两个Cessna模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
   <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">transformation1</span> <span class="o">=</span> <span class="k">new</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
@@ -312,18 +314,18 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>现在我们osg::PolygonMode渲染属性添加到节点transformation1所关联的状态集合。他有一个setMode()方法，该方法接受两个参数：要应用模式的面，以及多边形的光栅化模式：</li>
+<li><p>现在我们osg::PolygonMode渲染属性添加到节点transformation1所关联的状态集合。他有一个setMode()方法，该方法接受两个参数：要应用模式的面，以及多边形的光栅化模式：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">&gt;</span> <span class="n">pm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">&gt;</span> <span class="n">pm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="p">;</span>
 <span class="n">pm</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">::</span><span class="n">FRONT_AND_BACK</span><span class="p">,</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">::</span><span class="n">LINE</span><span class="p">);</span>
 <span class="n">transformation1</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setAttribute</span><span class="p">(</span> <span class="n">pm</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>接下来的步骤是我们所熟悉的了。现在我们可以将节点添加到根节点，并启动查看器来看一下是否发生了变化：</li>
+<li><p>接下来的步骤是我们所熟悉的了。现在我们可以将节点添加到根节点，并启动查看器来看一下是否发生了变化：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">transformation1</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">transformation2</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
@@ -332,7 +334,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>位于(-25.0,0.0,0.0)位置处或初始显示容器左侧的Cessna，使用前面与后面的轮廓多边形进行绘制。相对应的，右侧的模型像平常一样进行填充：</li>
+<li><p>位于(-25.0,0.0,0.0)位置处或初始显示容器左侧的Cessna，使用前面与后面的轮廓多边形进行绘制。相对应的，右侧的模型像平常一样进行填充：</p></li>
 </ol>
 <img alt="_images/osg_stateset.png" src="_images/osg_stateset.png" />
 </div>
@@ -348,11 +350,11 @@
 <p>节点的状态集将会影响当前节点及其子节点。例如，节点transformation1的osg::PolygonMode属性将会使得其所有子节点显示为轮廓图。然而，子节点的状态集可以覆盖父节点的状态集，也就是，渲染状态将会由父节点继承，除非子节点改变这一行为。下图显示了一个想像的场景图如何遍历不同的多边形模式状态：</p>
 <img alt="_images/osg_render_state.png" src="_images/osg_render_state.png" />
 <p>有时我们也许希望不同的行为。例如，在通常的3D编辑器软件中，用户可以由文件载入多个模型，并将其渲染为纹理，金属丝帧或是固体，而不论前一个模型的状态是什么。换句话说，编辑器中的所有子模型应继承统一的而不论他们之前被设置为何种状态。这在OSG中可以通过使用osg::StateAttribute::OVERRIDE标记来实现，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttribute</span><span class="p">(</span> <span class="n">attr</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OVERRIDE</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttribute</span><span class="p">(</span> <span class="n">attr</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OVERRIDE</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>要设置渲染模式或是属性与模式，可以使用位或操作符：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">attr</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">attr</span><span class="p">,</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">ON</span><span class="o">|</span><span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OVERRIDE</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -362,18 +364,18 @@
 <h3>Time for action - lighting the glider or not<a class="headerlink" href="#time-for-action-lighting-the-glider-or-not" title="Permalink to this headline">¶</a></h3>
 <p>在下面的简短示例中我们将显示OVERRIDE与PROTECTED标记的使用。根节点将会被设置为OVERRIDE，以强制其所有的子节点继承其属性或模式。同时，子节点会尝试通过使用或不使用PROTECTED标记来改变其继承性，从而会导致不同的结果。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/PolygonMode&gt;</span>
-<span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/PolygonMode&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>创建两个osg::MatrixTransform节点并使其共享同一个滑翔机模型。毕竟，我们并不希望总是使用著名的Cessna。滑翔机在尺寸上很小，所以对于setMatrix()方法只需要一个很小的距离：</li>
+<li><p>创建两个osg::MatrixTransform节点并使其共享同一个滑翔机模型。毕竟，我们并不希望总是使用著名的Cessna。滑翔机在尺寸上很小，所以对于setMatrix()方法只需要一个很小的距离：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
   <span class="s">&quot;glider.osg&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">transformation1</span> <span class="o">=</span> <span class="k">new</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
@@ -388,17 +390,17 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>将两个变换节点添加到根节点：</li>
+<li><p>将两个变换节点添加到根节点：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">transformation1</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">transformation2</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>现在我们要为每一个节点的状态集合设置渲染模式。GL_LIGHTING模式是一个著名的OpenGL枚举，可以用来打开或是禁止场景的全局灯光。注意，OVERRIDE与PROTECTED标记被分别设置到root与transformation2，且其开关值分别被设置为ON与OFF：</li>
+<li><p>现在我们要为每一个节点的状态集合设置渲染模式。GL_LIGHTING模式是一个著名的OpenGL枚举，可以用来打开或是禁止场景的全局灯光。注意，OVERRIDE与PROTECTED标记被分别设置到root与transformation2，且其开关值分别被设置为ON与OFF：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">transformation1</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">GL_LIGHTING</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">transformation1</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">GL_LIGHTING</span><span class="p">,</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OFF</span> <span class="p">);</span>
 <span class="n">transformation2</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">GL_LIGHTING</span><span class="p">,</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OFF</span><span class="o">|</span><span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">PROTECTED</span><span class="p">);</span>
@@ -407,22 +409,22 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>启动查看器：</li>
+<li><p>启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>位于屏幕左侧的节点transformation1并没有明显的变化。然而，transformation2则完全不同，尽管他与transformation1共享相同的载入模型：</li>
+<li><p>位于屏幕左侧的节点transformation1并没有明显的变化。然而，transformation2则完全不同，尽管他与transformation1共享相同的载入模型：</p></li>
 </ol>
 <img alt="_images/osg_glider.png" src="_images/osg_glider.png" />
 </div>
 <div class="section" id="id1">
 <h3>What just happened?<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>我们可以首先通过下面的命令来看一下正常的滑翔机是什么样子的：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp"># osgviewer glider.osg</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp"># osgviewer glider.osg</span>
 </pre></div>
 </div>
 <p>在这个示例中，我们尝试修改transformation1与transformation2的GL_LIGHTING模式来禁止其上的灯光。然而，我们已经为根节点打开了灯光模式，并且使用OVERRIDE标记以其所有的子节点来保持其灯光状态。</p>
@@ -438,13 +440,13 @@
 <img alt="_images/osg_fix_func_3.png" src="_images/osg_fix_func_3.png" />
 <img alt="_images/osg_fix_func_4.png" src="_images/osg_fix_func_4.png" />
 <p>Type ID列可以由状态集获取特定的属性。他被用作getAttribute()方法的参数，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">*</span> <span class="n">pm</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">*&gt;</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">*</span> <span class="n">pm</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">PolygonMode</span><span class="o">*&gt;</span><span class="p">(</span>
     <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">getAttribute</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">POLYGONMODE</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>如果我们之前已经为stateset设置了多边形模式属性，则上面的代码会获取一个正确的指针。否则，getAttribute()将会返回NULL。</p>
 <p>上表中的关联模式列显示了当使用setAttributeAndModes()时OSG如何调用OpenGL模式。我们也可以通过使用getMode()方法来检测一个模式是打开还是关闭：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">GLModeValue</span> <span class="n">value</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">GLModeValue</span> <span class="n">value</span> <span class="o">=</span>
     <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">getMode</span><span class="p">(</span> <span class="n">GL_LIGHTING</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -454,17 +456,17 @@
 <h3>Time for action - applying simple fog to models<a class="headerlink" href="#time-for-action-applying-simple-fog-to-models" title="Permalink to this headline">¶</a></h3>
 <p>我们将会以雾效果作为处理各种渲染属性与模式的理想示例。OpenGL接受一个线性与两个指数雾公式，这些参数也为osg::Fog类所支持。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Fog&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Fog&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们首先创建雾属性。使用线性模式，我们需要通过使用setStart()与setEnd()方法设置近距离与远距离。为了生成灰尘雾的效果，我们同时设置雾的颜色：</li>
+<li><p>我们首先创建雾属性。使用线性模式，我们需要通过使用setStart()与setEnd()方法设置近距离与远距离。为了生成灰尘雾的效果，我们同时设置雾的颜色：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Fog</span><span class="o">&gt;</span> <span class="n">fog</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Fog</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Fog</span><span class="o">&gt;</span> <span class="n">fog</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Fog</span><span class="p">;</span>
 <span class="n">fog</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Fog</span><span class="o">::</span><span class="n">LINEAR</span> <span class="p">);</span>
 <span class="n">fog</span><span class="o">-&gt;</span><span class="n">setStart</span><span class="p">(</span> <span class="mf">500.0f</span> <span class="p">);</span>
 <span class="n">fog</span><span class="o">-&gt;</span><span class="n">setEnd</span><span class="p">(</span> <span class="mf">2500.0f</span> <span class="p">);</span>
@@ -472,22 +474,22 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>我们载入一个名为lz.osg的示例地形模型，该模型位于由环境变量OSG_FILE_PATH所指示的数据目录内。我们所要做的唯一工作就是向节点的状态集合设置雾属性与关联模式。</li>
+<li><p>我们载入一个名为lz.osg的示例地形模型，该模型位于由环境变量OSG_FILE_PATH所指示的数据目录内。我们所要做的唯一工作就是向节点的状态集合设置雾属性与关联模式。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;lz.osg&quot;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;lz.osg&quot;</span> <span class="p">);</span>
 <span class="n">model</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">fog</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>启动查看器并操作场景，以便利地形与雾可以较好的展示：</li>
+<li><p>启动查看器并操作场景，以便利地形与雾可以较好的展示：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>当我们使用鼠标右键缩放场景时，地形模型将会以一种平滑的过程淡入与淡出。这是非常基本的环境效果，但有时结果依然是非常惊奇的：</li>
+<li><p>当我们使用鼠标右键缩放场景时，地形模型将会以一种平滑的过程淡入与淡出。这是非常基本的环境效果，但有时结果依然是非常惊奇的：</p></li>
 </ol>
 <img alt="_images/osg_fog.png" src="_images/osg_fog.png" />
 </div>
@@ -495,7 +497,7 @@
 <h3>What just happened?<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>OpenGL的glFog()函数支持各种模式参数的设置，例如GL_FOG_MODE，GL_FOG_DENSITY，GL_FOG_START与GL_FOG_END。在OSG中这些模式被重定义为setMode()，setDensity()，setStart()与setEnd()方法，每一个还有相对应的get*()方法。</p>
 <p>下面是实现雾效果的另外一个小技巧：开发者可以设置几何体每一个顶点的雾坐标，并将其用作计算中的距离值。除了指定雾坐标源之外，这可以通过osg::Geometry类的setFogCoordArray()与setFogCoordBinding()方法来实现：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">fog</span><span class="o">-&gt;</span><span class="n">setFogCoordinateSource</span><span class="p">(</span> <span class="n">GL_FOG_COORD</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">fog</span><span class="o">-&gt;</span><span class="n">setFogCoordinateSource</span><span class="p">(</span> <span class="n">GL_FOG_COORD</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>如果方法的参数被设置为GL_FRAGMENT_DEPTH，则在雾颜色的计算中会使用当前片段深度。</p>
@@ -511,7 +513,7 @@
 <p>类似OpenGL，OSG支持多达八个固定功能光源用于直接照明3D空间，并且不能够在对象上自动生成与转换阴影。光线通常起源于特定的光源，以直线前进，反射场景对象或是由场景对象分散，并最终为观察者的眼睛所接收。光源性质，表面材质性，以及几何法线均是实现完整光效果所必需的。</p>
 <p>osg::Light类提供了精巧的方法用于光源属性上的操作，包括用于处理OpenGL光数目的setLightNum()与getLIghtNum()方法，用于周围环境的setAmbient()与getAmbient()方法，用于处理光组件混合的setDiffuse()与getDiffuse()方法。</p>
 <p>OSG同时提供了osg::LightSource类用于向场景图添加光线。他有一个setLight()方法，并且应被用作只有一个光线属性的叶子节点。如果设置了相应的GL_LIGHT1模式，则场景图中的其他所有节点都会受到光源节点的影响：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Light</span><span class="o">&gt;</span> <span class="n">light</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Light</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Light</span><span class="o">&gt;</span> <span class="n">light</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Light</span><span class="p">;</span>
 <span class="n">light</span><span class="o">-&gt;</span><span class="n">setLightNum</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>  <span class="c1">// Specify light number 1</span>
 <span class="p">...</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="o">&gt;</span> <span class="n">lightSource</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="p">;</span>
@@ -524,14 +526,14 @@
 </pre></div>
 </div>
 <p>打开指定光线的另一个更为方便的解决方案是setStateSetMods()方法，通过该方法光源会自动将光线数目关联到场景根节点：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">lightSource</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">lightSource</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">lightSource</span><span class="o">-&gt;</span><span class="n">setStateSetModes</span><span class="p">(</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">(),</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">ON</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>有时我们也许会将子节点添加到osg::LightSource节点，但是这并不意味着照亮基于节点层次结构关系的子场景图。他可以被看作表示光源物理开关的几何体。</p>
 <p>osg::LightSource节点可以被放置在osg::Transform节点下。然后点光可以依据当前的变换信息进行变换。我们可以通过设置osg::LightSource的引用帧来禁止该特性，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">lightSource</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">lightSource</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>其含义类似于osg::Transform类的setReferenceFrame()方法。</p>
@@ -540,18 +542,18 @@
 <p>默认情况下，OSG自动打开第一道光（GL_LIGHT0），从而为场景提供一个柔软的方向光。然而，这次我们将会自己创建多道光，并且随着变换父节点移动。注意，只有位置可以移动。方向光没有源点，因而不能放置在任何位置。</p>
 <p>OpenGL与OSG均使用位置参数的第四部分来确定光是否为点光。也就是说，如果第四部分为0，则该光被看作方向光；否则为点光。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osg/LightSource&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/LightSource&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们创建一个函数来为场景图创建光源。光源应用一个标号（由0到7），一个变换位置，以及一个颜色参数。之所以创建点光是因为位置向量的第四部分为1.0。然后我们将该光赋值给一个新创建的osg::LightSource节点，并将该光源添加到变换的osg::MatrixTransform节点，并返回该变换节点：</li>
+<li><p>我们创建一个函数来为场景图创建光源。光源应用一个标号（由0到7），一个变换位置，以及一个颜色参数。之所以创建点光是因为位置向量的第四部分为1.0。然后我们将该光赋值给一个新创建的osg::LightSource节点，并将该光源添加到变换的osg::MatrixTransform节点，并返回该变换节点：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">createLightSource</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">createLightSource</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">num</span><span class="p">,</span>
                               <span class="k">const</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="o">&amp;</span> <span class="n">trans</span><span class="p">,</span>
                               <span class="k">const</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4</span><span class="o">&amp;</span> <span class="n">color</span> <span class="p">)</span>
 <span class="p">{</span>
@@ -572,18 +574,18 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>Cessna模型将会由我们的自定义光进行照射。我们会在创建光源之前将其由文件中载入：</li>
+<li><p>Cessna模型将会由我们的自定义光进行照射。我们会在创建光源之前将其由文件中载入：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
   <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>现在创建两个光源节点并将其放置在场景中的不同位置：</li>
+<li><p>现在创建两个光源节点并将其放置在场景中的不同位置：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">light0</span> <span class="o">=</span> <span class="n">createLightSource</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">light0</span> <span class="o">=</span> <span class="n">createLightSource</span><span class="p">(</span>
     <span class="mi">0</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="o">-</span><span class="mf">20.0f</span><span class="p">,</span><span class="mf">0.0f</span><span class="p">,</span><span class="mf">0.0f</span><span class="p">),</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4</span><span class="p">(</span>
   <span class="mf">1.0f</span><span class="p">,</span><span class="mf">1.0f</span><span class="p">,</span><span class="mf">0.0f</span><span class="p">,</span><span class="mf">1.0f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">light1</span> <span class="o">=</span> <span class="n">createLightSource</span><span class="p">(</span>
@@ -592,9 +594,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>在这里0号光与1号光。所以我们将会打开根节点的GL_LIGHT0与GL_LIGHT1，意味着场景图中的所有节点将会由两个暖光源中受益：</li>
+<li><p>在这里0号光与1号光。所以我们将会打开根节点的GL_LIGHT0与GL_LIGHT1，意味着场景图中的所有节点将会由两个暖光源中受益：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">root</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">GL_LIGHT0</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">GL_LIGHT0</span><span class="p">,</span>
   <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">ON</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">GL_LIGHT1</span><span class="p">,</span>
   <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">ON</span> <span class="p">);</span>
@@ -603,15 +605,14 @@
 </pre></div>
 </div>
 <ol class="arabic" start="6">
-<li><p class="first">现在让我们启动查看器：</p>
+<li><p>现在让我们启动查看器：</p>
 <blockquote>
 <div><p>osgViewer::Viewer viewer;
 viewer.setSceneData( root.get() );
 return viewer.run();</p>
 </div></blockquote>
 </li>
-<li><p class="first">我们将会看到Cessna的一侧为黄光照射，而其前面则由青光照射。这正是我们在示例源中所期望的！</p>
-</li>
+<li><p>我们将会看到Cessna的一侧为黄光照射，而其前面则由青光照射。这正是我们在示例源中所期望的！</p></li>
 </ol>
 <img alt="_images/osg_light.png" src="_images/osg_light.png" />
 </div>
@@ -631,19 +632,19 @@ return viewer.run();</p>
 <p>在上一章中我们已经了解了如何创建一个方块并填充颜色。然而另一个方法在其上应用纹理映射（通常是位图或栅格图像）。这并不会影响表面的顶点，而只会修改最终的像素数据，大多数情况下，这是用于表示对象细节更为有效和合适的方法。</p>
 <p>OSG提供了多个纹理属性与模式用于纹理映射操作，我们将会在下一节进行介绍。在这之前，我们需要探讨osg::Image类，该类存储OpenGL纹理对象载入与使用的图像数据。</p>
 <p>由磁盘载入图像的最好方法是使用osgDB::readImageFile()函数。这非常类似于osgDB::readNodeFile()函数，该函数将模型载入为场景节点。假定我们有一个名为picture.bmp的位图文件，下面的代码会将其载入为图像对象用于纹理映射使用：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
     <span class="n">osgDB</span><span class="o">::</span><span class="n">readImageFile</span><span class="p">(</span> <span class="s">&quot;picture.bmp&quot;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>如果图像载入成功，也就是，图像指针是可用的，那么我们就可以使用一些公共方法来读取图像的属性：</p>
 <ul class="simple">
-<li>公共方法s()，t()与r()返回图像的宽度，高度与深度。</li>
-<li>公共方法data()将原始图像数据作为unsigned char*指针返回。为了读取或是修改图像像素数据我们可以直接在指针上进行操作。</li>
+<li><p>公共方法s()，t()与r()返回图像的宽度，高度与深度。</p></li>
+<li><p>公共方法data()将原始图像数据作为unsigned char*指针返回。为了读取或是修改图像像素数据我们可以直接在指针上进行操作。</p></li>
 </ul>
 <p>data()指针中每一个无符号字符元素的含义是与图像的像素格式与数据类型相关联的，这可以通过getPixelFormat()与getDataType()方法。这两个值与OpenGL glTexImage*()函数的格式与类型参数具有相同的含义。例如，一个像素格式为GL_RGB与数据类型GL_UNSIGNED_BYTE的图像对象将会使用三个独立的无符号字符元素来表示每一个RGB组件，从而形成一个完整的像素，如下图所示：</p>
 <img alt="_images/osg_image.png" src="_images/osg_image.png" />
 <p>我们也可以分配一个新的图像对象并将我们自己的图像对象放置在该对象中：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="p">;</span>
 <span class="n">image</span><span class="o">-&gt;</span><span class="n">allocateImage</span><span class="p">(</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">GL_RGB</span><span class="p">,</span> <span class="n">GL_UNSIGNED_BYTE</span> <span class="p">);</span>
 <span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="n">ptr</span> <span class="o">=</span> <span class="n">image</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">();</span>
 <span class="p">...</span>  <span class="c1">// Operate on the ptr variable directly!</span>
@@ -656,21 +657,21 @@ return viewer.run();</p>
 <h2>The basis of texture mapping<a class="headerlink" href="#the-basis-of-texture-mapping" title="Permalink to this headline">¶</a></h2>
 <p>要在我们的程序中使用基本的纹理映射，我们需要遵循下列步骤：</p>
 <ol class="arabic simple">
-<li>设定指定几何体的纹理坐标</li>
-<li>为1D，2D，3D或是立方体映射纹理映射操作创建纹理属性对象</li>
-<li>为纹理属性指定一个或是多个图像</li>
-<li>将相应的纹理属性或模式关联到状态集，该状态将会被应用到相关的节点与可绘制元素</li>
+<li><p>设定指定几何体的纹理坐标</p></li>
+<li><p>为1D，2D，3D或是立方体映射纹理映射操作创建纹理属性对象</p></li>
+<li><p>为纹理属性指定一个或是多个图像</p></li>
+<li><p>将相应的纹理属性或模式关联到状态集，该状态将会被应用到相关的节点与可绘制元素</p></li>
 </ol>
 <p>OSG定义了一个osg::Texture类来封装所有的纹理类型。其子类osg::Texture1D，osg::Texture2D，osg::Texture3D与osg::TextureCubMap可以表示不同的OpenGL纹理映射技术。</p>
 <p>osg::Texture类最常用的方法是setImage()。该方法简单的将一个已分配的图像设置到纹理对象。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
     <span class="n">osgDB</span><span class="o">::</span><span class="n">readImageFile</span><span class="p">(</span> <span class="s">&quot;picture.bmp&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
 <span class="n">texture</span><span class="o">-&gt;</span><span class="n">setImage</span><span class="p">(</span> <span class="n">image</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>或者，我们也许会直接向构造函数传递图像对象：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
     <span class="n">osgDB</span><span class="o">::</span><span class="n">readImageFile</span><span class="p">(</span> <span class="s">&quot;picture.bmp&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">(</span> <span class="n">image</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
@@ -679,19 +680,19 @@ return viewer.run();</p>
 <p>在纹理对象内部，图像变量是由智能指针来管理的。我们可以通过使用getImage()方法由纹理对象中读取该图像。</p>
 <p>另一个重要事情是为osg::Geometry对象的每一个顶点设置纹理坐标。我们可以通过使用setTexCoordArray()方法将osg::Vec2Array或是osg::Vec3Array应用到几何体，从而使用当前2D或是一个大纹理中相应的数据构建所有帧。</p>
 <p>当指定纹理坐标时，我们必须同时为多个纹理实现设置纹理映射单位。要在一个模型上使用单一的纹理，我们可以简单的指定纹理单位为0。例如，下面的代码几何体变量geom的纹理坐标数据设置为0：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec2Array</span><span class="o">&gt;</span> <span class="n">texcoord</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec2Array</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec2Array</span><span class="o">&gt;</span> <span class="n">texcoord</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec2Array</span><span class="p">;</span>
 <span class="n">texcoord</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec2</span><span class="p">(...)</span> <span class="p">);</span>
 <span class="p">...</span>
 <span class="n">geom</span><span class="o">-&gt;</span><span class="n">setTexCoordArray</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">texcoord</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>在这之后，我们可以将纹理属性添加到状态集，自动依据相关的模式（GL_TEXTURE_2D）进行切换，并将属性应用到几何体本身，或是包含其的节点：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">geom</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setTextureAttributeAndModes</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">geom</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setTextureAttributeAndModes</span><span class="p">(</span>
     <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>注意，OpenGL在图像内存（视频卡内存）中管理图像数据，但是osg::Image对象会将载入的数据保存在系统内存中。结果就是相同图像数据的两份拷贝，一个为OpenGL所有，而另一个存储在osg::Image对象中。如果图像没有在多个纹理属性之间共享，那么可以在将其应用到OpenGL管线之后删除图像对象及其所占用的系统内存。osg::Texture类提供了一个setUnRefImageDataAfterApply()方法来执行该操作：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">texture</span><span class="o">-&gt;</span><span class="n">setUnRefImageDataAfterApply</span><span class="p">(</span> <span class="nb">true</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">texture</span><span class="o">-&gt;</span><span class="n">setUnRefImageDataAfterApply</span><span class="p">(</span> <span class="nb">true</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>一旦OpenGL纹理对象被创建，内部管理的图像会被释放，而getImage()将会返回一个不正确的指针。这会使得查看器的运行更为高效。</p>
@@ -699,18 +700,18 @@ return viewer.run();</p>
 <h3>Time for action - loading and applying 2D textures<a class="headerlink" href="#time-for-action-loading-and-applying-2d-textures" title="Permalink to this headline">¶</a></h3>
 <p>最常见的纹理映射技术是2D纹理映射。这会接受一个2D图像作为纹理并将其映射到一个或是多个几何体面。在这里osg::Texture2D类被用作特定纹理映射单元的纹理属性。</p>
 <ol class="arabic simple">
-<li>包括必需的头文件：</li>
+<li><p>包括必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Texture2D&gt;</span>
-<span class="cp">#include &lt;osg/Geometry&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Texture2D&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/Geometry&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们快速创建一个四边形，并调用setTexCoordArray()方法来将纹理坐标绑定到每个顶点。在这个示例中，纹理坐标数组仅影响纹理单位0，但总是可以在单位之间共享数组：</li>
+<li><p>我们快速创建一个四边形，并调用setTexCoordArray()方法来将纹理坐标绑定到每个顶点。在这个示例中，纹理坐标数组仅影响纹理单位0，但总是可以在单位之间共享数组：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="o">&gt;</span> <span class="n">vertices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="o">&gt;</span> <span class="n">vertices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="p">;</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span> <span class="mf">0.5f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span> <span class="mf">0.5f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.5f</span><span class="p">)</span> <span class="p">);</span>
@@ -731,33 +732,33 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>我们将由磁盘载入文件并将其赋值给2D纹理对象。文件格式.rgb是由SGI开发，通常用于存储2D纹理：</li>
+<li><p>我们将由磁盘载入文件并将其赋值给2D纹理对象。文件格式.rgb是由SGI开发，通常用于存储2D纹理：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
     <span class="n">osgDB</span><span class="o">::</span><span class="n">readImageFile</span><span class="p">(</span> <span class="s">&quot;Images/lz.rgb&quot;</span> <span class="p">);</span>
 <span class="n">texture</span><span class="o">-&gt;</span><span class="n">setImage</span><span class="p">(</span> <span class="n">image</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>将四边形添加到osg::Geode节点，然后将纹理属性添加到状态集合。注意，要将属性设置为与纹理坐标数组相同的纹理映射单位：</li>
+<li><p>将四边形添加到osg::Geode节点，然后将纹理属性添加到状态集合。注意，要将属性设置为与纹理坐标数组相同的纹理映射单位：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addDrawable</span><span class="p">(</span> <span class="n">quad</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setTextureAttributeAndModes</span><span class="p">(</span>
     <span class="mi">0</span><span class="p">,</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>启动查看器并查看效果：</li>
+<li><p>启动查看器并查看效果：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>现在我们有一个应用了普通纹理的四边形几何体。尝试使用其他的图像文件来看一下我们是否可以在3D空间构建一个精彩的世界：</li>
+<li><p>现在我们有一个应用了普通纹理的四边形几何体。尝试使用其他的图像文件来看一下我们是否可以在3D空间构建一个精彩的世界：</p></li>
 </ol>
 <img alt="_images/osg_texture.png" src="_images/osg_texture.png" />
 </div>
@@ -772,7 +773,7 @@ return viewer.run();</p>
 <h3>Have a go hero - making use of filters and rwapping modes<a class="headerlink" href="#have-a-go-hero-making-use-of-filters-and-rwapping-modes" title="Permalink to this headline">¶</a></h3>
 <p>OpenGL已经设计有完美的机制来处理纹理封装与过滤。osg::Texture类也包含有封装的方法。</p>
 <p>setWrap()方法需要两个参数：要应用于其上的纹理坐标轴以及要使用的封装模式。然后我们可以这玉色纹理的封装行为，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">texture</span><span class="o">-&gt;</span><span class="n">setWrap</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">::</span><span class="n">WRAP_S</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">::</span><span class="n">REPEAT</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">texture</span><span class="o">-&gt;</span><span class="n">setWrap</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">::</span><span class="n">WRAP_S</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">::</span><span class="n">REPEAT</span> <span class="p">);</span>
 <span class="n">texture</span><span class="o">-&gt;</span><span class="n">setWrap</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">::</span><span class="n">WRAP_R</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">::</span><span class="n">REPEAT</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -789,12 +790,12 @@ return viewer.run();</p>
 <img alt="_images/osg_render_order.png" src="_images/osg_render_order.png" />
 <p>osg::StateSet类的setRenderingHint()方法将会通知OSG在需要时控制节点与可以绘制元素的渲染顺序。他只是简单的指示一个状态集是否为不透明或半透明，并会确保与透明状态关联的对象应在不透明对象之后渲染，而这些透明对象应依据每个对象的中心到人眼位置的距离而存储（也就是由远到近）。</p>
 <p>为了指示一个节点或是可绘制元素是不透明的（实际上是默认情况），可以输入下面代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">node</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setRenderingHint</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">node</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setRenderingHint</span><span class="p">(</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">::</span><span class="n">OPAQUE_BIN</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>而对于透明的节点或可绘制元素则使用下面的代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">node</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setRenderingHint</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">node</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setRenderingHint</span><span class="p">(</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">::</span><span class="n">TRANSPARENT_BIN</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -802,19 +803,19 @@ return viewer.run();</p>
 <h3>Time for action - achieving the translucent effect<a class="headerlink" href="#time-for-action-achieving-the-translucent-effect" title="Permalink to this headline">¶</a></h3>
 <p>我们将要实现一个将模型作视作玻璃的半透明效果。其他的场景对象可以通过glass对象进行显示。这可以通过OpenGL的混合机制来实现，但是在这个示例中计算场景对象的正确渲染顺序将会非常重要。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/BlendFunc&gt;</span>
-<span class="cp">#include &lt;osg/Texture2D&gt;</span>
-<span class="cp">#include &lt;osg/Geometry&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/BlendFunc&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/Texture2D&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/Geometry&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们将会继续通过一个预定义的纹理坐标数组来使用四边形几何体。他应被看作一个半透明对象，并且应在稍后应用渲染属性与模式：</li>
+<li><p>我们将会继续通过一个预定义的纹理坐标数组来使用四边形几何体。他应被看作一个半透明对象，并且应在稍后应用渲染属性与模式：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="o">&gt;</span> <span class="n">vertices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="o">&gt;</span> <span class="n">vertices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="p">;</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span> <span class="mf">0.5f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span> <span class="mf">0.5f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.5f</span><span class="p">)</span> <span class="p">);</span>
@@ -829,16 +830,16 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>要小心设置四边形的颜色数组。要将其与其他的场景对象混合，在这里我们要将alpha部分设置小于1.0的值：</li>
+<li><p>要小心设置四边形的颜色数组。要将其与其他的场景对象混合，在这里我们要将alpha部分设置小于1.0的值：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec4Array</span><span class="o">&gt;</span> <span class="n">colors</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4Array</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec4Array</span><span class="o">&gt;</span> <span class="n">colors</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4Array</span><span class="p">;</span>
 <span class="n">colors</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.5f</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>再次创建四边形几何体：</li>
+<li><p>再次创建四边形几何体：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="o">&gt;</span> <span class="n">quad</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="o">&gt;</span> <span class="n">quad</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="p">;</span>
 <span class="n">quad</span><span class="o">-&gt;</span><span class="n">setVertexArray</span><span class="p">(</span> <span class="n">vertices</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">quad</span><span class="o">-&gt;</span><span class="n">setNormalArray</span><span class="p">(</span> <span class="n">normals</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">quad</span><span class="o">-&gt;</span><span class="n">setNormalBinding</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="o">::</span><span class="n">BIND_OVERALL</span> <span class="p">);</span>
@@ -851,33 +852,33 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>如同我们在前面示例中所做的，将纹理应用到四边形：</li>
+<li><p>如同我们在前面示例中所做的，将纹理应用到四边形：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
     <span class="n">osgDB</span><span class="o">::</span><span class="n">readImageFile</span><span class="p">(</span> <span class="s">&quot;Images/lz.rgb&quot;</span> <span class="p">);</span>
 <span class="n">texture</span><span class="o">-&gt;</span><span class="n">setImage</span><span class="p">(</span> <span class="n">image</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>使用osg::BlendFunc类来实现混合效果。其作用与OpenGL的glBlendFunc()完全相同：</li>
+<li><p>使用osg::BlendFunc类来实现混合效果。其作用与OpenGL的glBlendFunc()完全相同：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="o">&gt;</span> <span class="n">blendFunc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="o">&gt;</span> <span class="n">blendFunc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="p">;</span>
 <span class="n">blendFunc</span><span class="o">-&gt;</span><span class="n">setFunction</span><span class="p">(</span> <span class="n">GL_SRC_ALPHA</span><span class="p">,</span> <span class="n">GL_ONE_MINUS_SRC_ALPHA</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>向状态集合添加混合函数属性与纹理属性：</li>
+<li><p>向状态集合添加混合函数属性与纹理属性：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="n">geode</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="n">geode</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setTextureAttributeAndModes</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">blendFunc</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>现在我们来看一下场景是否被正确渲染。试着将几何体模型与一个载入的滑翔机模式添加到场景图中，并看一下会发生什么。</li>
+<li><p>现在我们来看一下场景是否被正确渲染。试着将几何体模型与一个载入的滑翔机模式添加到场景图中，并看一下会发生什么。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">geode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;glider.osg&quot;</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
@@ -886,24 +887,24 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>与前面的示例相比，现在的四边形当然是半透明的。然而，在场景视图中有一些不合理的地方。被四边形切割的滑翔机，其中的一个机翼在半透明面之下。这是由于滑翔机与四边形错误的渲染顺序所致。由于OpenGL中的深度测试，后者的渲染并不正确：</li>
+<li><p>与前面的示例相比，现在的四边形当然是半透明的。然而，在场景视图中有一些不合理的地方。被四边形切割的滑翔机，其中的一个机翼在半透明面之下。这是由于滑翔机与四边形错误的渲染顺序所致。由于OpenGL中的深度测试，后者的渲染并不正确：</p></li>
 </ol>
 <img alt="_images/osg_render_order_glider.png" src="_images/osg_render_order_glider.png" />
 <ol class="arabic simple" start="10">
-<li>我们是否还记得解决该问题的setRenderingHint()方法？现在让我们在第7步中添加一行来指示四边形是透明的，并使得OSG以正确的顺序存储与渲染：</li>
+<li><p>我们是否还记得解决该问题的setRenderingHint()方法？现在让我们在第7步中添加一行来指示四边形是透明的，并使得OSG以正确的顺序存储与渲染：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setRenderingHint</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">::</span><span class="n">TRANSPARENT_BIN</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setRenderingHint</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">::</span><span class="n">TRANSPARENT_BIN</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="11">
-<li>现在一切正常了：</li>
+<li><p>现在一切正常了：</p></li>
 </ol>
 <img alt="_images/osg_render_order_glider2.png" src="_images/osg_render_order_glider2.png" />
 </div>
 <div class="section" id="id5">
 <h3>What just happened?<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>在绘制遍历中，GL_SRC_ALPHA与GL_ONE_MINUS_SRC_ALPHA枚举会使用下面的等式来确定混合颜色：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">R</span> <span class="o">=</span> <span class="n">srcR</span> <span class="o">*</span> <span class="n">srcA</span> <span class="o">+</span> <span class="n">dstR</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">srcA</span><span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="n">srcR</span> <span class="o">*</span> <span class="n">srcA</span> <span class="o">+</span> <span class="n">dstR</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">srcA</span><span class="p">)</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">srcG</span> <span class="o">*</span> <span class="n">srcA</span> <span class="o">+</span> <span class="n">dstG</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">srcA</span><span class="p">)</span>
 <span class="n">B</span> <span class="o">=</span> <span class="n">srcB</span> <span class="o">*</span> <span class="n">srcA</span> <span class="o">+</span> <span class="n">dstB</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">srcA</span><span class="p">)</span>
 </pre></div>
@@ -920,12 +921,12 @@ return viewer.run();</p>
 <p>我们所指定的也许不会超过在OpenGL管线中所处理的一个顶点阴影器，一个几何体阴影器以及一个帧阴影器（每一步仅有一个main()函数）。这些将会完全替换固定功能，例如雾，光以及纹理映射，这些需要在我们的阴影器源码中重新实现。</p>
 <p>阴影器需要OpenGL API来编译并执行他们。顶点阴影器可以为每一个顶点应用变换；帧阴影器计算来自光栅的单个像素的颜色；而几何体阴影器会由已存在的顶点与基元数据重新生成几何体。</p>
 <p>OSG使用osg::Shader类来定义包含源码字符串的阴影器对象。setShaderSource()方法被用来由std::string变量指定源码，而loadShaderSourceFromFile()方法将会由磁盘读取源码文件。除此之外，开发者可以由已存在的字符串vertText直接构建阴影器对象，如下所示：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">vertShader</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">vertShader</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">VERTEX</span><span class="p">,</span> <span class="n">vertText</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>输入参数osg::Shader::VERTEX表示顶点阴影器。我们也可以使用枚举GEOMETRY或是FRAGMENT来代替，以指定几何体阴影器或帧阴影器。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">fragShader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">fragShader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="p">(</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">FRAGMENT</span><span class="p">,</span> <span class="n">fragText</span> <span class="p">);</span>
 
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">geomShader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="p">(</span>
@@ -935,12 +936,12 @@ return viewer.run();</p>
 </div>
 <p>在这里我们假定文件source.geom已被载入并包含我们的几何体阴影器。</p>
 <p>osgDB::readShaderFile()函数也许更适合由文件读取，因为他会依据文件扩展名（.vert，.frag或是.geom）自动检测阴影器类型。他会返回一个完全形成的正确类型与数据的osg::Shader实例，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">*</span> <span class="n">fragShader</span> <span class="o">=</span>  <span class="n">osgDB</span><span class="o">::</span><span class="n">readShaderFile</span><span class="p">(</span><span class="s">&quot;source.frag&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">*</span> <span class="n">fragShader</span> <span class="o">=</span>  <span class="n">osgDB</span><span class="o">::</span><span class="n">readShaderFile</span><span class="p">(</span><span class="s">&quot;source.frag&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>在所有的阴影器被设置并准备好使用以后，我们可以使用osg::Program类与addShader()方法来包含该阴影器并将GLSL渲染属性与模式设置到状态集。在阴影器起效果之后，大多数其他的固定功能状态将会变得不可用，包括光，材质，雾，纹理映射，纹理坐标生成以及纹理环境。</p>
 <p>下面的代码片段将所有上面的阴影器添加到一个osg::Program对象并将其关联到一个已存在节点的状态集：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Program</span><span class="o">&gt;</span> <span class="n">program</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Program</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Program</span><span class="o">&gt;</span> <span class="n">program</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Program</span><span class="p">;</span>
 <span class="n">program</span><span class="o">-&gt;</span><span class="n">addShader</span><span class="p">(</span> <span class="n">vertShader</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">program</span><span class="o">-&gt;</span><span class="n">addShader</span><span class="p">(</span> <span class="n">fragShader</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">program</span><span class="o">-&gt;</span><span class="n">addShader</span><span class="p">(</span> <span class="n">geomShader</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
@@ -953,27 +954,27 @@ return viewer.run();</p>
 <p>在一个典型的阴影器中有三种类型的输入与输出：uniforms，vertex attributes与varyings。uniforms与vertex attributes在阴影器执行过程中是只读的，但是可以由宿主OpenGL或OSG程序所设置。他们实际上是用于阴影器与用户程序之间交互的全局GLSL变量。</p>
 <p>varyings用于由一个阴影器向另一个阴影器传递数据。他们对于外部程序是不可见的。</p>
 <p>OSG使用osg::Uniform类来定义GLSL uniform变量。其构造函数有一个名字与一个初始化值参数，该参数必须与阴影器源码中的定义相匹配，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">float</span> <span class="n">length</span> <span class="o">=</span> <span class="mf">1.0f</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">length</span> <span class="o">=</span> <span class="mf">1.0f</span><span class="p">;</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Uniform</span><span class="o">&gt;</span> <span class="n">uniform</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Uniform</span><span class="p">(</span> <span class="s">&quot;length&quot;</span><span class="p">,</span> <span class="n">length</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>我们也许会将该uniform对象添加一个状态集，该状态集已经通过使用addUniform()方法与一个osg::Program对象相关联：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">addUniform</span><span class="p">(</span> <span class="n">uniform</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">stateset</span><span class="o">-&gt;</span><span class="n">addUniform</span><span class="p">(</span> <span class="n">uniform</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>同时，在阴影器源码中必有一个变量定义，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">uniform</span> <span class="kt">float</span> <span class="n">length</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span> <span class="kt">float</span> <span class="n">length</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>否则，uniform变量在OSG程序或阴影器中会不可用。</p>
 <p>uniform可以是任意的基本类型，或是组合类型，例如布尔型，浮点型，整型，2D/3D/4D向量，矩阵以及各处纹理取样器。osg::Uniform类通过构造函数与set()方法接受所有的基本类型。同时他还提供了更多的数据类型，例如osg::Matrix2与osg::Matrix3来2x2与3x3矩阵。为了绑定纹理取样器，用在阴影器中表示特定的纹理，osg::Uniform对象唯一的工作就是通过使用unsigned int值指定纹理映射单位，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Uniform</span><span class="o">&gt;</span> <span class="n">uniform</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Uniform</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Uniform</span><span class="o">&gt;</span> <span class="n">uniform</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Uniform</span><span class="p">(</span>
   <span class="s">&quot;texture&quot;</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>当然，我们应已经使得osg::Texture对象的单位为0，同时在阴影器源中定义了取样器uniform：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">uniform</span> <span class="n">sampler2D</span> <span class="n">texture</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">uniform</span> <span class="n">sampler2D</span> <span class="n">texture</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>在这里我们假定2D纹理将会用来改变阴影器的执行行为。</p>
@@ -981,17 +982,17 @@ return viewer.run();</p>
 <h3>Time for action - implementing a cartoon cow<a class="headerlink" href="#time-for-action-implementing-a-cartoon-cow" title="Permalink to this headline">¶</a></h3>
 <p>卡通阴影是一种非常简单的在色调之间突然发生变化的非真实效果。要实现一个卡通阴影器，我们只需要将顶点传递给顶点阴影器中内建的gl_Position变量，然后使用帧阴影器中的法线与光线方法进行计算并选择。之后，我们将其应用到一个载入的模型之上，例如，一个漂亮的牛上。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Program&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Program&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们将会使用字符串来编写顶点阴影器源。除了设置gl_Position，他会将一个法线变化变量传递给帧阴影器：</li>
+<li><p>我们将会使用字符串来编写顶点阴影器源。除了设置gl_Position，他会将一个法线变化变量传递给帧阴影器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">vertSource</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">vertSource</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s">&quot;varying vec3 normal;</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;void main()</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;{</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -1002,9 +1003,9 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>帧阴影器使用四个color uniforms来表示卡通阴影中的色调。他会依据点积（dot product）的几何解释计算法线变化与光位置之间的余弦角。注意，当使用阴影器时固定功能光状态会失去其效果，但是光属性依然可用，并可以由内建的GLSL uniforms中读取：</li>
+<li><p>帧阴影器使用四个color uniforms来表示卡通阴影中的色调。他会依据点积（dot product）的几何解释计算法线变化与光位置之间的余弦角。注意，当使用阴影器时固定功能光状态会失去其效果，但是光属性依然可用，并可以由内建的GLSL uniforms中读取：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">fragSource</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">fragSource</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s">&quot;uniform vec4 color1;</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;uniform vec4 color2;</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;uniform vec4 color3;</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -1022,9 +1023,9 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>我们将创建两个阴影器对象并将其添加到程序属性：</li>
+<li><p>我们将创建两个阴影器对象并将其添加到程序属性：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">vertShader</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">vertShader</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">VERTEX</span><span class="p">,</span> <span class="n">vertSource</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">&gt;</span> <span class="n">fragShader</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">FRAGMENT</span><span class="p">,</span> <span class="n">fragSource</span> <span class="p">);</span>
@@ -1034,9 +1035,9 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>读取cow模型，并将属性与模式应用到状态集合。在用户程序中要定义四个uniform变量，所以在这里为了将值绑定到uniforms，我们需要四次使用addUniform()方法：</li>
+<li><p>读取cow模型，并将属性与模式应用到状态集合。在用户程序中要定义四个uniform变量，所以在这里为了将值绑定到uniforms，我们需要四次使用addUniform()方法：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cow.osg&quot;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cow.osg&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="n">model</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">program</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">addUniform</span><span class="p">(</span>
@@ -1054,15 +1055,15 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>全部完成！现在启动查看器：</li>
+<li><p>全部完成！现在启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>这次我们将会看到一个完全不同的cow模型。看起来是由一个孩子或是喜剧艺术家绘制的。这种技术广泛应用于计算机游戏与动画电影中：</li>
+<li><p>这次我们将会看到一个完全不同的cow模型。看起来是由一个孩子或是喜剧艺术家绘制的。这种技术广泛应用于计算机游戏与动画电影中：</p></li>
 </ol>
 <img alt="_images/osg_shader.png" src="_images/osg_shader.png" />
 </div>
@@ -1083,30 +1084,30 @@ return viewer.run();</p>
 <p>几何体阴影器包含在OpenGL 3.2核心中，并以低版本被用作扩展，GL_EXT_geometry_shader4，其应在阴影器源码中被声明。</p>
 <p>几何体阴影器引入了一些新的连接基元，可以被用作osg::PrimitiveSet派生类的参数。他同时要求设置更多的参数来操纵阴影器操作，包括：</p>
 <ol class="arabic simple">
-<li>GL_GEOMETRY_VERTICES_OUT_EXT：阴影器将会发射的顶点数目</li>
-<li>GL_GEOMETRY_INPUT_TYPE_EXT：发送到阴影器的基元类型</li>
-<li>GL_GEOMETRY_OUTPUT_TYPE_EXT：由阴影器发射的基元类型</li>
+<li><p>GL_GEOMETRY_VERTICES_OUT_EXT：阴影器将会发射的顶点数目</p></li>
+<li><p>GL_GEOMETRY_INPUT_TYPE_EXT：发送到阴影器的基元类型</p></li>
+<li><p>GL_GEOMETRY_OUTPUT_TYPE_EXT：由阴影器发射的基元类型</p></li>
 </ol>
 <p>osg::Program类使用setParameter()方法为这些参数设置值。例如，要表示将由阴影器发射100个顶点到渲染管线中的组合处理器基元，我们可以使用：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">program</span><span class="o">-&gt;</span><span class="n">setParameter</span><span class="p">(</span> <span class="n">GL_GEOMETRY_VERTICES_OUT_EXT</span><span class="p">,</span> <span class="mi">100</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">program</span><span class="o">-&gt;</span><span class="n">setParameter</span><span class="p">(</span> <span class="n">GL_GEOMETRY_VERTICES_OUT_EXT</span><span class="p">,</span> <span class="mi">100</span> <span class="p">);</span>
 </pre></div>
 </div>
 <div class="section" id="time-for-action-generating-a-bezier-curve">
 <h3>Time for action - generating a Bezier curve<a class="headerlink" href="#time-for-action-generating-a-bezier-curve" title="Permalink to this headline">¶</a></h3>
 <p>OpenGL在几年前就提供了用于生成Bezier与NURBS曲线与面的函数，但是他们的表现并不像我们所希望的那样好。今天的几何体阴影器可以一种更为使得与高效的方法完成相同的工作。以Cubic Bezier曲线的生成为例。给定两个端点，以及阴影器的两个控制点，则他会使用起始与结束于两个不同的端点，并且朝向控制点的特定段来生成一条光滑的曲线。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件。我们需要修改输出线的宽度，所以在这里我们使用osg::LineWith类：</li>
+<li><p>包含必需的头文件。我们需要修改输出线的宽度，所以在这里我们使用osg::LineWith类：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Program&gt;</span>
-<span class="cp">#include &lt;osg/LineWidth&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Program&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/LineWidth&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>顶点阴影器总是需要的。但这次他仅是将顶点传输给后续的阴影器：</li>
+<li><p>顶点阴影器总是需要的。但这次他仅是将顶点传输给后续的阴影器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">vertSource</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">vertSource</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s">&quot;#version 120</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;#extension GL_EXT_geometry_shader4 : enable</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;void main()</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -1115,9 +1116,9 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>几何体阴影器源是这个示例中的关键。他由内建的gl_Position变量读取端点与控制点，重新组合，并使用EmitVertex()函数发射新顶点。uniform变量segments被用来控制生成曲线的平滑：</li>
+<li><p>几何体阴影器源是这个示例中的关键。他由内建的gl_Position变量读取端点与控制点，重新组合，并使用EmitVertex()函数发射新顶点。uniform变量segments被用来控制生成曲线的平滑：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">geomSource</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">geomSource</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s">&quot;#version 120</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;#extension GL_EXT_geometry_shader4 : enable</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="s">&quot;uniform int segments;</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -1144,9 +1145,9 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>我们将会通过osg::Geometry类创建几何体阴影器的输入基元。他包含一个名为GL_LINES_ADJACENCY_EXT的新基元类型，给出了阴影器的gl_PositionIn变量的维度：</li>
+<li><p>我们将会通过osg::Geometry类创建几何体阴影器的输入基元。他包含一个名为GL_LINES_ADJACENCY_EXT的新基元类型，给出了阴影器的gl_PositionIn变量的维度：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="o">&gt;</span> <span class="n">vertices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="o">&gt;</span> <span class="n">vertices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3Array</span><span class="p">;</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">vertices</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">2.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0f</span><span class="p">)</span> <span class="p">);</span>
@@ -1160,9 +1161,9 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>我们要设置阴影器的参数。他有segments+1个要发射的顶点，接收GL_LINES_ADJACENCY_EXT类型，并输出所得到的曲线，如下面的代码所示：</li>
+<li><p>我们要设置阴影器的参数。他有segments+1个要发射的顶点，接收GL_LINES_ADJACENCY_EXT类型，并输出所得到的曲线，如下面的代码所示：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">int</span> <span class="n">segments</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">segments</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Program</span><span class="o">&gt;</span> <span class="n">program</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Program</span><span class="p">;</span>
 <span class="n">program</span><span class="o">-&gt;</span><span class="n">addShader</span><span class="p">(</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">VERTEX</span><span class="p">,</span> <span class="n">vertSource</span><span class="p">)</span> <span class="p">);</span>
@@ -1176,16 +1177,16 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>默认线宽为1.0。设置线宽有助于我们分辨输出的曲线：</li>
+<li><p>默认线宽为1.0。设置线宽有助于我们分辨输出的曲线：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LineWidth</span><span class="o">&gt;</span> <span class="n">lineWidth</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LineWidth</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LineWidth</span><span class="o">&gt;</span> <span class="n">lineWidth</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LineWidth</span><span class="p">;</span>
 <span class="n">lineWidth</span><span class="o">-&gt;</span><span class="n">setWidth</span><span class="p">(</span> <span class="mf">2.0f</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>向状态集合设置所有的渲染属性，并且不要忘记向阴影的使用添加uniform：</li>
+<li><p>向状态集合设置所有的渲染属性，并且不要忘记向阴影的使用添加uniform：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="n">geode</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">stateset</span> <span class="o">=</span> <span class="n">geode</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">program</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttribute</span><span class="p">(</span> <span class="n">lineWidth</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">GL_LIGHTING</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OFF</span> <span class="p">);</span>
@@ -1193,15 +1194,15 @@ return viewer.run();</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>一切就绪。现在启动查看器：</li>
+<li><p>一切就绪。现在启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">geode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>我们会在看到屏幕中显示一条Bezier曲线。试着修改uniform segments的值。更大的值会使得曲线更为平滑与完整，但是却会占用更多的资源，从而导致更低的渲染效率。</li>
+<li><p>我们会在看到屏幕中显示一条Bezier曲线。试着修改uniform segments的值。更大的值会使得曲线更为平滑与完整，但是却会占用更多的资源，从而导致更低的渲染效率。</p></li>
 </ol>
 <img alt="_images/osg_geometry_shader.png" src="_images/osg_geometry_shader.png" />
 </div>
@@ -1209,7 +1210,7 @@ return viewer.run();</p>
 <h3>What just happened?<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>几何体阴影器定义了一个新的基元类型GL_LINE_STRIP_ADJACENCY_EXT，表示相连的点划线。第一个与最后一个顶点提供了相连信息，但是并不作为线段可见。所以，我们使用这两个额外的顶点作为Bezier曲线的端点，而其他的顶点作为控制点。这实际上就是我们由GLSL变量gl_PositionIn[0]到gl_PositionIn[3]所读取的。</p>
 <p>Cubic Bezier曲线可以依据下面的等式计算获得：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">P</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">^</span><span class="mi">3</span> <span class="o">*</span><span class="n">P0</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="n">P1</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">t</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">P2</span> <span class="o">+</span> <span class="n">t</span><span class="o">^</span><span class="mi">3</span><span class="o">*</span><span class="n">P3</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">^</span><span class="mi">3</span> <span class="o">*</span><span class="n">P0</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="n">P1</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">t</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">P2</span> <span class="o">+</span> <span class="n">t</span><span class="o">^</span><span class="mi">3</span><span class="o">*</span><span class="n">P3</span>
 </pre></div>
 </div>
 <p>因子t可以设置为范围0到1之间的任何值。</p>
@@ -1219,10 +1220,10 @@ return viewer.run();</p>
 <p>有些人认为阴影器是全能的，而有些人则不这样认为。但是不会有人否认阴影器使得我们的开发更为有趣。已经有一些使用图像阴影器的真实的海洋，大气，光，特征动画 等的成功实现。现在确实有一个使用阴影器替换固定功能管线的任务，从而为我们的程序提供大量的优势。</p>
 <p>OSG提供了对阴影语言的完全支持，尽管这些是随着OpenGL4而引入的。他也通过名为osgNV的第三方工程支持NVIDIA Cg。等不及把玩阴影器了？除了我们自己的探索，还有一些很好的使用阴影器的开源工程，我们可以参考：</p>
 <ul class="simple">
-<li>osgCompute与osgCUDA工程被用于使用GPU并行流处理器进行计算：<a class="reference external" href="http://www.cg.informatik.uni-siegen.de/svt/osgcompute/">http://www.cg.informatik.uni-siegen.de/svt/osgcompute/</a></li>
-<li>osgNV工程可以支持NVIDIA Cg语言：<a class="reference external" href="http://osgnv.sourceforge.net/">http://osgnv.sourceforge.net/</a></li>
-<li>osgOcean工程被用于真实海洋的模拟：<a class="reference external" href="http://code.google.com/p/osgocean/">http://code.google.com/p/osgocean/</a></li>
-<li>osgPPU工程使用后处理技术实现了各种效果：<a class="reference external" href="http://projects.tevs.eu/osgppu">http://projects.tevs.eu/osgppu</a></li>
+<li><p>osgCompute与osgCUDA工程被用于使用GPU并行流处理器进行计算：<a class="reference external" href="http://www.cg.informatik.uni-siegen.de/svt/osgcompute/">http://www.cg.informatik.uni-siegen.de/svt/osgcompute/</a></p></li>
+<li><p>osgNV工程可以支持NVIDIA Cg语言：<a class="reference external" href="http://osgnv.sourceforge.net/">http://osgnv.sourceforge.net/</a></p></li>
+<li><p>osgOcean工程被用于真实海洋的模拟：<a class="reference external" href="http://code.google.com/p/osgocean/">http://code.google.com/p/osgocean/</a></p></li>
+<li><p>osgPPU工程使用后处理技术实现了各种效果：<a class="reference external" href="http://projects.tevs.eu/osgppu">http://projects.tevs.eu/osgppu</a></p></li>
 </ul>
 </div>
 </div>
@@ -1231,11 +1232,11 @@ return viewer.run();</p>
 <p>正如我们在本章中所了解到的，借助于osg::StateSet类以及osg::StateAttribute子类集合，在管线中的骨架准备好之后，然后，图像渲染可以被应用来添加光，纹理，碰撞映射，或是其他对象的可编程效果。在本章中，我们详细介绍了操作渲染状态与属性的技术，特别是通过使用固定功能管线与OpenGL shading language实现真实渲染效果的两种不同方法。</p>
 <p>在本章中，我们特别探讨了：</p>
 <ul class="simple">
-<li>控制与继承存储在节点与可绘制元素的osg::StateSet对象中的渲染属性与模式。</li>
-<li>通过使用不同的OSG渲染状态类，例如osg::PolygonModel，osg::Fog与osg::BlendFunc，实现固定功能渲染效果。当渲染透明与半透明对象时要注意状态集合的渲染顺序。</li>
-<li>如何通过使用osg::LightSource节点创建并控制osg::Light。</li>
-<li>如何通过使用osg::Image类及相关联的osg::Texture子类，特别是管理与渲染2D纹理的osg::Texture2D类，来实现纹理映射。</li>
-<li>图像阴影器的概念及其实现者类：osg::Shader与osg::Program。</li>
+<li><p>控制与继承存储在节点与可绘制元素的osg::StateSet对象中的渲染属性与模式。</p></li>
+<li><p>通过使用不同的OSG渲染状态类，例如osg::PolygonModel，osg::Fog与osg::BlendFunc，实现固定功能渲染效果。当渲染透明与半透明对象时要注意状态集合的渲染顺序。</p></li>
+<li><p>如何通过使用osg::LightSource节点创建并控制osg::Light。</p></li>
+<li><p>如何通过使用osg::Image类及相关联的osg::Texture子类，特别是管理与渲染2D纹理的osg::Texture2D类，来实现纹理映射。</p></li>
+<li><p>图像阴影器的概念及其实现者类：osg::Shader与osg::Program。</p></li>
 </ul>
 </div>
 </div>
@@ -1297,7 +1298,7 @@ return viewer.run();</p>
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'',
+            URL_ROOT:'./',
             VERSION:'0.01',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -1307,6 +1308,7 @@ return viewer.run();</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
 
   
 

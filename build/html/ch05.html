@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -29,6 +28,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
         <link rel="next" title="Chapter 6: Creating Realistic Rendering Effects" href="ch06.html"/>
         <link rel="prev" title="Chapter 4: Building Geometry Models" href="ch04.html"/>
@@ -92,7 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ch04.html#summary">Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 5: Managing Scene Graph</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 5: Managing Scene Graph</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-group-interface">The Group interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#managing-parent-nodes">Managing parent nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#traversing-the-scene-graph">Traversing the scene graph</a></li>
@@ -224,7 +226,7 @@
     <li>Chapter 5: Managing Scene Graph</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ch05.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/ch05.rst.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -238,11 +240,11 @@
 <p>场景图是表示图形与状态对象的空间布局的节点的层次图结构图。他封装了最底层的图像基元与状态组合，可以通过底层的图像API创建可视化事物。OpenSceneGraph释放了场景图的威力，并且开发优化机制来管理与渲染3D场景，从而允许开发者以标准方式使用简单但强大的代码实现如对象组装，遍历，传输栈，场景裁剪，细节管理以及其他基本或是高级图像特性等事情。</p>
 <p>在本章中，我们将会探讨下列主题：</p>
 <ul class="simple">
-<li>理解组合节点与叶子节点的概念</li>
-<li>如何处理父节点与子节点接口</li>
-<li>使用各种节点，包括转换节点，切换节点，细节节点与代理节点</li>
-<li>如何由基本的节点类派生我们自己的节点</li>
-<li>如何遍历已载入模式的场景图结构</li>
+<li><p>理解组合节点与叶子节点的概念</p></li>
+<li><p>如何处理父节点与子节点接口</p></li>
+<li><p>使用各种节点，包括转换节点，切换节点，细节节点与代理节点</p></li>
+<li><p>如何由基本的节点类派生我们自己的节点</p></li>
+<li><p>如何遍历已载入模式的场景图结构</p></li>
 </ul>
 <div class="section" id="the-group-interface">
 <h2>The Group interface<a class="headerlink" href="#the-group-interface" title="Permalink to this headline">¶</a></h2>
@@ -250,10 +252,10 @@
 <p>osg::Group类派生自osg::Node，因而间接派生自osg::Referenced。osg::Group类包含一个子节点列表，每一个子节点由智能指针osg::ref_ptr&lt;&gt;进行管理。这可以确保删除场景图中的级联节点集合时不会存在内存泄露。</p>
 <p>osg::Group类提供了一个公共方法集合用于定义处理子节点的接口。这些方法非常类似于osg::Geode的可绘制元素的管理方法，但是大多数的输入参数是osg::Node指针。</p>
 <ol class="arabic simple">
-<li>公共方法addChild()将一个节点关联到子节点列表的结尾。同时，有一个insertChild()方法用于将节点插入到osg::Group的指定位置处，该方法接受一个整数索引与一个节点指针作为参数。</li>
-<li>公共方法removeChild()与removeChildren()将会由当前的osg::Group对象移除一个或是多个子节点。后者使用两个参数：基于零的起始元素索引，以及要移除的元素数目。</li>
-<li>getChild()方法在指定索引处存储的osg::Node指针。</li>
-<li>getNumChildren()返回子节点的总数。</li>
+<li><p>公共方法addChild()将一个节点关联到子节点列表的结尾。同时，有一个insertChild()方法用于将节点插入到osg::Group的指定位置处，该方法接受一个整数索引与一个节点指针作为参数。</p></li>
+<li><p>公共方法removeChild()与removeChildren()将会由当前的osg::Group对象移除一个或是多个子节点。后者使用两个参数：基于零的起始元素索引，以及要移除的元素数目。</p></li>
+<li><p>getChild()方法在指定索引处存储的osg::Node指针。</p></li>
+<li><p>getNumChildren()返回子节点的总数。</p></li>
 </ol>
 <p>由于我们前面处理osg::Geode与可绘制元素的经验，我们可以很容易处理osg::Group子节点接口。</p>
 </div>
@@ -262,14 +264,14 @@
 <p>我们已经了解到osg::Group被用作组合节点，而osg::Geode被用作场景图的叶子节点。其方法在上一章中进行了介绍，而在本章中也同样会用到。另外，两个类都应具有用于管理父节点的接口。</p>
 <p>正如稍后将会解释的，OSG允许一个节点具有多个父节点。在本节中，我们将会首先概略了解一个父节点管理方法，这些方法直接声明在osg::Node类中：</p>
 <ol class="arabic simple">
-<li>getParent()方法返回一个osg::Group指针作为父节点。他需要一个表示父节点列表中索引的整数参数。</li>
-<li>getNumParents()方法返回父节点的总数。如果节点只有一个父节点，该方法将会返回1，而此时只有getParent(0)是正确可用的。</li>
-<li>getParentalNodePaths()方法返回由场景的根节点到当前节点（但是不包含当前节点）的所有可能路径。他返回一个osg::NodePath变量的列表。</li>
+<li><p>getParent()方法返回一个osg::Group指针作为父节点。他需要一个表示父节点列表中索引的整数参数。</p></li>
+<li><p>getNumParents()方法返回父节点的总数。如果节点只有一个父节点，该方法将会返回1，而此时只有getParent(0)是正确可用的。</p></li>
+<li><p>getParentalNodePaths()方法返回由场景的根节点到当前节点（但是不包含当前节点）的所有可能路径。他返回一个osg::NodePath变量的列表。</p></li>
 </ol>
 <p>osg::NodePath实际上是一个节点指针的std::vector对象，例如，假定我们有如下一个场景图：</p>
 <img alt="_images/osg_parentalnodepath.png" src="_images/osg_parentalnodepath.png" />
 <p>下面的代码片段将会找到由场景根节点到节点child3的唯一路径：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">NodePath</span><span class="o">&amp;</span> <span class="n">nodePath</span> <span class="o">=</span> <span class="n">child3</span><span class="o">-&gt;</span><span class="n">getParentalNodePaths</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">NodePath</span><span class="o">&amp;</span> <span class="n">nodePath</span> <span class="o">=</span> <span class="n">child3</span><span class="o">-&gt;</span><span class="n">getParentalNodePaths</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
 <span class="k">for</span> <span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">nodePath</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">node</span> <span class="o">=</span> <span class="n">nodePath</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
@@ -284,39 +286,39 @@
 <h3>Time for action - adding models to the scene graph<a class="headerlink" href="#time-for-action-adding-models-to-the-scene-graph" title="Permalink to this headline">¶</a></h3>
 <p>在前面的示例中，我们只是通过osgDB::readNodeFile()函数载入一个模型，例如Cessna。这次我们将会尝试载入并管理多个模型。每一个模型将会被赋值给一个节点指针，然后添加到组合节点。组合节点被定义为根节点，将会被程序用来在最后渲染整个场景图：</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Group&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Group&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>在主函数中，我们首先载入两个不同的模型，然后将其赋值给osg::Node指针。载入的模型同时也是一个通过组合节点与叶子节点构建的子场景图。osg::Node类能够表示任意类型的子场景图，如果需要，他们可以被转换为osg::Group或是osg::Geode，或者通过C++ dynamic_cast&lt;&gt;操作符实现，或者是如asGroup()与asGeode()这样的便利方法，这要比dynamic_cast&lt;&gt;节省时间。</li>
+<li><p>在主函数中，我们首先载入两个不同的模型，然后将其赋值给osg::Node指针。载入的模型同时也是一个通过组合节点与叶子节点构建的子场景图。osg::Node类能够表示任意类型的子场景图，如果需要，他们可以被转换为osg::Group或是osg::Geode，或者通过C++ dynamic_cast&lt;&gt;操作符实现，或者是如asGroup()与asGeode()这样的便利方法，这要比dynamic_cast&lt;&gt;节省时间。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
     <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model2</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cow.osg&quot;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>通过addChild()方法向osg::Group节点添加两个模型：</li>
+<li><p>通过addChild()方法向osg::Group节点添加两个模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model1</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model2</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>初始化并启动查看器：</li>
+<li><p>初始化并启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>现在我们将会看到一头牛与Cessna模型粘合在一起。实际上不可能看到这样的场景，但是在虚拟世界中，这两个模型属性于由一个组合节点管理的不相关的子节点，因而可以由场景查看器进行单独渲染。</li>
+<li><p>现在我们将会看到一头牛与Cessna模型粘合在一起。实际上不可能看到这样的场景，但是在虚拟世界中，这两个模型属性于由一个组合节点管理的不相关的子节点，因而可以由场景查看器进行单独渲染。</p></li>
 </ol>
 <img alt="_images/osg_group_node.png" src="_images/osg_group_node.png" />
 </div>
@@ -324,24 +326,24 @@
 <h3>What just happened?<a class="headerlink" href="#what-just-happened" title="Permalink to this headline">¶</a></h3>
 <p>osg::Group与osg::Geode都由osg::Node基类派生。osg::Group允许添加任意类型的子节点，包括osg::Group自身。然而，osg::Geode类不包含组合节点或是叶子节点。他只接受用于渲染的可绘制元素。</p>
 <p>如果我们能够确定一个节点的类型是osg::Group，osg::Geode还是其他的派生类型将会非常方便，特别是由文件读取并由osg::Node类所管理的节点，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>dynamic_cast&lt;&gt;操作符与如asGroup()，asGeode()以及其他的便利方法，会有助于将一个指针或引用类型转换为另一种指针或是引用类型。首先，我们以dynamic_cast&lt;&gt;为例。这可以用来在类的继承层次结构中向下转换，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span>
     <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">*&gt;</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>osgDB::readNodeFile()函数的返回值总是osg::Node*，但是我们也可以尝试使用osg::Group指针进行管理。如果Cessna子图的根节点是一个组合节点，那么转换就会成功，否则转换失败，而变量model将会为NULL。</p>
 <p>我们也可以执行向上转换，这实际上是隐式转换：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">group</span> <span class="o">=</span> <span class="p">...;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">group</span> <span class="o">=</span> <span class="p">...;</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">node1</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*&gt;</span><span class="p">(</span> <span class="n">group</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">node2</span> <span class="o">=</span> <span class="n">group</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>在大多数编译器上，node1与node2都会通过编译并正常工作。</p>
 <p>转换方法也会完成类似的工作。事实上，如果我们所需要的类型存在一个这样的转换方法，则推荐使用转换方法，而不是dynamic_cast&lt;&gt;，特别是在性能要求较高的代码中：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="c1">// Assumes the Cessna&#39;s root node is a group node.</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Assumes the Cessna&#39;s root node is a group node.</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">*</span> <span class="n">convModel1</span> <span class="o">=</span> <span class="n">model</span><span class="o">-&gt;</span><span class="n">asGroup</span><span class="p">();</span>  <span class="c1">// OK!</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">*</span> <span class="n">convModel2</span> <span class="o">=</span> <span class="n">model</span><span class="o">-&gt;</span><span class="n">asGeode</span><span class="p">();</span>  <span class="c1">// Returns NULL.</span>
@@ -357,16 +359,16 @@
 <h2>Traversing the scene graph<a class="headerlink" href="#traversing-the-scene-graph" title="Permalink to this headline">¶</a></h2>
 <p>一个通常的遍历由下列步骤组成：</p>
 <ol class="arabic simple">
-<li>首先，由任意节点开始（例如，根节点）。</li>
-<li>递归沿场景图向下（或向上）到子节点，直到叶子节点或是没有子节点的节点。</li>
-<li>反向到达没有完成探索的最近节点，重复上述步骤。这被称为场景图的尝试优先搜索。</li>
+<li><p>首先，由任意节点开始（例如，根节点）。</p></li>
+<li><p>递归沿场景图向下（或向上）到子节点，直到叶子节点或是没有子节点的节点。</p></li>
+<li><p>反向到达没有完成探索的最近节点，重复上述步骤。这被称为场景图的尝试优先搜索。</p></li>
 </ol>
 <p>在遍历过程中，可以对所有的场景节点应用不同的更新与渲染操作，从而使得遍历成为场景图的关键特性。有不同目的的多种遍历类型：</p>
 <ol class="arabic simple">
-<li>事件（event）遍历在遍历节点时首先处理鼠标与键盘输入以及其他的用户事件。</li>
-<li>更新遍历（或应用遍历）允许用户应用修改场景图，例如设置节点与几何属性，应用节点功能，执行回调等。</li>
-<li>裁剪遍历（cull）测试一个节点是否位于一个视口内并可进行渲染。他会裁剪不可见与不可用的节点，并且向内部渲染列表输出优化的场景图。</li>
-<li>绘制遍历（draw）（或渲染遍历）执行底层的OpenGL API调用来真正的渲染场景。注意，他与场景图并没有关系，而仅是作用在由裁剪遍历所生成的渲染列表上。</li>
+<li><p>事件（event）遍历在遍历节点时首先处理鼠标与键盘输入以及其他的用户事件。</p></li>
+<li><p>更新遍历（或应用遍历）允许用户应用修改场景图，例如设置节点与几何属性，应用节点功能，执行回调等。</p></li>
+<li><p>裁剪遍历（cull）测试一个节点是否位于一个视口内并可进行渲染。他会裁剪不可见与不可用的节点，并且向内部渲染列表输出优化的场景图。</p></li>
+<li><p>绘制遍历（draw）（或渲染遍历）执行底层的OpenGL API调用来真正的渲染场景。注意，他与场景图并没有关系，而仅是作用在由裁剪遍历所生成的渲染列表上。</p></li>
 </ol>
 <p>在通常情况下，这些遍历应依次为每一帧所执行。但是对于具有多处理器与图形卡的系统，OSG可以并行执行从而提高渲染效率。</p>
 <p>访问者模式可以用来实现遍历。该模式会在本章稍后进行讨论。</p>
@@ -376,7 +378,7 @@
 <p>osg::Group节点除了向下遍历到子节点外不做任何事情。然而，OSG同时支持osg::Transform类家庭，这是在应用到几何体的遍历相关转换过程中创建的。osg::Transform派生自osg::Group。他不能被直接实例化。相反，他提供了一个用于实现不同转换接口的子类集合。</p>
 <p>当向下遍历场景图层次结构时，osg::Transform节点总是将其自己的操作添加到当前的变换矩阵，也就是，OpenGL模型-视图矩阵（model-view matrix）。他等同于如glMultMatrix()这样的连接OpenGL矩阵命令，例如：</p>
 <p>上面的示例场景图可以翻译为如下的OpenGL代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">glPushMatrix</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">glPushMatrix</span><span class="p">();</span>
     <span class="n">glMultMatrix</span><span class="p">(</span> <span class="n">matrixOfTransform1</span> <span class="p">);</span>
     <span class="n">renderGeode1</span><span class="p">();</span>  <span class="c1">// Assume this will render Geode1</span>
     <span class="n">glPushMatrix</span><span class="p">();</span>
@@ -387,18 +389,18 @@
 </pre></div>
 </div>
 <p>要使用坐标帧（coordinate frmae）的概念来描述上述过程，我们可以说Geode1与Transform2位于Transform1的相对引用帧之下，Geode2位于Transform2的相对引用帧之下。然而，OSG同时也允许设置绝对引用帧，从而导致与OpenGL命令glLoadMatrix()等同的行为：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">transformNode</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Transform</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">transformNode</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Transform</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>而要切换到默认的坐标帧，可以使用如下的代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">transformNode</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Transform</span><span class="o">::</span><span class="n">RELATIVE_RF</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">transformNode</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Transform</span><span class="o">::</span><span class="n">RELATIVE_RF</span> <span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="understanding-the-matrix">
 <h2>Understanding the matrix<a class="headerlink" href="#understanding-the-matrix" title="Permalink to this headline">¶</a></h2>
 <p>osg::Matrix是一个基本的OSG数据类型，而不需要使用智能指针进行管理。他支持4x4矩阵变换接口，例如变换，旋转，缩放与投影操作。他可以显式设置：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">mat</span><span class="p">(</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">mat</span><span class="p">(</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span>
                  <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span>
                  <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span>
                  <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="p">);</span> <span class="c1">// Just an identity matrix</span>
@@ -406,17 +408,18 @@
 </div>
 <p>其他的方法与操作包括：</p>
 <ol class="arabic simple">
-<li>公共方法postMult()与operator*()将当前的矩阵对象与输入矩阵或向量参数执行后乘运算。而方法preMult()执行前乘运算。</li>
-<li>makeTranslate()，makeRotate()与makeScale()方法重置当前矩阵并且创建一个4x4变换，旋转或是缩放矩阵。其静态版本，translate()，rotate()与scale()可以使用特定的参数分配一个新的矩阵对象。</li>
-<li>公共方法invert()反转矩阵。其静态版本inverse()需要一个矩阵参数并且返回一个新的反转osg::Matrix对象。</li>
+<li><p>公共方法postMult()与operator*()将当前的矩阵对象与输入矩阵或向量参数执行后乘运算。而方法preMult()执行前乘运算。</p></li>
+<li><p>makeTranslate()，makeRotate()与makeScale()方法重置当前矩阵并且创建一个4x4变换，旋转或是缩放矩阵。其静态版本，translate()，rotate()与scale()可以使用特定的参数分配一个新的矩阵对象。</p></li>
+<li><p>公共方法invert()反转矩阵。其静态版本inverse()需要一个矩阵参数并且返回一个新的反转osg::Matrix对象。</p></li>
 </ol>
 <p>我们将会注意到OSG使用行为主（row-major）矩阵来表示变换。这意味着OSG会将向量看作行，并使用行向量执行前乘矩阵操作。所以将变换矩阵mat应用到坐标vec的方法为：</p>
-<div class="highlight-cpp"><pre>osg::Matrix mat = …;
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>osg::Matrix mat = …;
 osg::Vec3 vec = …;
-osg::Vec3 resultVec = vec * mat;</pre>
+osg::Vec3 resultVec = vec * mat;
+</pre></div>
 </div>
 <p>当连接矩阵时，OSG行为主矩阵操作的顺序也很容易理解：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">mat1</span> <span class="o">=</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">scale</span><span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">mat1</span> <span class="o">=</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">scale</span><span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">mat2</span> <span class="o">=</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">resultMat</span> <span class="o">=</span> <span class="n">mat1</span> <span class="o">*</span> <span class="n">mat2</span><span class="p">;</span>
 </pre></div>
@@ -431,24 +434,24 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h3>Time for action - performing translations of child nodes<a class="headerlink" href="#time-for-action-performing-translations-of-child-nodes" title="Permalink to this headline">¶</a></h3>
 <p>现在我们要利用变换节点。osg::MatrixTransform节点，将当前的模型视图矩阵与指定的矩阵直接相乘，可以将我们的模型移动到视图空间中的其他位置。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>首先载入Cessna模型：</li>
+<li><p>首先载入Cessna模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span>
   <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>osg::MatrixTransform类由osg::Group类派生，所以他可以使用addChild()方法来添加多个子节点。所有的子节点都会受到osg::MatrixTransform节点的影响，并且会依据当前的矩阵进行变换。在这里，我们将会两次载入模型，以同时单独显示两个实例：</li>
+<li><p>osg::MatrixTransform类由osg::Group类派生，所以他可以使用addChild()方法来添加多个子节点。所有的子节点都会受到osg::MatrixTransform节点的影响，并且会依据当前的矩阵进行变换。在这里，我们将会两次载入模型，以同时单独显示两个实例：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">transformation1</span> <span class="o">=</span> <span class="k">new</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">transformation1</span> <span class="o">=</span> <span class="k">new</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
 <span class="n">transform1</span><span class="o">-&gt;</span><span class="n">setMatrix</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span>
   <span class="o">-</span><span class="mf">25.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">)</span> <span class="p">);</span>
@@ -461,9 +464,9 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>向根节点添加两个变换节点并启动查看器：</li>
+<li><p>向根节点添加两个变换节点并启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">transformation1</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">transformation2</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
@@ -472,7 +475,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>Cessna模型，最初位于坐标原点，该模型被复制并在不同的位置显示。一个被变换到坐标(-25.0, 0.0, 0.0)处，而另一个被变换到(25.0,0.0,0.0)处：</li>
+<li><p>Cessna模型，最初位于坐标原点，该模型被复制并在不同的位置显示。一个被变换到坐标(-25.0, 0.0, 0.0)处，而另一个被变换到(25.0,0.0,0.0)处：</p></li>
 </ol>
 <img alt="_images/osg_matrix.png" src="_images/osg_matrix.png" />
 </div>
@@ -491,7 +494,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <div class="section" id="have-a-go-hero-making-use-of-the-positionattitudetransform-class">
 <h3>Have a go hero - making use of the PositionAttitudeTransform class<a class="headerlink" href="#have-a-go-hero-making-use-of-the-positionattitudetransform-class" title="Permalink to this headline">¶</a></h3>
 <p>osg::MatrixTransform类的执行类似于OpenGL的glMultMatrix()与glLoadMatrix()函数，该函数几乎可以实现所有的空间变换类型，但是并不容易使用。然而，osg::PositionAttitudeTransform类的作用类似于OpenGL的glTranslate()，glScale()与glRotate()函数的组合。他提供了公共方法在3D世界中变换子节点，包括setPosition()，setScale()与setAttitue()。前两个需要osg::Vec3输入值，而setAttitude()使用osg::Quat变量作为参数。osg::Quat是一个四元数类，该类被用来表示朝向。其构造函数可以接受一个浮点角度与一个osg::Vec3向量作为参数。欧拉旋转（关于三个固定坐标的旋转）也是可以接受的，但要使用osg::Quat的重载构造函数：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Quat</span> <span class="n">quat</span><span class="p">(</span><span class="n">xAngle</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">X_AXIS</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Quat</span> <span class="n">quat</span><span class="p">(</span><span class="n">xAngle</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">X_AXIS</span><span class="p">,</span>
                <span class="n">yAngle</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Y_AXIS</span><span class="p">,</span>
                <span class="n">zangle</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Z_AXIS</span><span class="p">);</span> <span class="c1">// Angles should be radians!</span>
 </pre></div>
@@ -503,11 +506,11 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h2>Switch nodes<a class="headerlink" href="#switch-nodes" title="Permalink to this headline">¶</a></h2>
 <p>osg::Switch节点能够渲染或是略过某些特定条件的子节点。他继承了超类osg::Group的方法，并且可以为每一个子节点关联一个布尔值。他有一些非常有用的公共方法：</p>
 <ol class="arabic simple">
-<li>重载的addChild()方法除了osg::Node指针以外还可以有一个布尔参数。当布尔参数被设置为假时，所添加的节点对于查看器不可见。</li>
-<li>setValue()方法可以设置指定索引处子节点的可见性值。他有两个参数：基于零的索引与布尔值。getValue()可以获取输入索引处子节点的值。</li>
-<li>setNewChildDefaultValue()方法为新子节点设置默认可见性。如果一个子节点只是简单的被添加而没有指定值，则其值由setNewChildDefaultValue()决定，例如：</li>
+<li><p>重载的addChild()方法除了osg::Node指针以外还可以有一个布尔参数。当布尔参数被设置为假时，所添加的节点对于查看器不可见。</p></li>
+<li><p>setValue()方法可以设置指定索引处子节点的可见性值。他有两个参数：基于零的索引与布尔值。getValue()可以获取输入索引处子节点的值。</p></li>
+<li><p>setNewChildDefaultValue()方法为新子节点设置默认可见性。如果一个子节点只是简单的被添加而没有指定值，则其值由setNewChildDefaultValue()决定，例如：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">setNewChildDefaultValue</span><span class="p">(</span> <span class="nb">false</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">setNewChildDefaultValue</span><span class="p">(</span> <span class="nb">false</span> <span class="p">);</span>
 <span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">childNode</span> <span class="p">);</span> <span class="c1">// Turned off by default now!</span>
 </pre></div>
 </div>
@@ -515,39 +518,39 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h3>Time for action - switching between the normal and damaged Cessna<a class="headerlink" href="#time-for-action-switching-between-the-normal-and-damaged-cessna" title="Permalink to this headline">¶</a></h3>
 <p>我们将要使用osg::Switch节点来构建场景。他甚至可以用来实现状态切换动画与更为复杂的工作，但是目前我们仅是演示如何在场景查看器启动之前预先定义子节点的可见性。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Switch&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Switch&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们由文件中读取两个模型并使用开关进行控制。我们可以在OSG示例数据目录中找到一个正常的Cessna与一个损坏的Cessna。他们非常适于模拟飞机的不同状态：</li>
+<li><p>我们由文件中读取两个模型并使用开关进行控制。我们可以在OSG示例数据目录中找到一个正常的Cessna与一个损坏的Cessna。他们非常适于模拟飞机的不同状态：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model2</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessnafire.</span>
 <span class="n">osg</span><span class="s">&quot;);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>osg::Switch节点能够显示一个或多个子节点并隐藏其他的子节点。其作用不同于osg::Group父类，后者会在渲染场景时显示所有的子节点。如果我们要开发一个战斗游戏，并且要在任何时刻管理某些飞机对象时，这个功能将会非常有用。下面的代码会在将model2添加到根节点时设置为可见，并同时隐藏model1：</li>
+<li><p>osg::Switch节点能够显示一个或多个子节点并隐藏其他的子节点。其作用不同于osg::Group父类，后者会在渲染场景时显示所有的子节点。如果我们要开发一个战斗游戏，并且要在任何时刻管理某些飞机对象时，这个功能将会非常有用。下面的代码会在将model2添加到根节点时设置为可见，并同时隐藏model1：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model1</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">false</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model2</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="nb">true</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>启动查看器：</li>
+<li><p>启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>现在我们将会看到一个燃烧的Cessna而不是正常的Cessna：</li>
+<li><p>现在我们将会看到一个燃烧的Cessna而不是正常的Cessna：</p></li>
 </ol>
 <img alt="_images/osg_switch.png" src="_images/osg_switch.png" />
 </div>
@@ -555,7 +558,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h3>What just happened?<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>osg::Switch类在由其超类osg::Group管理的子节点列表之处添加一个开关值列表。两个列表具有相同的大小，而列表中的每个元素与另一个列表中的元素具有一对一的关系。所以，开关值列表中的任何变化将会影响到相关的子节点，打开或关闭其可见性。</p>
 <p>当OSG后端遍历场景图并应用不同的NodeKit功能时，由addChild()或setValue()所触发的开关值变化将会被保存为属性并在下一个渲染帧中执行。在下面的代码片段中，只有位于索引0与1处的后两个子节点的开关值会实际起作用：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">setValue</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">false</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">setValue</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">false</span> <span class="p">);</span>
 <span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">setValue</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">true</span> <span class="p">);</span>
 <span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">setValue</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">true</span> <span class="p">);</span>
 <span class="n">switchNode</span><span class="o">-&gt;</span><span class="n">setValue</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">false</span> <span class="p">);</span>
@@ -569,7 +572,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <p>详细级别技术为指定的对象创建详细或是复杂性级别，并且提供一定的线索来自动选择相应的对象级别，例如，依据距离观看者的距离。他会减少3D世界中对象表示的复杂性，并且在远距离对象的外观上具有不被注意到的质量损失。</p>
 <p>osg::LOD节点派生自osg::Group，并且使用子节点来表示可变详细级别上的相同对象，由最高级别到最低级别。每一个级别需要一个最小与最大可视范围来指定在相邻级别之间切换的合理机会。osg::LOD节点的结果是子节点的离散量作为级别，也被称之为离散LOD。</p>
 <p>osg::LOD类可以配合子节点指定范围，或是在已有的子节点上使用setRange()方法：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="o">&gt;</span> <span class="n">lodNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="o">&gt;</span> <span class="n">lodNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="p">;</span>
 <span class="n">lodNode</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">node2</span><span class="p">,</span> <span class="mf">500.0f</span><span class="p">,</span> <span class="n">FLT_MAX</span> <span class="p">);</span>
 <span class="n">lodNode</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">node1</span> <span class="p">);</span>
 <span class="p">...</span>
@@ -581,18 +584,18 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h3>Time for action - constructing a LOD Cessna<a class="headerlink" href="#time-for-action-constructing-a-lod-cessna" title="Permalink to this headline">¶</a></h3>
 <p>我们将使用一个预定义对象的集合创建一个离散LOD节点来表示相同的模型。这些对象被用作osg::LOD节点的子节点并且在不同的距离上显示。我们将内部多边形减少技术类osgUtil::Simplifier来由源始模型生成各种细节对象。我们也可以由磁盘文件读取低多边形与高多边形模型。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/LOD&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgUtil/Simplifier&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/LOD&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgUtil/Simplifier&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们要构建三级模型细节。首先，我们需要创建原始模型的三份拷贝。可以由文件三次读取Cessna，但是在这里调用clone()方法来复制所载入的模型以立即使用：</li>
+<li><p>我们要构建三级模型细节。首先，我们需要创建原始模型的三份拷贝。可以由文件三次读取Cessna，但是在这里调用clone()方法来复制所载入的模型以立即使用：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">modelL3</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">modelL3</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.</span>
 <span class="n">osg</span><span class="s">&quot;);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">modelL2</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*&gt;</span><span class="p">(</span>
     <span class="n">modelL3</span><span class="o">-&gt;</span><span class="n">clone</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">CopyOp</span><span class="o">::</span><span class="n">DEEP_COPY_ALL</span><span class="p">)</span> <span class="p">);</span>
@@ -601,9 +604,9 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>我们希望级别三将是原始Cessna，该级别具有最大的多边形数以用于近距离查看。级别二具有较少的可显示的多边形数，而级别一是细节最少的，该级别只在较远的距离上显示。osgUtil::Simplifier类在这里用来减少顶点数与面数。我们使用不同的值为级别一与级别二应用setSampleRation()方法，从而会导致不同的缩放比率：</li>
+<li><p>我们希望级别三将是原始Cessna，该级别具有最大的多边形数以用于近距离查看。级别二具有较少的可显示的多边形数，而级别一是细节最少的，该级别只在较远的距离上显示。osgUtil::Simplifier类在这里用来减少顶点数与面数。我们使用不同的值为级别一与级别二应用setSampleRation()方法，从而会导致不同的缩放比率：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgUtil</span><span class="o">::</span><span class="n">Simplifier</span> <span class="n">simplifier</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgUtil</span><span class="o">::</span><span class="n">Simplifier</span> <span class="n">simplifier</span><span class="p">;</span>
 <span class="n">simplifier</span><span class="p">.</span><span class="n">setSampleRatio</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
 <span class="n">modelL2</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span> <span class="n">simplifier</span> <span class="p">);</span>
 <span class="n">simplifier</span><span class="p">.</span><span class="n">setSampleRatio</span><span class="p">(</span> <span class="mf">0.1</span> <span class="p">);</span>
@@ -611,24 +614,24 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>向LOD节点添加级别模型并且以递减顺序设置其可见范围。当我们使用addChild()与setRange()方法配置最小与最大范围值时，不要有重叠的范围，否则就会在相同的位置上显示多个级别模型，从而导致不正确的行为：</li>
+<li><p>向LOD节点添加级别模型并且以递减顺序设置其可见范围。当我们使用addChild()与setRange()方法配置最小与最大范围值时，不要有重叠的范围，否则就会在相同的位置上显示多个级别模型，从而导致不正确的行为：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LOD</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">modelL1</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="mf">200.0f</span><span class="p">,</span> <span class="n">FLT_MAX</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">modelL2</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="mf">50.0f</span><span class="p">,</span> <span class="mf">200.0f</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">modelL3</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">50.0f</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>启动查看器。这次程序会需要一些时间来计算并减少模型面数：</li>
+<li><p>启动查看器。这次程序会需要一些时间来计算并减少模型面数：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>再次出现Cessna模型。尝试持续按下鼠标右键来放大与缩小。当近距离查看时我们会发现模型依然显示很好，如下图中的左侧图片所示。然而，当由远距离查看时，模型会有简化。如下图中的右侧两幅图所示。距离并不会严重影响渲染结果，但如果正确使用将会增强系统效率。</li>
+<li><p>再次出现Cessna模型。尝试持续按下鼠标右键来放大与缩小。当近距离查看时我们会发现模型依然显示很好，如下图中的左侧图片所示。然而，当由远距离查看时，模型会有简化。如下图中的右侧两幅图所示。距离并不会严重影响渲染结果，但如果正确使用将会增强系统效率。</p></li>
 </ol>
 <img alt="_images/osg_lod.png" src="_images/osg_lod.png" />
 </div>
@@ -648,29 +651,29 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h3>Time for action - loading a model at runtime<a class="headerlink" href="#time-for-action-loading-a-model-at-runtime" title="Permalink to this headline">¶</a></h3>
 <p>我们将通过使用osg::ProxyNode来演示模型文件的载入。代理将会记录原始模型的文件名，并延迟载入直到查看已经运行并发送相应的请求。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/ProxyNode&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/ProxyNode&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们并没有直接载入模型文件作为子节点，而是为特定索引处的子节点设置文件名。这类似于insertChild()方法，后者会将节点放置在子节点列表的特定索引处，但是列表不会被填充，直到动态载入过程已经完成。</li>
+<li><p>我们并没有直接载入模型文件作为子节点，而是为特定索引处的子节点设置文件名。这类似于insertChild()方法，后者会将节点放置在子节点列表的特定索引处，但是列表不会被填充，直到动态载入过程已经完成。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">ProxyNode</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">ProxyNode</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">ProxyNode</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">ProxyNode</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">setFileName</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;cow.osg&quot;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>启动查看器：</li>
+<li><p>启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>模型看起来像通常一样被载入，但是我们会注意到他是突然出现的，而且查看点并没有被调整到最佳位置。这是因为不可见的代理节点的使用就如同在渲染开始时他并没有包含子节点。然后cow模型会在运行时由文件载入，并且会自动添加为代理的子节点并渲染：</li>
+<li><p>模型看起来像通常一样被载入，但是我们会注意到他是突然出现的，而且查看点并没有被调整到最佳位置。这是因为不可见的代理节点的使用就如同在渲染开始时他并没有包含子节点。然后cow模型会在运行时由文件载入，并且会自动添加为代理的子节点并渲染：</p></li>
 </ol>
 <img alt="_images/osg_proxy.png" src="_images/osg_proxy.png" />
 </div>
@@ -683,7 +686,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <div class="section" id="have-a-go-hero-working-with-the-pagedlod-class">
 <h3>Have a go hero - working with the PagedLOD class<a class="headerlink" href="#have-a-go-hero-working-with-the-pagedlod-class" title="Permalink to this headline">¶</a></h3>
 <p>类似于代理节点，osg::PagedLOD类也有一个setFileName()方法来设置要载入到特定子节点位置处的文件。然而，作为一个LOD节点，他还需要设置每一个动态载入子节点的最小与最大可视范围。假定我们有一个cessna.osg文件以及一个低多边形版本modelL1，我们可以像下面的样子组织分页节点：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">PagedLOD</span><span class="o">&gt;</span> <span class="n">pagedLOD</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">PagedLOD</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">PagedLOD</span><span class="o">&gt;</span> <span class="n">pagedLOD</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">PagedLOD</span><span class="p">;</span>
 <span class="n">pagedLOD</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">modelL1</span><span class="p">,</span> <span class="mf">200.0f</span><span class="p">,</span> <span class="n">FLT_MAX</span> <span class="p">);</span>
 <span class="n">pagedLOD</span><span class="o">-&gt;</span><span class="n">setFileName</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 <span class="n">pagedLOD</span><span class="o">-&gt;</span><span class="n">setRange</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">200.0f</span> <span class="p">);</span>
@@ -691,7 +694,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </div>
 <p>注意，modelL1指针不会由内存中卸载，因为他是一个直接子节点，而不是一个文件代理。</p>
 <p>我们会看到如果只显一个详细级别的节点，使用osg::LOD与osg::PagedLOD之间并没有区别。一个更好的主意是尝试使用osg::MatrixTransform来构建一个大的Cessna集。例如，我们可以使用一个独立的函数来构建一个可变换的LOD Cessna：</p>
-<div class="highlight-cpp"><pre>osg::Node* createLODNode( const osg::Vec3&amp; pos )
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>osg::Node* createLODNode( const osg::Vec3&amp; pos )
 {
     osg::ref_ptr&lt;osg::PagedLOD&gt; pagedLOD = new osg::PagedLOD;
     …
@@ -699,7 +702,8 @@ osg::Vec3 resultVec = vec * mat;</pre>
     mt-&gt;setMatrix( osg::Matrix::translate(pos) );
     mt-&gt;addChild( pagedLOD.get() );
     return mt.release();
-}</pre>
+}
+</pre></div>
 </div>
 <p>设置不同的位置参数并向场景根节点添加多个createLODNode()节点。可以看一下分布节点是如何被渲染的。再尝试使用osg::LOD，来比对一下在性能与内存使用上的不同。</p>
 </div>
@@ -712,19 +716,19 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h3>Time for action - animating the switch node<a class="headerlink" href="#time-for-action-animating-the-switch-node" title="Permalink to this headline">¶</a></h3>
 <p>osg::Switch类可以显示特定的子节点而隐藏他的子节点。他可以用来表示各种对象的动画状态，例如，信号灯。然而，一个典型的osg::Switch节点并不能在不同时刻自动在子节点之间切换。基于这一思想，我们将开发一个新的AnimatingSwitch节点，该类会一次显示一个子节点，并且依据用户定义的内部计数器反转切换状态。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Switch&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Switch&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>声明AnimatingSwitch类。该类将会由osg::Switch类派生并利用setValue()方法。我们同时使用一个OSG宏定义，META_Node，该宏类似于在上一章所介绍的定义节点基本属性的META_Object宏：</li>
+<li><p>声明AnimatingSwitch类。该类将会由osg::Switch类派生并利用setValue()方法。我们同时使用一个OSG宏定义，META_Node，该宏类似于在上一章所介绍的定义节点基本属性的META_Object宏：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">AnimatingSwitch</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">Switch</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AnimatingSwitch</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">Switch</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="n">AnimatingSwitch</span><span class="p">()</span> <span class="o">:</span> <span class="n">osg</span><span class="o">::</span><span class="n">Switch</span><span class="p">(),</span> <span class="n">_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{}</span>
     <span class="n">AnimatingSwitch</span><span class="p">(</span> <span class="k">const</span> <span class="n">AnimatingSwitch</span><span class="o">&amp;</span> <span class="n">copy</span><span class="p">,</span>
              <span class="k">const</span> <span class="n">osg</span><span class="o">::</span><span class="n">CopyOp</span><span class="o">&amp;</span> <span class="n">copyop</span><span class="o">=</span><span class="n">osg</span><span class="o">::</span><span class="n">CopyOp</span><span class="o">::</span><span class="n">SHALLOW_COPY</span> <span class="p">)</span>
@@ -733,15 +737,15 @@ osg::Vec3 resultVec = vec * mat;</pre>
 
     <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">traverse</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span><span class="o">&amp;</span> <span class="n">nv</span> <span class="p">);</span>
 
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
     <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">_count</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>在traverse()实现中，我们将会增加内部计数器并且测试他是否到达60的倍数，并且反转第一个与第二子节点的状态：</li>
+<li><p>在traverse()实现中，我们将会增加内部计数器并且测试他是否到达60的倍数，并且反转第一个与第二子节点的状态：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="n">AnimatingSwitch</span><span class="o">::</span><span class="n">traverse</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span><span class="o">&amp;</span> <span class="n">nv</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">AnimatingSwitch</span><span class="o">::</span><span class="n">traverse</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span><span class="o">&amp;</span> <span class="n">nv</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">((</span><span class="o">++</span><span class="n">_count</span><span class="p">)</span><span class="o">%</span><span class="mi">60</span><span class="p">)</span> <span class="p">)</span>
     <span class="p">{</span>
@@ -753,9 +757,9 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>再次载入Cessna模型与燃烧的Cessna模型，并将其添加到自定义的AnimatingSwitch实例：</li>
+<li><p>再次载入Cessna模型与燃烧的Cessna模型，并将其添加到自定义的AnimatingSwitch实例：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model2</span><span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessnafire.</span>
 <span class="n">osg</span><span class="s">&quot;);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">AnimatingSwitch</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AnimatingSwitch</span><span class="p">;</span>
@@ -764,15 +768,15 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>启动查看器：</li>
+<li><p>启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>因为硬件的刷新速率通常是60Hz，traverse()中的if条件将会每分钟变为真，从而实现动画。那么我们就会在前一分钟内看到Cessna，而在下一分钟内看到燃烧的Cessna，依次循环：</li>
+<li><p>因为硬件的刷新速率通常是60Hz，traverse()中的if条件将会每分钟变为真，从而实现动画。那么我们就会在前一分钟内看到Cessna，而在下一分钟内看到燃烧的Cessna，依次循环：</p></li>
 </ol>
 <img alt="_images/osg_animating_switch.png" src="_images/osg_animating_switch.png" />
 </div>
@@ -781,7 +785,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <p>因为traverse()方法被广泛重新实现来扩展不同的节点类型，他涉及到为实际使用读取变换矩阵与渲染状态的机制。例如，osg::LOD节点必须计算由子节点的中心到查看者眼睛的距离，从而用作不同级别之间切换的可视范围。</p>
 <p>输入参数osg::NodeVisitor&amp;是各种节点操作的关键。他表示访问节点的遍历类型，例如更新，事件与裁剪遍历。前两者与回调相关，我们会在第8章中进行详细讨论。</p>
 <p>裁剪遍历，名为osgUtil::CullVisitor，可以使用下面的代码片段由osg::NodeVisitor&amp;参数获取：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgUtil</span><span class="o">::</span><span class="n">CullVisitor</span><span class="o">*</span> <span class="n">cv</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osgUtil</span><span class="o">::</span><span class="n">CullVisitor</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">nv</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgUtil</span><span class="o">::</span><span class="n">CullVisitor</span><span class="o">*</span> <span class="n">cv</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">osgUtil</span><span class="o">::</span><span class="n">CullVisitor</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">nv</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span> <span class="n">cv</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="c1">// Do something</span>
@@ -794,7 +798,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h3>Have a go hero - creating a tracker node<a class="headerlink" href="#have-a-go-hero-creating-a-tracker-node" title="Permalink to this headline">¶</a></h3>
 <p>我们是否想过实现一个跟踪器节点，该节点会总是跟踪其他节点的位置？跟踪器是一个更好的osg::MatrixTransform派生子类。他可以使用智能指针成员来记录要跟踪的节点并在traverse()重写方法中获取3D世界中的位置。然后跟踪器将会使用setMatrix()方法来将其自身设置到一个相对位置，以实现跟踪操作。</p>
 <p>我们可以通过使用osg::computeLocalToWorld()函数计算绝对坐标帧中的顶点：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span> <span class="n">posInWorld</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">getBound</span><span class="p">().</span><span class="n">center</span><span class="p">()</span> <span class="o">*</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span> <span class="n">posInWorld</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">getBound</span><span class="p">().</span><span class="n">center</span><span class="p">()</span> <span class="o">*</span>
             <span class="n">osg</span><span class="o">::</span><span class="n">computeLocalToWorld</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">getParentalNodePaths</span><span class="p">()[</span><span class="mi">0</span><span class="p">]);</span>
 </pre></div>
 </div>
@@ -813,14 +817,14 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <p>要创建一个访问者子类，我们必须重新实现osg::NodeVisitor基类中所声明的一个或是多个apply()虚重载方法。这些方法是为大多数主要的OSG节点类型所设计的。访问者会在遍历过程中为他所访问的每一个节点自动调用相应的apply()方法。用户自定义的访问者类应只为所要求的节点类型重写apply()方法。</p>
 <p>在apply()方法的实现中，开发者需要在适当的时候调用osg::NodeVisitor的traverse()方法。他会指示访问者遍历到下一个节点，也许是一个子节点，或者如果当前节点没有子节点要访问，则为兄弟节点。不调用traverse()方法则意味着立即停止遍历，而场景图的其他部分会被忽略而不执行任何操作。</p>
 <p>apply()方法具有如下的统一格式：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">virtual</span> <span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="p">);</span>
 <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&amp;</span> <span class="p">);</span>
 <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&amp;</span> <span class="p">);</span>
 <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Transform</span><span class="o">&amp;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>要遍历指定节点的子场景图并调用这些方法，我们首先需要为访问对象选择一个遍历节点。以假定的ExampleVisitor类作为例子，在特定的节点上初始化并启动访问需要两个步骤：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">ExampleVisitor</span> <span class="n">visitor</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">ExampleVisitor</span> <span class="n">visitor</span><span class="p">;</span>
 <span class="n">visitor</span><span class="o">-&gt;</span><span class="n">setTraversalMode</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span><span class="o">::</span><span class="n">TRAVERSE_ALL_CHILDREN</span> <span class="p">);</span>
 <span class="n">node</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span> <span class="n">visitor</span> <span class="p">);</span>
 </pre></div>
@@ -831,19 +835,19 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <p>用户程序也许总是会在载入模型文件后在载入的场景图中查找感兴趣的节点。例如，如果根节点是osg::Transform或osg::Switch，我们也许会希望接管载入模型的变换或可见性。我们也许会对收集所有骨骼连接处的变换节点感兴趣，从而用来在稍后执行特征动画。</p>
 <p>在这种情况下，载入模型结构的分析非常重要。在这里我们将会实现一个信息输出访问器，该访问器会输出所访问节点的基本信息并将其排列在树结构中。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
-<span class="cp">#include &lt;iostream&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>声明InfoVisitor类，并定义必需要虚方法。我们仅处理叶子节点与普通的osg::Node对象。内联函数spaces()用来在节点信息之前输出空格，来表示其在树结构中的级别：</li>
+<li><p>声明InfoVisitor类，并定义必需要虚方法。我们仅处理叶子节点与普通的osg::Node对象。内联函数spaces()用来在节点信息之前输出空格，来表示其在树结构中的级别：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">InfoVisitor</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">InfoVisitor</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="n">InfoVisitor</span><span class="p">()</span> <span class="o">:</span> <span class="n">_level</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="p">{</span> <span class="n">setTraversalMode</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span><span class="o">::</span><span class="n">TRAVERSE_ALL_CHILDREN</span><span class="p">);</span> <span class="p">}</span>
 
@@ -853,15 +857,15 @@ osg::Vec3 resultVec = vec * mat;</pre>
     <span class="n">Virtual</span> <span class="kt">void</span> <span class="n">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="n">node</span> <span class="p">);</span>
     <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&amp;</span> <span class="n">geode</span> <span class="p">);</span>
 
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
     <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">_level</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>我们将会介绍两个方法，className()与libraryName()，这两个方法都会返回const char*值，例如，作为类名的&#8221;Node&#8221;以及作为库名的&#8221;osg&#8221;。META_Object与META_Node宏定义会在内部完成这些工作：</li>
+<li><p>我们将会介绍两个方法，className()与libraryName()，这两个方法都会返回const char*值，例如，作为类名的”Node”以及作为库名的”osg”。META_Object与META_Node宏定义会在内部完成这些工作：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="n">InfoVisitor</span><span class="o">::</span><span class="n">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="n">node</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">InfoVisitor</span><span class="o">::</span><span class="n">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="n">node</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">spaces</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">node</span><span class="p">.</span><span class="n">libraryName</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;::&quot;</span>
       <span class="o">&lt;&lt;</span> <span class="n">node</span><span class="p">.</span><span class="n">className</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
@@ -873,9 +877,9 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>以osg::Geode&amp;为参数的apply()重载方法的实现与前面的实现略为不同。他会遍历所有关联到osg::Geode节点的可绘制元素并输出其信息。在这里要小心traverse()的调用时，从而保证树中每个节点的级别都是正确的。</li>
+<li><p>以osg::Geode&amp;为参数的apply()重载方法的实现与前面的实现略为不同。他会遍历所有关联到osg::Geode节点的可绘制元素并输出其信息。在这里要小心traverse()的调用时，从而保证树中每个节点的级别都是正确的。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&amp;</span> <span class="n">geode</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&amp;</span> <span class="n">geode</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">spaces</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">geode</span><span class="p">.</span><span class="n">libraryName</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;::&quot;</span>
       <span class="o">&lt;&lt;</span> <span class="n">geode</span><span class="p">.</span><span class="n">className</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
@@ -894,9 +898,9 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>在主函数中，使用osgDB::readNodeFiles()由命令行参数读取文件：</li>
+<li><p>在主函数中，使用osgDB::readNodeFiles()由命令行参数读取文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ArgumentParser</span> <span class="n">arguments</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ArgumentParser</span> <span class="n">arguments</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFiles</span><span class="p">(</span> <span class="n">arguments</span> <span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">root</span> <span class="p">)</span>
 <span class="p">{</span>
@@ -907,28 +911,28 @@ osg::Vec3 resultVec = vec * mat;</pre>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>现在使用自定义的InfoVisitor来访问载入的模型。为了允许其所有子节点的遍历，我们会注意到在访问器的构造函数中调用了setTraversalMode()方法：</li>
+<li><p>现在使用自定义的InfoVisitor来访问载入的模型。为了允许其所有子节点的遍历，我们会注意到在访问器的构造函数中调用了setTraversalMode()方法：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">InfoVisitor</span> <span class="n">infoVisitor</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">InfoVisitor</span> <span class="n">infoVisitor</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span> <span class="n">infoVisitor</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>是否启动查看器，这取决于我们自己，因为我们的访问器已完成其任务：</li>
+<li><p>是否启动查看器，这取决于我们自己，因为我们的访问器已完成其任务：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>假定我们的可执行文件为MyProject.ext，在命令行输入：</li>
+<li><p>假定我们的可执行文件为MyProject.ext，在命令行输入：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp"># MyProject.exe cessnafire.osg</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp"># MyProject.exe cessnafire.osg</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>我们会在控制台看到下列信息：</li>
+<li><p>我们会在控制台看到下列信息：</p></li>
 </ol>
 <img alt="_images/osg_visitor.png" src="_images/osg_visitor.png" />
 </div>
@@ -943,14 +947,14 @@ osg::Vec3 resultVec = vec * mat;</pre>
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>本章探讨了如何通过使用OSG实现一个典型的场景图，显示了各种场景图节点类型的使用，特别关注了图树的组装以及如何添加状态对象，例如常用到的;osg::Transform，osg::Switch，osg::LOD以及osg::ProxyNode类。我们特别探讨了：</p>
 <ul class="simple">
-<li>如何实例化osg::Group与osg::Geode节点来组装一个基本的层次结构图并处理父节点与子节点。</li>
-<li>如何使用osg::Transform，基于对矩阵及其实现－osg::Matrix变量－的理解实现空间变换。</li>
-<li>如何使用osg::Switch节点来切换场景节点的渲染状态。</li>
-<li>如何通过使用osg::LOD类来场景节点确定渲染复杂性的细节。</li>
-<li>使用osg::ProxyNode与osg::PagedLOD类来平衡运行时场景载入。</li>
-<li>如何自定义节点并强化其特性。</li>
-<li>访问者设计模式的基本概念及其在OSG中的实现</li>
-<li>使用osg::NodeVisitor派生类遍历节点及其子场景图</li>
+<li><p>如何实例化osg::Group与osg::Geode节点来组装一个基本的层次结构图并处理父节点与子节点。</p></li>
+<li><p>如何使用osg::Transform，基于对矩阵及其实现－osg::Matrix变量－的理解实现空间变换。</p></li>
+<li><p>如何使用osg::Switch节点来切换场景节点的渲染状态。</p></li>
+<li><p>如何通过使用osg::LOD类来场景节点确定渲染复杂性的细节。</p></li>
+<li><p>使用osg::ProxyNode与osg::PagedLOD类来平衡运行时场景载入。</p></li>
+<li><p>如何自定义节点并强化其特性。</p></li>
+<li><p>访问者设计模式的基本概念及其在OSG中的实现</p></li>
+<li><p>使用osg::NodeVisitor派生类遍历节点及其子场景图</p></li>
 </ul>
 </div>
 </div>
@@ -1012,7 +1016,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'',
+            URL_ROOT:'./',
             VERSION:'0.01',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -1022,6 +1026,7 @@ osg::Vec3 resultVec = vec * mat;</pre>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
 
   
 

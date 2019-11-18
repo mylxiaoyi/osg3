@@ -116,7 +116,7 @@ OSG有一个内部的osg::GLBeginEndAdapter类可以用来执行基本的图形�
 
 要获得并使用一个已初始化的osg::GLBeginEndAdapter对象，我们必须定义一个由osg::Drawble基类派生的类，并重新实现其drawImplementation()方法，并从头开始编程，就如同我们编写典型的OpenGL 1.0绘制调用一样：
 
-::
+.. code-block::cpp
 
     void drawImplementation( osg::RenderInfo& renderInfo ) const
     { 
@@ -138,7 +138,7 @@ osg::Array类不能被实例化，但是他声明了与OpenGL调用交换以及�
 
 下面的代码将会向一个已存在的osg::Vec3Array对象命名顶点添加一个三元素的向量：
 
-::
+.. code-block:: cpp
 
     vertices->push_back( osg::Vec3(1.0f, 0.0f, 0.0f) );
 
@@ -267,7 +267,7 @@ What just happened?
 
 我们假定已经熟悉下面的OpenGL代码片段：
 
-::
+.. code-block::cpp
 
     static const GLfloat vertices[][3] = { … };
     glEnableClientState( GL_VERTEX_ARRAY );
@@ -517,8 +517,7 @@ osg::Drawable类接受四种算符类型：
 
 #. osg::Drawable::AttributeFunctor将顶点属性读取为数组指针。他具有可以应用于不同数据类型顶点属性的大量虚方法。要使用该算符，我们应继承该类并且重新实现一个或是多个虚方法，并且在其中执行我们需要的操作：
 
-::
-
+.. code-block::cpp
     virtual void apply( osg::Drawable::AttributeType type,
                         unsigned int size, osg::Vec3* ptr )
     {

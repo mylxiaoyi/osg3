@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -29,6 +28,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
         <link rel="next" title="Chapter 12: Improving Rendering Efficiency" href="ch12.html"/>
         <link rel="prev" title="Chapter 10: Saving and Loading Files" href="ch10.html"/>
@@ -176,7 +178,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ch10.html#summary">Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 11: Developing Visual Components</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 11: Developing Visual Components</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#creating-billboards-in-a-scene">Creating billboards in a scene</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-texts">Creating texts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-3d-texts">Creating 3D texts</a></li>
@@ -224,7 +226,7 @@
     <li>Chapter 11: Developing Visual Components</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ch11.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/ch11.rst.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -238,11 +240,11 @@
 <p>在前面的10章中，我们已经介绍了OSG的历史与安装，以及几何体，场景图节点，渲染状态，相机，动画，交互以及文件I/O机制的概念。然而完整的3D渲染API还有许多方面，包括文本显示，粒子，阴影，特殊效果，体积渲染以及大量被统称为NodeKits的模型。在本书或是任意其他的书中，解释所有这些内容都是不可能的，但是向我们民展示如何利用这些典型的可视化效果并在本章结束时通过提供一个实际的NodeKits列表来使得球旋转则是值得的。</p>
 <p>在本章中，我们将会了解：</p>
 <ul class="simple">
-<li>如何将几何体创建为场景中的宣传板</li>
-<li>如何在场景中显示2D与3D文本</li>
-<li>如何设计一个粒子系统并使其动起来</li>
-<li>如何在场景对象上实现阴影</li>
-<li>特殊效果的理论与实现</li>
+<li><p>如何将几何体创建为场景中的宣传板</p></li>
+<li><p>如何在场景中显示2D与3D文本</p></li>
+<li><p>如何设计一个粒子系统并使其动起来</p></li>
+<li><p>如何在场景对象上实现阴影</p></li>
+<li><p>特殊效果的理论与实现</p></li>
 </ul>
 <div class="section" id="creating-billboards-in-a-scene">
 <h2>Creating billboards in a scene<a class="headerlink" href="#creating-billboards-in-a-scene" title="Permalink to this headline">¶</a></h2>
@@ -250,7 +252,7 @@
 <p>osg::BillBoard类被用来表示3D场景中的宣化板列表。他由osg::Geode类派生，并且可以使得其所有子节点（osg::Drawable对象）朝向查看器的视口。他有一个重要方法，setMode()，可以用来确定旋转行为，其必须设置下列枚举中的一个作为参数：</p>
 <img alt="_images/osg_billboard.png" src="_images/osg_billboard.png" />
 <p>osg::BillBoard节点中的所有可绘制元素应具有一个轴点位置，这是通过重载的addDrawable()方法指定的，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">billboard</span><span class="o">-&gt;</span><span class="n">addDrawable</span><span class="p">(</span> <span class="n">child</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">)</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">billboard</span><span class="o">-&gt;</span><span class="n">addDrawable</span><span class="p">(</span> <span class="n">child</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>所有的可绘制元素同时需要一个统一的初始方向，该方向用来计算旋转值。初始方向是通过setNormal()方法设置的。并且每一个新添加的可绘制元素必须确保其前面朝向与其法线值位于相同的方向；否则，宣传板的结果也许会不正确。</p>
@@ -259,18 +261,18 @@
 <p>在OSG中实现电子公告板的前提条件是首先创建一个或是多个四边形几何体。然后这些四边形由osg::BillBoard类进行管理。这会强制所有的子可绘制元素自动围绕指定的轴放置，或是面向查看器。这可以通过指定一个统一的法线值并依据法线与当前旋转轴或是查看向量每一个电子公告板来实现。</p>
 <p>我们将会创建两行OSG标记，排列为V字形，来演示OSG中电子公告板的使用。无论查看者在哪里以及如何操作场景相机，标记的前面总是会朝向查看者。该特性可以用来表示我们程序中的纹理树与粒子。</p>
 <ol class="arabic simple">
-<li>包括必需的头文件：</li>
+<li><p>包括必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Billboard&gt;</span>
-<span class="cp">#include &lt;osg/Texture2D&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Billboard&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/Texture2D&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>直接由osg::createTexturedQuadGeometry()函数创建四边形几何体。每一个生成的四边形具有相同的尺寸与源点，并使用相同的图片文件。注意，osg256.png文件可以在我们的OSG安装路径下的data目录中找到，但是他需要osgdb_png插件来读取图片文件。如果我们在配置与编译该插件遇到问题时请参考第10章。</li>
+<li><p>直接由osg::createTexturedQuadGeometry()函数创建四边形几何体。每一个生成的四边形具有相同的尺寸与源点，并使用相同的图片文件。注意，osg256.png文件可以在我们的OSG安装路径下的data目录中找到，但是他需要osgdb_png插件来读取图片文件。如果我们在配置与编译该插件遇到问题时请参考第10章。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="o">*</span> <span class="n">createQuad</span><span class="p">()</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="o">*</span> <span class="n">createQuad</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span>
@@ -289,16 +291,16 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>在主要部分，我们首先创建一个电子公告板节点并将模型设置到POINT_ROT_EYE。也就是，可绘制元素将会旋转来面向查看者并使得其Z轴在渲染窗口保持向上。osg::Billboard类的默认法线设置是负Y轴，所以将其旋转到查看向量将会在XOZ平面的最佳位置处显示四边形：</li>
+<li><p>在主要部分，我们首先创建一个电子公告板节点并将模型设置到POINT_ROT_EYE。也就是，可绘制元素将会旋转来面向查看者并使得其Z轴在渲染窗口保持向上。osg::Billboard类的默认法线设置是负Y轴，所以将其旋转到查看向量将会在XOZ平面的最佳位置处显示四边形：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Billboard</span><span class="o">&gt;</span> <span class="n">geode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Billboard</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Billboard</span><span class="o">&gt;</span> <span class="n">geode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Billboard</span><span class="p">;</span>
 <span class="n">geode</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Billboard</span><span class="o">::</span><span class="n">POINT_ROT_EYE</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>现在让我们创建标记四边形并将其排列为V字形：</li>
+<li><p>现在让我们创建标记四边形并将其排列为V字形：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="o">*</span> <span class="n">quad</span> <span class="o">=</span> <span class="n">createQuad</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Geometry</span><span class="o">*</span> <span class="n">quad</span> <span class="o">=</span> <span class="n">createQuad</span><span class="p">();</span>
 <span class="k">for</span> <span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">float</span> <span class="n">id</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">i</span><span class="p">;</span>
@@ -308,26 +310,26 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>所有四边形纹理的背景将会被自动清除，因为alpha测试在osgdb_png插件内部是自动执行的。这意味着我们需要设置所有可绘制元素的正确渲染顺序来确保整个过程被正确处理：</li>
+<li><p>所有四边形纹理的背景将会被自动清除，因为alpha测试在osgdb_png插件内部是自动执行的。这意味着我们需要设置所有可绘制元素的正确渲染顺序来确保整个过程被正确处理：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">geode</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">geode</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
 <span class="n">ss</span><span class="o">-&gt;</span><span class="n">setRenderingHint</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">::</span><span class="n">TRANSPARENT_BIN</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>现在是启动查看器的时候了，因为创建并渲染电子公告板再无需其他的步骤了：</li>
+<li><p>现在是启动查看器的时候了，因为创建并渲染电子公告板再无需其他的步骤了：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">geode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>试着在场景图中浏览：</li>
+<li><p>试着在场景图中浏览：</p></li>
 </ol>
 <img alt="_images/osg_banner.png" src="_images/osg_banner.png" />
 <ol class="arabic simple" start="8">
-<li>我们将会发现电子公告板的所有子节点都会进行旋转来面向查看者，但是图片的Y方面不会发生变化（始终指向窗口的Y坐标）。将模式POINT_ROT_EYE替换为POINT_ROT_WORLD并看一下是否有什么区别。</li>
+<li><p>我们将会发现电子公告板的所有子节点都会进行旋转来面向查看者，但是图片的Y方面不会发生变化（始终指向窗口的Y坐标）。将模式POINT_ROT_EYE替换为POINT_ROT_WORLD并看一下是否有什么区别。</p></li>
 </ol>
 <img alt="_images/osg_banner2.png" src="_images/osg_banner2.png" />
 </div>
@@ -350,26 +352,26 @@
 <h3>Time for action - writing descriptions for the Cessna<a class="headerlink" href="#time-for-action-writing-descriptions-for-the-cessna" title="Permalink to this headline">¶</a></h3>
 <p>这次我们将在3D空间中显示Cessna并在渲染场景的前面提供描述性文本。在这里可以使用HUD相机，该相机会在主相机之后渲染，并且为直接将文本更新到帧缓冲区而仅清除深度缓冲区。然后HUD相机将会以一种总是可见的方式渲染其子节点。</p>
 <ol class="arabic simple">
-<li>包含必须的头文件：</li>
+<li><p>包含必须的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Camera&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgText/Font&gt;</span>
-<span class="cp">#include &lt;osgText/Text&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Camera&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgText/Font&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgText/Text&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>osgText::readFontFile()函数被用来读取合适的字体文件，例如，非变形的TrueType字体。OSG数据路径（通过OSG_FILE_PATH指定）与windows系统路径将被搜索以确定指定的文件是否存在：</li>
+<li><p>osgText::readFontFile()函数被用来读取合适的字体文件，例如，非变形的TrueType字体。OSG数据路径（通过OSG_FILE_PATH指定）与windows系统路径将被搜索以确定指定的文件是否存在：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgText</span><span class="o">::</span><span class="n">Font</span><span class="o">&gt;</span> <span class="n">g_font</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgText</span><span class="o">::</span><span class="n">Font</span><span class="o">&gt;</span> <span class="n">g_font</span> <span class="o">=</span>
     <span class="n">osgText</span><span class="o">::</span><span class="n">readFontFile</span><span class="p">(</span><span class="s">&quot;fonts/arial.ttf&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>创建标准的HUD相机并且为了在2维空间绘制3D文本的目的设置2D拼接投影矩阵。相机不应接收任何用户事件，也不应受到父节点变换的影响。这是通过setAllowEventFocus()与setReferenceFrame()方法来保证的：</li>
+<li><p>创建标准的HUD相机并且为了在2维空间绘制3D文本的目的设置2D拼接投影矩阵。相机不应接收任何用户事件，也不应受到父节点变换的影响。这是通过setAllowEventFocus()与setReferenceFrame()方法来保证的：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">*</span> <span class="n">createHUDCamera</span><span class="p">(</span> <span class="kt">double</span> <span class="n">left</span><span class="p">,</span> <span class="kt">double</span> <span class="n">right</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">*</span> <span class="n">createHUDCamera</span><span class="p">(</span> <span class="kt">double</span> <span class="n">left</span><span class="p">,</span> <span class="kt">double</span> <span class="n">right</span><span class="p">,</span>
                               <span class="kt">double</span> <span class="n">bottom</span><span class="p">,</span> <span class="kt">double</span> <span class="n">top</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">&gt;</span> <span class="n">camera</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="p">;</span>
@@ -384,9 +386,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>文本也是由一个单独的全局函数创建的。他定义了一个描述每一个字符轮廓，以及世界空间中的大小与位置参数和文本内容的字体对象。在HUD文本实现中，文本应总是与XOY面对齐：</li>
+<li><p>文本也是由一个单独的全局函数创建的。他定义了一个描述每一个字符轮廓，以及世界空间中的大小与位置参数和文本内容的字体对象。在HUD文本实现中，文本应总是与XOY面对齐：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgText</span><span class="o">::</span><span class="n">Text</span><span class="o">*</span> <span class="n">createText</span><span class="p">(</span> <span class="k">const</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="o">&amp;</span> <span class="n">pos</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgText</span><span class="o">::</span><span class="n">Text</span><span class="o">*</span> <span class="n">createText</span><span class="p">(</span> <span class="k">const</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="o">&amp;</span> <span class="n">pos</span><span class="p">,</span>
                            <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">content</span><span class="p">,</span>
                            <span class="kt">float</span> <span class="n">size</span> <span class="p">)</span>
 <span class="p">{</span>
@@ -401,9 +403,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>在主体部分，我们创建一个新osg::Geode节点并向该节点添加多个文本对象。这些文本介绍了Cessna的主要特性。当然，我们也可以使用额外的osgText::Text可绘制元素添加我们自己的关于这种类型单翼机的介绍：</li>
+<li><p>在主体部分，我们创建一个新osg::Geode节点并向该节点添加多个文本对象。这些文本介绍了Cessna的主要特性。当然，我们也可以使用额外的osgText::Text可绘制元素添加我们自己的关于这种类型单翼机的介绍：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">textGeode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">textGeode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
 <span class="n">textGeode</span><span class="o">-&gt;</span><span class="n">addDrawable</span><span class="p">(</span> <span class="n">createText</span><span class="p">(</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">150.0f</span><span class="p">,</span> <span class="mf">500.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">),</span>
     <span class="s">&quot;The Cessna monoplane&quot;</span><span class="p">,</span>
@@ -417,18 +419,18 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>这个节点包含所有应添加到HUD的文本。为了确保文本不会为OpenGL法线与光（毕竟他们也是纹理几何体）影响，我们必须关闭相机节点的光：</li>
+<li><p>这个节点包含所有应添加到HUD的文本。为了确保文本不会为OpenGL法线与光（毕竟他们也是纹理几何体）影响，我们必须关闭相机节点的光：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">*</span> <span class="n">camera</span> <span class="o">=</span> <span class="n">createHUDCamera</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">768</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">*</span> <span class="n">camera</span> <span class="o">=</span> <span class="n">createHUDCamera</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">768</span><span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">textGeode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMode</span><span class="p">(</span>
     <span class="n">GL_LIGHTING</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateAttribute</span><span class="o">::</span><span class="n">OFF</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>最后一步是将Cessna模型与相机添加到场景图，并像通常一样启动查看器：</li>
+<li><p>最后一步是将Cessna模型与相机添加到场景图，并像通常一样启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">camera</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
@@ -437,7 +439,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>在渲染窗口中，我们会看到在Cessna模型上有两行文本。无论我们如何变换，旋转与缩放视图矩阵，HUD文本绝不会被覆盖。所以，用户总是可以直接读取最生要的信息，而无需脱离其通常的视图：</li>
+<li><p>在渲染窗口中，我们会看到在Cessna模型上有两行文本。无论我们如何变换，旋转与缩放视图矩阵，HUD文本绝不会被覆盖。所以，用户总是可以直接读取最生要的信息，而无需脱离其通常的视图：</p></li>
 </ol>
 <img alt="_images/osg_text.png" src="_images/osg_text.png" />
 </div>
@@ -449,20 +451,20 @@
 <div class="section" id="pop-quiz-text-positions-and-the-projection-matrix">
 <h3>Pop quiz - text positions and the projection matrix<a class="headerlink" href="#pop-quiz-text-positions-and-the-projection-matrix" title="Permalink to this headline">¶</a></h3>
 <p>我们使用下面的代码来定义我们的文本对象：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">text</span><span class="o">-&gt;</span><span class="n">setAxisAlignment</span><span class="p">(</span> <span class="n">osgText</span><span class="o">::</span><span class="n">TextBase</span><span class="o">::</span><span class="n">XY_PLANE</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">text</span><span class="o">-&gt;</span><span class="n">setAxisAlignment</span><span class="p">(</span> <span class="n">osgText</span><span class="o">::</span><span class="n">TextBase</span><span class="o">::</span><span class="n">XY_PLANE</span> <span class="p">);</span>
 <span class="n">text</span><span class="o">-&gt;</span><span class="n">setPosition</span><span class="p">(</span> <span class="n">pos</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>这里有两个需要我们思考的问题：</p>
 <ol class="arabic simple">
-<li>首先，为什么平面字体必须放置在XOY平面上？如果我们不这样做会出现什么情况？我们是否应该使用HUD相机？</li>
-<li>其次，这些文本位置的参考帧是什么？也就是，当设置文本对象的位置时，我们如何在渲染窗口中对其定位？他是否与拼接投影矩阵有关？我们能否将示例中的两行移动右上角？</li>
+<li><p>首先，为什么平面字体必须放置在XOY平面上？如果我们不这样做会出现什么情况？我们是否应该使用HUD相机？</p></li>
+<li><p>其次，这些文本位置的参考帧是什么？也就是，当设置文本对象的位置时，我们如何在渲染窗口中对其定位？他是否与拼接投影矩阵有关？我们能否将示例中的两行移动右上角？</p></li>
 </ol>
 </div>
 <div class="section" id="have-a-go-hero-using-wide-characters-to-support-more-languages">
 <h3>Have a go hero - using wide characters to support more languages<a class="headerlink" href="#have-a-go-hero-using-wide-characters-to-support-more-languages" title="Permalink to this headline">¶</a></h3>
 <p>osgText::Text的setText()方法直接接受std::string变量。同时，他也可以接受宽字符作为输入参数。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">wchar_t</span><span class="o">*</span> <span class="n">wstr</span> <span class="o">=</span> <span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">wchar_t</span><span class="o">*</span> <span class="n">wstr</span> <span class="o">=</span> <span class="p">;</span>
 <span class="n">text</span><span class="o">-&gt;</span><span class="n">setText</span><span class="p">(</span> <span class="n">wstr</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -476,26 +478,26 @@
 <h3>Time for action - creating texts in the world space<a class="headerlink" href="#time-for-action-creating-texts-in-the-world-space" title="Permalink to this headline">¶</a></h3>
 <p>在该示例中我们将会创建一个简单的3D文本对象。类似于2D文本类osgText::Text，osgText::Text3D类也继承了一个方法列表来设置基本的文本参数，包括位置，大小，对齐方式，字体对象以及内容。3D文本最通常用作游戏与程序的特殊效果。</p>
 <ol class="arabic simple">
-<li>包含必须的头文件：</li>
+<li><p>包含必须的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgText/Font3D&gt;</span>
-<span class="cp">#include &lt;osgText/Text3D&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgText/Font3D&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgText/Text3D&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>使用osgText::readFont3DFile()函数读取相应的字体文件，该函数类似于osgText::readFontFile()。使用osgdb_freetype插件，TrueType字体可以被分析为细节良好的3D字符轮廓：</li>
+<li><p>使用osgText::readFont3DFile()函数读取相应的字体文件，该函数类似于osgText::readFontFile()。使用osgdb_freetype插件，TrueType字体可以被分析为细节良好的3D字符轮廓：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgText</span><span class="o">::</span><span class="n">Font3D</span><span class="o">&gt;</span> <span class="n">g_font3D</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgText</span><span class="o">::</span><span class="n">Font3D</span><span class="o">&gt;</span> <span class="n">g_font3D</span> <span class="o">=</span>
     <span class="n">osgText</span><span class="o">::</span><span class="n">readFont3DFile</span><span class="p">(</span><span class="s">&quot;fonts/arial.ttf&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>所以我们将会模拟上个示例中的createText()函数。唯一的区别在于我们需要为文本字符设置一个额外的深度参数使其站立在3D世界中。这里的setAxisAlignment()方法表明文本对象位于XOZ平面上，并使其前面朝向Y轴负方向：</li>
+<li><p>所以我们将会模拟上个示例中的createText()函数。唯一的区别在于我们需要为文本字符设置一个额外的深度参数使其站立在3D世界中。这里的setAxisAlignment()方法表明文本对象位于XOZ平面上，并使其前面朝向Y轴负方向：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgText</span><span class="o">::</span><span class="n">Text3D</span><span class="o">*</span> <span class="n">createText3D</span><span class="p">(</span> <span class="k">const</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="o">&amp;</span> <span class="n">pos</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgText</span><span class="o">::</span><span class="n">Text3D</span><span class="o">*</span> <span class="n">createText3D</span><span class="p">(</span> <span class="k">const</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="o">&amp;</span> <span class="n">pos</span><span class="p">,</span>
                                <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">content</span><span class="p">,</span>
                                <span class="kt">float</span> <span class="n">size</span><span class="p">,</span> <span class="kt">float</span> <span class="n">depth</span> <span class="p">)</span>
 <span class="p">{</span>
@@ -511,26 +513,26 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>使用简短的文本创建一个3D文本对象。注意，由于3D文本实际上是由顶点与几何体基元构成的，对其的过度使用会导致较高的资源消耗：</li>
+<li><p>使用简短的文本创建一个3D文本对象。注意，由于3D文本实际上是由顶点与几何体基元构成的，对其的过度使用会导致较高的资源消耗：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">textGeode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">textGeode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
 <span class="n">textGeode</span><span class="o">-&gt;</span><span class="n">addDrawable</span><span class="p">(</span>
     <span class="n">createText3D</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(),</span> <span class="s">&quot;The Cessna&quot;</span><span class="p">,</span> <span class="mf">20.0f</span><span class="p">,</span> <span class="mf">10.0f</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>这次我们添加一个osg::MatrixTransform作为textGeode的父节点。当渲染所有的文本可渲染元素时，他会向模型视图矩阵应用额外的变换矩阵，从而会改变他们在世界坐标系中的显示位置与高度：</li>
+<li><p>这次我们添加一个osg::MatrixTransform作为textGeode的父节点。当渲染所有的文本可渲染元素时，他会向模型视图矩阵应用额外的变换矩阵，从而会改变他们在世界坐标系中的显示位置与高度：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">textNode</span><span class="o">=</span> <span class="k">new</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">textNode</span><span class="o">=</span> <span class="k">new</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
 <span class="n">textNode</span><span class="o">-&gt;</span><span class="n">setMatrix</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">10.0f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">textNode</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">textGeode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>再次将我们的Cessna添加到场景图并启动查看器：</li>
+<li><p>再次将我们的Cessna添加到场景图并启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">textNode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
@@ -539,7 +541,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>我们将会看到模型上面大大的字母，但事实上，3D文本对象的初始位置应为(0,0,0)，这也是Cessna的原点。这里osg::MatrixTransform节点通过将textNode变换到新位置(0,0,10)来避免模型与文本彼此重叠：</li>
+<li><p>我们将会看到模型上面大大的字母，但事实上，3D文本对象的初始位置应为(0,0,0)，这也是Cessna的原点。这里osg::MatrixTransform节点通过将textNode变换到新位置(0,0,10)来避免模型与文本彼此重叠：</p></li>
 </ol>
 <img alt="_images/osg_3dtext.png" src="_images/osg_3dtext.png" />
 </div>
@@ -547,7 +549,7 @@
 <h3>What just happened?<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>2D与3D文本都可以通过其父节点进行变换。当我们必须构建组合或是使得模型位于文本标签之后时这会非常有用。类似于OSG的变换节点，osgText::TextBase的setPosition()方法只会设置文本对象的父节点的相对参考帧下的位置。这同样适用于setRotation()方法，该方法会确定文本的旋转，而setAxisAlignment()方法会将文本对齐到指定的平面。</p>
 <p>唯一的例外是SCREEN对齐模式：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">text</span><span class="o">-&gt;</span><span class="n">setAxisAlignment</span><span class="p">(</span> <span class="n">osgText</span><span class="o">::</span><span class="n">TextBase</span><span class="o">::</span><span class="n">SCREEN</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">text</span><span class="o">-&gt;</span><span class="n">setAxisAlignment</span><span class="p">(</span> <span class="n">osgText</span><span class="o">::</span><span class="n">TextBase</span><span class="o">::</span><span class="n">SCREEN</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>这会模信场景对象的公告板技术，并且使得文本（osg::Text或osg::Text3D）总是面向查看者。在3D地理信息系统（3DGIS中），将路标放置在地球上或是城市上作为公告板是非常常见的技术，因而可以通过SCREEN模式实现。在这种情况下，旋转与父节点变换不再可用，因而不会被使用，因为他们会引起误解与潜在的问题。</p>
@@ -560,13 +562,13 @@
 <p>粒子系统类，osgParticle::Particle，管理所有粒子的创建，更新，渲染与销毁。他由osg::Drawable派生，所以他可以接受不同的渲染属性与模式，就如同普通的可绘制元素一样。他应被添加到osg::Geode节点，如同上一个类一样。</p>
 <p>发射器抽象类（osgParticle::Emitter）定义了每一帧新生成粒子的数量与基本操作。其派生类，osgParticle::ModularEmitter，其作用类似于一个普通的发射器，提供了对所创建粒子的控制机制。他总是存储三种类型的子控制器：</p>
 <ul class="simple">
-<li>位置器（osgParticle::Placer）设置每个粒子的初始位置</li>
-<li>射击器（osgParticle::Shooter）设置粒子的初始速度</li>
-<li>计数器（osgParticle::Counter）确定要创建多少粒子</li>
+<li><p>位置器（osgParticle::Placer）设置每个粒子的初始位置</p></li>
+<li><p>射击器（osgParticle::Shooter）设置粒子的初始速度</p></li>
+<li><p>计数器（osgParticle::Counter）确定要创建多少粒子</p></li>
 </ul>
 <p>程序的抽象类（osgParticle::Program）操作其生命周期中每一个粒子的位置，速度以及其他属性。其派生类，osgParticle::ModularProgram，是由一个在已有粒子上进行操作的osgParticle::Operator子类的列表构成的。</p>
 <p>发射器与程序类都是间接派生自osg::Node，这意味着他们可以被看作是场景图中的节点。在更新与裁剪遍历中，他们会被自动遍历，而子控制器与操作符将会被执行。然后，粒子系统将会使用其结果来重新计算并绘制其所管理的粒子。重新计算的过程可以通过osgParticle::ParticleSystemUpdater来实现，后者实际上也是一个节点。更新器应放置在场景图中的发射器与程序之后，从而确保更新以正确的顺序被执行。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">emitter</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">emitter</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">program</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">updater</span> <span class="p">);</span>  <span class="c1">// Added last</span>
 </pre></div>
@@ -577,28 +579,28 @@
 <h3>Time for action - building a fountain in the scene<a class="headerlink" href="#time-for-action-building-a-fountain-in-the-scene" title="Permalink to this headline">¶</a></h3>
 <p>我将会演示如何实现一个粒子喷泉。喷泉的模拟可以描述如下：首先，水以一定的初速度由某一点射出；然后由于重力的原因速度减少，直到到达最高点；之后，水掉落到地面上或是池子里。要实现该效果，osgParticle::ParticleSystem节点以及发射器与程序处理器应被创建并添加到场景图。</p>
 <ol class="arabic simple">
-<li>包含必须的头文件：</li>
+<li><p>包含必须的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osg/Point&gt;</span>
-<span class="cp">#include &lt;osg/PointSprite&gt;</span>
-<span class="cp">#include &lt;osg/Texture2D&gt;</span>
-<span class="cp">#include &lt;osg/BlendFunc&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgGA/StateSetManipulator&gt;</span>
-<span class="cp">#include &lt;osgParticle/ParticleSystem&gt;</span>
-<span class="cp">#include &lt;osgParticle/ParticleSystemUpdater&gt;</span>
-<span class="cp">#include &lt;osgParticle/ModularEmitter&gt;</span>
-<span class="cp">#include &lt;osgParticle/ModularProgram&gt;</span>
-<span class="cp">#include &lt;osgParticle/AccelOperator&gt;</span>
-<span class="cp">#include &lt;osgViewer/ViewerEventHandlers&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/Point&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/PointSprite&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/Texture2D&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/BlendFunc&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgGA/StateSetManipulator&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgParticle/ParticleSystem&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgParticle/ParticleSystemUpdater&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgParticle/ModularEmitter&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgParticle/ModularProgram&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgParticle/AccelOperator&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/ViewerEventHandlers&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>创建粒子系统的整个过程可以在一个单独的用户函数中实现：</li>
+<li><p>创建粒子系统的整个过程可以在一个单独的用户函数中实现：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystem</span><span class="o">*</span> <span class="n">createParticleSystem</span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystem</span><span class="o">*</span> <span class="n">createParticleSystem</span><span class="p">(</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">*</span> <span class="n">parent</span> <span class="p">)</span>
 <span class="p">{</span>
 
@@ -606,27 +608,27 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>现在我们位于函数内部。每一个粒子系统都有一个确定所有新生成粒子的行为的模板粒子。这里，我们将系统中所有粒子的形状设置为POINT。借助于OpenGL的点精灵（point sprite）扩展，这些点可以被渲染为纹理公告板，这在大多数情况下就足够了：</li>
+<li><p>现在我们位于函数内部。每一个粒子系统都有一个确定所有新生成粒子的行为的模板粒子。这里，我们将系统中所有粒子的形状设置为POINT。借助于OpenGL的点精灵（point sprite）扩展，这些点可以被渲染为纹理公告板，这在大多数情况下就足够了：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystem</span><span class="o">&gt;</span> <span class="n">ps</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystem</span><span class="o">&gt;</span> <span class="n">ps</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystem</span><span class="p">;</span>
 <span class="n">ps</span><span class="o">-&gt;</span><span class="n">getDefaultParticleTemplate</span><span class="p">().</span><span class="n">setShape</span><span class="p">(</span>
     <span class="n">osgParticle</span><span class="o">::</span><span class="n">Particle</span><span class="o">::</span><span class="n">POINT</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>设置粒子系统的渲染属性与模式。这会自动影响到所有已渲染的粒子。这里，我们将一个纹理图片关联到粒子，并且定义一个混合函数以使得图片背景变得透明：</li>
+<li><p>设置粒子系统的渲染属性与模式。这会自动影响到所有已渲染的粒子。这里，我们将一个纹理图片关联到粒子，并且定义一个混合函数以使得图片背景变得透明：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="o">&gt;</span> <span class="n">blendFunc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="o">&gt;</span> <span class="n">blendFunc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">BlendFunc</span><span class="p">;</span>
 <span class="n">blendFunc</span><span class="o">-&gt;</span><span class="n">setFunction</span><span class="p">(</span> <span class="n">GL_SRC_ALPHA</span><span class="p">,</span> <span class="n">GL_ONE_MINUS_SRC_ALPHA</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
 <span class="n">texture</span><span class="o">-&gt;</span><span class="n">setImage</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readImageFile</span><span class="p">(</span><span class="s">&quot;Images/smoke.rgb&quot;</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>另两个重要属性为osg::Point与osg::PointSprite。前者将会设置点的大小（光栅化点的直径），而后者将会打开点精灵，从而会高效的将四点四边形替换为单一顶点，而无需指定纹理坐标以及旋转前面朝向查看者。另外，我们最好关闭粒子的光线，并且我们设置一个合适的渲染顺序以使其在整个场景图中被正确绘制：</li>
+<li><p>另两个重要属性为osg::Point与osg::PointSprite。前者将会设置点的大小（光栅化点的直径），而后者将会打开点精灵，从而会高效的将四点四边形替换为单一顶点，而无需指定纹理坐标以及旋转前面朝向查看者。另外，我们最好关闭粒子的光线，并且我们设置一个合适的渲染顺序以使其在整个场景图中被正确绘制：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">ps</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">ps</span><span class="o">-&gt;</span><span class="n">getOrCreateStateSet</span><span class="p">();</span>
 <span class="n">ss</span><span class="o">-&gt;</span><span class="n">setAttributeAndModes</span><span class="p">(</span> <span class="n">blendFunc</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">ss</span><span class="o">-&gt;</span><span class="n">setTextureAttributeAndModes</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">ss</span><span class="o">-&gt;</span><span class="n">setAttribute</span><span class="p">(</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Point</span><span class="p">(</span><span class="mf">20.0f</span><span class="p">)</span> <span class="p">);</span>
@@ -636,43 +638,43 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>osgParticle::RandomRateCounter类生成每一帧粒子的随机个数。他是由osgParticle::Counter类派生并且有一个setRateRange()方法可以用来指定元素数的最小值与最大值：</li>
+<li><p>osgParticle::RandomRateCounter类生成每一帧粒子的随机个数。他是由osgParticle::Counter类派生并且有一个setRateRange()方法可以用来指定元素数的最小值与最大值：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">RandomRateCounter</span><span class="o">&gt;</span> <span class="n">rrc</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">RandomRateCounter</span><span class="o">&gt;</span> <span class="n">rrc</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgParticle</span><span class="o">::</span><span class="n">RandomRateCounter</span><span class="p">;</span>
 <span class="n">rrc</span><span class="o">-&gt;</span><span class="n">setRateRange</span><span class="p">(</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">800</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>向标准发射器添加随机速率计数器。同时我们需要将粒子系统关联到该发射器作为操作目标。默认情况下，模块发射器已经包含有(0,0,0)位置点形状位置器，以及为每个粒子选择方向与初始随机速度的光线发射器，所以我们无需指定新值：</li>
+<li><p>向标准发射器添加随机速率计数器。同时我们需要将粒子系统关联到该发射器作为操作目标。默认情况下，模块发射器已经包含有(0,0,0)位置点形状位置器，以及为每个粒子选择方向与初始随机速度的光线发射器，所以我们无需指定新值：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ModularEmitter</span><span class="o">&gt;</span> <span class="n">emitter</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ModularEmitter</span><span class="o">&gt;</span> <span class="n">emitter</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgParticle</span><span class="o">::</span><span class="n">ModularEmitter</span><span class="p">;</span>
 <span class="n">emitter</span><span class="o">-&gt;</span><span class="n">setParticleSystem</span><span class="p">(</span> <span class="n">ps</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">emitter</span><span class="o">-&gt;</span><span class="n">setCounter</span><span class="p">(</span> <span class="n">rrc</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>osgParticle::AccelOperator类将固定加速随时应用到所有粒子。为了模拟重力，我们可以使用setAcceleration()来指定重力加速向量，或是直接调用setToGravity()方法：</li>
+<li><p>osgParticle::AccelOperator类将固定加速随时应用到所有粒子。为了模拟重力，我们可以使用setAcceleration()来指定重力加速向量，或是直接调用setToGravity()方法：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">AccelOperator</span><span class="o">&gt;</span> <span class="n">accel</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">AccelOperator</span><span class="o">&gt;</span> <span class="n">accel</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgParticle</span><span class="o">::</span><span class="n">AccelOperator</span><span class="p">;</span>
 <span class="n">accel</span><span class="o">-&gt;</span><span class="n">setToGravity</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>将唯一的操作符添加到标准程序代码并同时关联粒子系统：</li>
+<li><p>将唯一的操作符添加到标准程序代码并同时关联粒子系统：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ModularProgram</span><span class="o">&gt;</span> <span class="n">program</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ModularProgram</span><span class="o">&gt;</span> <span class="n">program</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgParticle</span><span class="o">::</span><span class="n">ModularProgram</span><span class="p">;</span>
 <span class="n">program</span><span class="o">-&gt;</span><span class="n">setParticleSystem</span><span class="p">(</span> <span class="n">ps</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">program</span><span class="o">-&gt;</span><span class="n">addOperator</span><span class="p">(</span> <span class="n">accel</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="10">
-<li>粒子系统实际上是一个可绘制元素对象，应该添加到场景图的叶子节点。然后，我们将所有粒子相关的节点添加到parent节点。这是一个关于世界坐标与本地坐标的有趣问题，我们会在稍后进行探讨：</li>
+<li><p>粒子系统实际上是一个可绘制元素对象，应该添加到场景图的叶子节点。然后，我们将所有粒子相关的节点添加到parent节点。这是一个关于世界坐标与本地坐标的有趣问题，我们会在稍后进行探讨：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">geode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&gt;</span> <span class="n">geode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="p">;</span>
 <span class="n">geode</span><span class="o">-&gt;</span><span class="n">addDrawable</span><span class="p">(</span> <span class="n">ps</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">parent</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">emitter</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">parent</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">program</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
@@ -681,16 +683,16 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="11">
-<li>现在让我们回到主体部分。首先，我们为定位粒子系统创建一个新的变换节点：</li>
+<li><p>现在让我们回到主体部分。首先，我们为定位粒子系统创建一个新的变换节点：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">mt</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">mt</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
 <span class="n">mt</span><span class="o">-&gt;</span><span class="n">setMatrix</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="12">
-<li>创建所有的粒子系统组件并将其添加到输入变换节点。同时使用addParticleSystem()方法将粒子系统注册到粒子系统更新器。</li>
+<li><p>创建所有的粒子系统组件并将其添加到输入变换节点。同时使用addParticleSystem()方法将粒子系统注册到粒子系统更新器。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystem</span><span class="o">*</span> <span class="n">ps</span> <span class="o">=</span> <span class="n">createParticleSystem</span><span class="p">(</span> <span class="n">mt</span><span class="p">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystem</span><span class="o">*</span> <span class="n">ps</span> <span class="o">=</span> <span class="n">createParticleSystem</span><span class="p">(</span> <span class="n">mt</span><span class="p">.</span><span class="n">get</span><span class="p">()</span>
 <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystemUpdater</span><span class="o">&gt;</span> <span class="n">updater</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgParticle</span><span class="o">::</span><span class="n">ParticleSystemUpdater</span><span class="p">;</span>
@@ -698,9 +700,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="13">
-<li>将上述的所有节点添加到场景的根节点，包括作为参考的小轴模型（我们可以在数据目录内找到）。然后，启动查看器：</li>
+<li><p>将上述的所有节点添加到场景的根节点，包括作为参考的小轴模型（我们可以在数据目录内找到）。然后，启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">updater</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">mt</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;axes.osg&quot;</span><span class="p">)</span> <span class="p">);</span>
@@ -710,7 +712,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="14">
-<li>我们的粒子喷泉最终完成了。放大，我们将会发现所有的粒子开始于X轴正方向的一点，X=1。现在仅通过一些简单的固定函数属性，粒子可以被渲染为良好的纹理点，并且由于溶合操作，每个粒子元素的显示非常类似于水滴：</li>
+<li><p>我们的粒子喷泉最终完成了。放大，我们将会发现所有的粒子开始于X轴正方向的一点，X=1。现在仅通过一些简单的固定函数属性，粒子可以被渲染为良好的纹理点，并且由于溶合操作，每个粒子元素的显示非常类似于水滴：</p></li>
 </ol>
 <img alt="_images/osg_particle.png" src="_images/osg_particle.png" />
 </div>
@@ -723,7 +725,7 @@
 <h3>Have a go hero - designing a rotary sprinkler<a class="headerlink" href="#have-a-go-hero-designing-a-rotary-sprinkler" title="Permalink to this headline">¶</a></h3>
 <p>我们是否见过旋转的洒水车？他是由至少一个可以自动旋转360度并将水喷射在洒水车直径周围的圆头组成。使用简单的圆柱模型与粒子系统来创建这样的一个机器，我们需要设计一个具有将粒子发射到指定水平方向的发射器的模块发射器，以及一个具有重力加速操作符的模块程序。</p>
 <p>作为提示，默认的光线发射器（osgParticle::RadialShooter）使用两个指定范围内的角度，theta与phi，以确定粒子的随机方向，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">RadialShooter</span><span class="o">&gt;</span> <span class="n">shooter</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgParticle</span><span class="o">::</span><span class="n">RadialShooter</span><span class="o">&gt;</span> <span class="n">shooter</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgParticle</span><span class="o">::</span><span class="n">RadialShooter</span><span class="p">;</span>
 <span class="c1">// Theta is the angle between the velocity vector and Z axis</span>
 <span class="n">shooter</span><span class="o">-&gt;</span><span class="n">setThetaRange</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">PI_2</span> <span class="o">-</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">PI_2</span> <span class="o">+</span> <span class="mf">0.1f</span> <span class="p">);</span>
@@ -745,20 +747,20 @@
 <h3>Time for action - receiving and casting shadows<a class="headerlink" href="#time-for-action-receiving-and-casting-shadows" title="Permalink to this headline">¶</a></h3>
 <p>我们的目标是通过在模型上转换阴影展示场景的构建。他总是包含一个特定的阴影场景根，一个内建的或自定义的阴影技术，以及一个具有可区分的接收或转换掩码的子节点。如果不添加阴影场景作为父节点，一个普通的场景不会有阴影，相对的，一个具有阴影的场景图可以通过移除应用到节点的osgShadow::ShadowedScene根节点或是阴影技术对象（通过简单的设置为null）来去除阴影计算与效果。在该示例中，我们只是在阴影场景根下创建并管理场景图，并且使用预定义的阴影映射技术来正确渲染真实对象与阴影。</p>
 <ol class="arabic simple">
-<li>包含必须的头文件：</li>
+<li><p>包含必须的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/AnimationPath&gt;</span>
-<span class="cp">#include &lt;osg/MatrixTransform&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgShadow/ShadowedScene&gt;</span>
-<span class="cp">#include &lt;osgShadow/ShadowMap&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/AnimationPath&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/MatrixTransform&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgShadow/ShadowedScene&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgShadow/ShadowMap&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>用于创建动画路径的代码是由第8章中拷贝的。他使用少量的采样控制点来生成圆，然后可以应用到osg::AnimationPathCallback来实现随时间变化的变换路径：</li>
+<li><p>用于创建动画路径的代码是由第8章中拷贝的。他使用少量的采样控制点来生成圆，然后可以应用到osg::AnimationPathCallback来实现随时间变化的变换路径：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">AnimationPath</span><span class="o">*</span> <span class="n">createAnimationPath</span><span class="p">(</span> <span class="kt">float</span> <span class="n">radius</span><span class="p">,</span> <span class="kt">float</span> <span class="n">time</span><span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">AnimationPath</span><span class="o">*</span> <span class="n">createAnimationPath</span><span class="p">(</span> <span class="kt">float</span> <span class="n">radius</span><span class="p">,</span> <span class="kt">float</span> <span class="n">time</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">AnimationPath</span><span class="o">&gt;</span> <span class="n">path</span> <span class="o">=</span>
         <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">AnimationPath</span><span class="p">;</span>
@@ -780,16 +782,16 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>设置阴影接收器与转换器的掩码。这两个掩码的与操作的结果必须为0：</li>
+<li><p>设置阴影接收器与转换器的掩码。这两个掩码的与操作的结果必须为0：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">rcvShadowMask</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">rcvShadowMask</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">;</span>
 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">castShadowMask</span> <span class="o">=</span> <span class="mh">0x2</span><span class="p">;</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>创建地面模型。这仅会由其他场景对象接收阴影，所以在其节点掩码与接收器掩码上执行与操作将会返回一个非零值，而节点掩码与转换器掩码的位与操作应总是返回0。所以我们可以依据这些原则来确定节点掩码：</li>
+<li><p>创建地面模型。这仅会由其他场景对象接收阴影，所以在其节点掩码与接收器掩码上执行与操作将会返回一个非零值，而节点掩码与转换器掩码的位与操作应总是返回0。所以我们可以依据这些原则来确定节点掩码：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">groundNode</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">groundNode</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
 <span class="n">groundNode</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;lz.osg&quot;</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">groundNode</span><span class="o">-&gt;</span><span class="n">setMatrix</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">200.0f</span><span class="p">));</span>
@@ -797,9 +799,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>设置Cessna模型，该模型也接受一个执行路径动画的更新回调。在我们的示例中，他仅是在地面与其他的场景对象上转换阴影：</li>
+<li><p>设置Cessna模型，该模型也接受一个执行路径动画的更新回调。在我们的示例中，他仅是在地面与其他的场景对象上转换阴影：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">cessnaNode</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">cessnaNode</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
 <span class="n">cessnaNode</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg.0,0,90.rot&quot;</span><span class="p">));</span>
 <span class="n">cessnaNode</span><span class="o">-&gt;</span><span class="n">setNodeMask</span><span class="p">(</span> <span class="n">castShadowMask</span> <span class="p">);</span>
@@ -810,9 +812,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>使用合适的变换矩阵将卡车模型添加到地面。他由头上的Cessna圆接收阴影，并将阴影变换到地面上。这意味着当我们在接收器与变换器掩码之间执行位与操作时，我们需要设置合适的节点掩码来接收非零值：</li>
+<li><p>使用合适的变换矩阵将卡车模型添加到地面。他由头上的Cessna圆接收阴影，并将阴影变换到地面上。这意味着当我们在接收器与变换器掩码之间执行位与操作时，我们需要设置合适的节点掩码来接收非零值：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">truckNode</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="o">&gt;</span> <span class="n">truckNode</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">MatrixTransform</span><span class="p">;</span>
 <span class="n">truckNode</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;dumptruck.osg&quot;</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">truckNode</span><span class="o">-&gt;</span><span class="n">setMatrix</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">100.0f</span><span class="p">));</span>
@@ -820,9 +822,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>为产生阴影设置光源。我们使用setPosition()方法来指定平行光的方向来生成减弱的阴影：</li>
+<li><p>为产生阴影设置光源。我们使用setPosition()方法来指定平行光的方向来生成减弱的阴影：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="o">&gt;</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="o">&gt;</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">LightSource</span><span class="p">;</span>
     <span class="n">source</span><span class="o">-&gt;</span><span class="n">getLight</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setPosition</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span>
 <span class="mf">0.0</span><span class="p">)</span> <span class="p">);</span>
     <span class="n">source</span><span class="o">-&gt;</span><span class="n">getLight</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setAmbient</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -832,18 +834,18 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>在这里我们必须设置阴影技术。已经有多种由组织与个人实现的基于OpenGL的阴影技术，包括使用投影纹理映射的阴影映射，通过stencil buffer实现的阴影量，以及其他实现。我们选择著名高效的阴影映射（osgShadow::ShadowMap）技术，并设置其必需的参数，包括光源，阴影纹理的大小与单位等：</li>
+<li><p>在这里我们必须设置阴影技术。已经有多种由组织与个人实现的基于OpenGL的阴影技术，包括使用投影纹理映射的阴影映射，通过stencil buffer实现的阴影量，以及其他实现。我们选择著名高效的阴影映射（osgShadow::ShadowMap）技术，并设置其必需的参数，包括光源，阴影纹理的大小与单位等：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgShadow</span><span class="o">::</span><span class="n">ShadowMap</span><span class="o">&gt;</span> <span class="n">sm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgShadow</span><span class="o">::</span><span class="n">ShadowMap</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgShadow</span><span class="o">::</span><span class="n">ShadowMap</span><span class="o">&gt;</span> <span class="n">sm</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgShadow</span><span class="o">::</span><span class="n">ShadowMap</span><span class="p">;</span>
 <span class="n">sm</span><span class="o">-&gt;</span><span class="n">setLight</span><span class="p">(</span> <span class="n">source</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">sm</span><span class="o">-&gt;</span><span class="n">setTextureSize</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec2s</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">sm</span><span class="o">-&gt;</span><span class="n">setTextureUnit</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>设置阴影场景的根节点，并向其应用技术实例以及阴影掩码：</li>
+<li><p>设置阴影场景的根节点，并向其应用技术实例以及阴影掩码：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgShadow</span><span class="o">::</span><span class="n">ShadowedScene</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgShadow</span><span class="o">::</span><span class="n">ShadowedScene</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">osgShadow</span><span class="o">::</span><span class="n">ShadowedScene</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">setShadowTechnique</span><span class="p">(</span> <span class="n">sm</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">setReceivesShadowTraversalMask</span><span class="p">(</span> <span class="n">rcvShadowMask</span> <span class="p">);</span>
@@ -851,9 +853,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="10">
-<li>将所有的模型与光源添加到根节点并启动查看器：</li>
+<li><p>将所有的模型与光源添加到根节点并启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">groundNode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">groundNode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">cessnaNode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">truckNode</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">source</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
@@ -863,7 +865,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="11">
-<li>应用简单的光源以及最常用且稳定的阴影映射技术，我们现在可以在阴影场景中渲染地面，Cessna以及卡车。我们可以通过setTextureSize()方法来改变纹理分辨率，或是切换到其他阴影技术来看一下是否有变化或是改进：</li>
+<li><p>应用简单的光源以及最常用且稳定的阴影映射技术，我们现在可以在阴影场景中渲染地面，Cessna以及卡车。我们可以通过setTextureSize()方法来改变纹理分辨率，或是切换到其他阴影技术来看一下是否有变化或是改进：</p></li>
 </ol>
 <img alt="_images/osg_shadow.png" src="_images/osg_shadow.png" />
 </div>
@@ -889,39 +891,39 @@
 <h3>Time for action - drawing the outline of models<a class="headerlink" href="#time-for-action-drawing-the-outline-of-models" title="Permalink to this headline">¶</a></h3>
 <p>勾勒对象的轮廓是用于在游戏，多媒体与工业应用表示特殊效果的实践技术。OpenGL的一个实现是在stencil buffer中写入固定值，然后使用细边线渲染对象。在两遍渲染过程之后，对像周围的轮廓就会显示出来。幸运的是，该效果已经由osgFX库中的osgFX::Effect的派生类osgFX::Outline类实现了。</p>
 <ol class="arabic simple">
-<li>包含必须的头文件：</li>
+<li><p>包含必须的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Group&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgFX/Outline&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Group&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgFX/Outline&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>载入Cessna模型：</li>
+<li><p>载入Cessna模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>创建勾勒效果。设置宽度与颜色参数，并将模型节点添加为子节点：</li>
+<li><p>创建勾勒效果。设置宽度与颜色参数，并将模型节点添加为子节点：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgFX</span><span class="o">::</span><span class="n">Outline</span><span class="o">&gt;</span> <span class="n">outline</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgFX</span><span class="o">::</span><span class="n">Outline</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgFX</span><span class="o">::</span><span class="n">Outline</span><span class="o">&gt;</span> <span class="n">outline</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgFX</span><span class="o">::</span><span class="n">Outline</span><span class="p">;</span>
 <span class="n">outline</span><span class="o">-&gt;</span><span class="n">setWidth</span><span class="p">(</span> <span class="mi">8</span> <span class="p">);</span>
 <span class="n">outline</span><span class="o">-&gt;</span><span class="n">setColor</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">outline</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>正如前面所讨论的，为了精确渲染效果，轮廓需要stencil buffer。所以我们需要在osg::DisplaySettings实例中为渲染窗口设置正确的stencil位。默认情况下，stencil被设置为0，意味着stencil buffer不可用。</li>
+<li><p>正如前面所讨论的，为了精确渲染效果，轮廓需要stencil buffer。所以我们需要在osg::DisplaySettings实例中为渲染窗口设置正确的stencil位。默认情况下，stencil被设置为0，意味着stencil buffer不可用。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMinimumNumStencilBits</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setMinimumNumStencilBits</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>在启动查看器之前，不要忘记重置清除掩码，以清除每一帧中的stencil位。在这里具有轮廓效果的节点被用作根节点。他可以被添加到更为复杂的场景图中进行渲染。</li>
+<li><p>在启动查看器之前，不要忘记重置清除掩码，以清除每一帧中的stencil位。在这里具有轮廓效果的节点被用作根节点。他可以被添加到更为复杂的场景图中进行渲染。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">getCamera</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setClearMask</span><span class="p">(</span>
     <span class="n">GL_COLOR_BUFFER_BIT</span><span class="o">|</span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="o">|</span><span class="n">GL_STENCIL_BUFFER_BIT</span><span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">outline</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
@@ -929,7 +931,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>这就是所需要的全部操作。当与本章中的其他示例相比时，这只是一个简单的示例。然而，通过使用传递的节点与相关联的状态集合并不容易实现类似的效果。这里osgFX库使用多次渲染概念来实现这种类型的效果：</li>
+<li><p>这就是所需要的全部操作。当与本章中的其他示例相比时，这只是一个简单的示例。然而，通过使用传递的节点与相关联的状态集合并不容易实现类似的效果。这里osgFX库使用多次渲染概念来实现这种类型的效果：</p></li>
 </ol>
 <img alt="_images/osg_outline.png" src="_images/osg_outline.png" />
 </div>
@@ -951,12 +953,12 @@
 <p>在本章中，我们讨论了渲染API最重要的可视化组件。这些组件实际上通过继承基本场景类（例如，osg::Group），重新实现其功能，并向场景图添加派生的对象来扩展了核心OSG元素。由于场景图的灵活性，只要模拟循环启动并遍历场景节点，我们就可以享受各种自定义NodeKits的新特性。设计我们自己的NodeKits并不困难，尽管我们并不具备OSG全方面的知识。</p>
 <p>在本章中，我们特别讨论了：</p>
 <ul class="simple">
-<li>如何通过使用osg::Billboard来创建总是面向查看器的特殊效果</li>
-<li>如何使用osgText::Text与osgText::Text3D创建并设置文本，以及如何使用osgText::Font与osgText::Font3D来指定相应的字体</li>
-<li>粒子系统的主要组件，包括osgParticle::Particle与osgParticle::ParticleSystem类，以及粒子系统更新器，发射器，程序，计数器，射击器，位置器以及操作的概念</li>
-<li>osgShadow::ShadowScene类与可用的阴影技术类，以及使用构建场景的使用</li>
-<li>使用osgFX库的特殊效果的实现</li>
-<li>当前OSG发布以及第三方工程中更多的NodeKits</li>
+<li><p>如何通过使用osg::Billboard来创建总是面向查看器的特殊效果</p></li>
+<li><p>如何使用osgText::Text与osgText::Text3D创建并设置文本，以及如何使用osgText::Font与osgText::Font3D来指定相应的字体</p></li>
+<li><p>粒子系统的主要组件，包括osgParticle::Particle与osgParticle::ParticleSystem类，以及粒子系统更新器，发射器，程序，计数器，射击器，位置器以及操作的概念</p></li>
+<li><p>osgShadow::ShadowScene类与可用的阴影技术类，以及使用构建场景的使用</p></li>
+<li><p>使用osgFX库的特殊效果的实现</p></li>
+<li><p>当前OSG发布以及第三方工程中更多的NodeKits</p></li>
 </ul>
 </div>
 </div>
@@ -1018,7 +1020,7 @@
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'',
+            URL_ROOT:'./',
             VERSION:'0.01',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -1028,6 +1030,7 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
 
   
 

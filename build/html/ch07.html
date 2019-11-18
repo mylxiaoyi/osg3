@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -29,6 +28,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="OpenSceneGraph 3.0 Beginner&#39;s Guide 0.01 documentation" href="index.html"/>
         <link rel="next" title="Chapter 8: Animating Scene Objects" href="ch08.html"/>
         <link rel="prev" title="Chapter 6: Creating Realistic Rendering Effects" href="ch06.html"/>
@@ -123,7 +125,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ch06.html#summary">Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 7: Viewing the World</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 7: Viewing the World</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#from-world-to-screen">From world to screen</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-camera-class">The Camera class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rendering-order-of-cameras">Rendering order of cameras</a></li>
@@ -224,7 +226,7 @@
     <li>Chapter 7: Viewing the World</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/ch07.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/ch07.rst.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
@@ -238,12 +240,12 @@
 <p>查看器对场景的观察是3D世界变换为2D图像的结果，这是由渲染引擎实时完成的。假定放置了一个虚拟相机来观察并记录3D及其动态变化，然后其移动，角度，聚焦距离变化以及不同的镜头类型将会改变渲染结果，而这正是我们改变在场景上所见内容的真正方法。</p>
 <p>本章主要关注于：</p>
 <ul class="simple">
-<li>理解OpenGL中所定义的坐标系统的概念</li>
-<li>修改视图点与方向，投影与最终视口</li>
-<li>如果存在多个相机改变并控制渲染顺序</li>
-<li>如何创建单一与复合查看器</li>
-<li>如何管理全局显示设置并生成易于使用的立体可视效果</li>
-<li>如何将渲染场景用作纹理对象－所谓的渲染到纹理（RTT）</li>
+<li><p>理解OpenGL中所定义的坐标系统的概念</p></li>
+<li><p>修改视图点与方向，投影与最终视口</p></li>
+<li><p>如果存在多个相机改变并控制渲染顺序</p></li>
+<li><p>如何创建单一与复合查看器</p></li>
+<li><p>如何管理全局显示设置并生成易于使用的立体可视效果</p></li>
+<li><p>如何将渲染场景用作纹理对象－所谓的渲染到纹理（RTT）</p></li>
 </ul>
 <div class="section" id="from-world-to-screen">
 <h2>From world to screen<a class="headerlink" href="#from-world-to-screen" title="Permalink to this headline">¶</a></h2>
@@ -251,18 +253,18 @@
 <p>模型矩阵被用来描述世界中对象的特定位置。他可以将顶点由对象的局部坐标系统转换为世界坐标系统。两个坐标系都是右手的。</p>
 <p>接下来要通过使用视图矩阵将整个世界转换为视图空间。假定我们有一个相同放置在世界的中心位置；相机变换矩阵的反转被真正用作视图矩阵。在右手视图坐标系统中，OpenGL定义了相机总是位置原点（0，0，0）并且面向Z轴的负方向。所以，所以我们可以在相机的屏幕上表示世界。</p>
 <p>注意，在OpenGL中并没有单独的模型矩阵与视图矩阵。然而，他定义了一个模型－视图矩阵来由对象的局部空间转换为视图空间，这是两个矩阵的组合。所以，要将局部空间中的顶点V转换为视图空间中的Ve，我们可以使用：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">Ve</span> <span class="o">=</span> <span class="n">V</span> <span class="o">*</span> <span class="n">modelViewMatrix</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Ve</span> <span class="o">=</span> <span class="n">V</span> <span class="o">*</span> <span class="n">modelViewMatrix</span>
 </pre></div>
 </div>
 <p>接下来的重要工作是确定3D对象如何映射到屏幕上（透视或是直角），并计算对象被渲染的截面。投影矩阵被用来使用六个切面面板：左，右，下，上，近，远，在世界坐标系统中指定截面。OpenGL同时提供了一个额外的gluPerspective()函数来确定具有相机镜头参数的视图域。</p>
 <p>所得到的结果坐标系统（被称为法线设备坐标系统，normalized device coordinate system）的范围在每个坐标轴上由-1到+1，并且现在为变为左手系。作为最后一步，我们将所有的结果数据投影到视口（窗口），定义最终图像映射所在的矩形范围，以及窗口坐标的z值。在之后，3D场景被渲染到我们2D屏幕上的一个矩形区域中。最后，屏幕坐标Vs可以通过使用所谓的MVPW矩阵表示3D世界中的局部顶点V，也就是：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">Vs</span> <span class="o">=</span> <span class="n">V</span> <span class="o">*</span> <span class="n">modelViewMatrix</span> <span class="o">*</span> <span class="n">projectionMatrix</span> <span class="o">*</span> <span class="n">windowMatrix</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Vs</span> <span class="o">=</span> <span class="n">V</span> <span class="o">*</span> <span class="n">modelViewMatrix</span> <span class="o">*</span> <span class="n">projectionMatrix</span> <span class="o">*</span> <span class="n">windowMatrix</span>
 </pre></div>
 </div>
 <p>Vs依然是一个表示具有深度值的2D像素位置。</p>
 <p>通过反转这一映射过程，我们可以由一个2D屏幕点（Xs，Ys）获得一条3D空间的线。这是因为2D点实际上可以被看作两个点：一个位于近切面板（Zs=0）上，而另一个位于远帖面板（Zs=1）上。</p>
 <p>这里MVPW的转置矩阵被用来获取“非投影”工作的结果：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">V0</span> <span class="o">=</span> <span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">Ys</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">invMVPW</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">V0</span> <span class="o">=</span> <span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">Ys</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">invMVPW</span>
 <span class="n">V1</span> <span class="o">=</span> <span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">Ys</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">invMVPW</span>
 </pre></div>
 </div>
@@ -273,30 +275,30 @@
 <p>osg::Camera类是核心OSG库中最重要的类之一。他可以用场景图的组合节点，但是他不仅仅是一个普通的节点。其主要功能可以划分为四类：</p>
 <p>首先，osg::Camera类处理视图矩阵，投影矩阵以及视口，这会影响其所有子节点并将其投影到屏幕上。相关的方法包括：</p>
 <ol class="arabic simple">
-<li>公共方法setViewMatrix()与setViewMatrixAsLookAt()通过使用osg::Matrix变量或是典型的眼/中心/上（eye/center/up）变量设置视图矩阵。</li>
-<li>公共方法setProjectionMatrix()接受osg::Matrix参数以指定投影矩阵。</li>
-<li>其他一些方便方法，包括setProjectionMatrixAsFrustum()，setProjectionMatrixAsOrtho()，setProjectionMatrixAsOrtho2D()与setProjectionMatrixAsPerspective()，用来使用不同的截面参数设置透视或直角投影矩阵。他们的作用类似于OpenGL投影函数（glOrtho()，gluPerspective()等）。</li>
-<li>公共方法setViewPort()可以使用osg::Viewport对象定义矩形窗口。</li>
+<li><p>公共方法setViewMatrix()与setViewMatrixAsLookAt()通过使用osg::Matrix变量或是典型的眼/中心/上（eye/center/up）变量设置视图矩阵。</p></li>
+<li><p>公共方法setProjectionMatrix()接受osg::Matrix参数以指定投影矩阵。</p></li>
+<li><p>其他一些方便方法，包括setProjectionMatrixAsFrustum()，setProjectionMatrixAsOrtho()，setProjectionMatrixAsOrtho2D()与setProjectionMatrixAsPerspective()，用来使用不同的截面参数设置透视或直角投影矩阵。他们的作用类似于OpenGL投影函数（glOrtho()，gluPerspective()等）。</p></li>
+<li><p>公共方法setViewPort()可以使用osg::Viewport对象定义矩形窗口。</p></li>
 </ol>
 <p>下面的代码片段显示了如何设置相机节点的视图与投影矩阵，并将其视口设置为(x,y)-(x+w,y+h)：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setViewMatrix</span><span class="p">(</span> <span class="n">viewMatrix</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setViewMatrix</span><span class="p">(</span> <span class="n">viewMatrix</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setProjectionMatrix</span><span class="p">(</span> <span class="n">projectionMatrix</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setViewport</span><span class="p">(</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Viewport</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>我们可以随时通过相应的get*()方法获取osg::Camera对象的当前视图与投影矩阵以及视口。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">viewMatrix</span> <span class="o">=</span> <span class="n">camera</span><span class="o">-&gt;</span><span class="n">getViewMatrix</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Matrix</span> <span class="n">viewMatrix</span> <span class="o">=</span> <span class="n">camera</span><span class="o">-&gt;</span><span class="n">getViewMatrix</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>为了获取视图矩阵的位置与方向，可以使用下面代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span> <span class="n">eye</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">up</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span> <span class="n">eye</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">up</span><span class="p">;</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">getViewMatrixAsLookAt</span><span class="p">(</span> <span class="n">eye</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">up</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>其次，osg::Camera封装了OpenGL函数，例如glClear()，glClearColor()与glClearDepth()，并清空帧缓冲区，以及在当在每一帧中重新将场景绘制到屏幕时预先设置其值。主要方法包括：</p>
 <ol class="arabic simple">
-<li>setClearMas()方法设置要清空 的缓冲区。默认为GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT。</li>
-<li>setClearColor()方法通过使用osg::Vec4变量以RGBA格式设置清理颜色。</li>
+<li><p>setClearMas()方法设置要清空 的缓冲区。默认为GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT。</p></li>
+<li><p>setClearColor()方法通过使用osg::Vec4变量以RGBA格式设置清理颜色。</p></li>
 </ol>
 <p>类似的，还有setClearDepth()，setClearStencil()与setClearAccum()方法，以及由相机获取设置值的get*()方法。</p>
 <p>第三类包含与相机相关联的OpenGL图像环境管理。我们将会在第9章进行探讨。</p>
@@ -307,7 +309,7 @@
 <p>在任意场景图中至少有一个主相机节点。他是由osgViewer::Viewer类创建并管理的，并且可以通过getCamera()方法读取。在启动模拟之前，他会自动添加根节点作为其子节点。默认情况下，其他相机，无论是直接还是间接添加到根节点的，都会共享与主相机相关联的图像环境，并且会在相同的渲染窗口上依次绘制其子场景。</p>
 <p>osg::Camera类提供了一个setRenderOrder()方法来精确控制相机的渲染顺序。他有一个顺序枚举以及一个可选的顺序数参数。第一个枚举可以是PRE_RENDER或POST_RENDER，指示通常的渲染顺序。第二个是一个整数用来以级联顺序对相同类型的相机排序。默认设置为0。</p>
 <p>例如，下面的代码将会强制OSG首先渲染camera1，然后是camera2（具有较大的顺序数），在这两个相机与主相机完成之后是camera3：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera1</span><span class="o">-&gt;</span><span class="n">setRenderOrder</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">PRE_RENDER</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera1</span><span class="o">-&gt;</span><span class="n">setRenderOrder</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">PRE_RENDER</span> <span class="p">);</span>
 <span class="n">camera2</span><span class="o">-&gt;</span><span class="n">setRenderOrder</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">PRE_RENDER</span><span class="p">,</span> <span class="mi">5</span> <span class="p">);</span>
 <span class="n">camera3</span><span class="o">-&gt;</span><span class="n">setRenderOrder</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">POST_RENDER</span> <span class="p">);</span>
 </pre></div>
@@ -318,32 +320,32 @@
 <h3>Time for action - creating an HUD camera<a class="headerlink" href="#time-for-action-creating-an-hud-camera" title="Permalink to this headline">¶</a></h3>
 <p>即时显示可以渲染数据而无需用户偏离其正常的视点。他被广泛用于3D场景中，用于显示重要的2D文本，计算机游戏数据以及战机与战场基础等。这次我们将会设计一个HUD相机，其中包含一个在任何时刻都要放在其他场景对象前面的模型。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Camera&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Camera&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>由磁盘文件中载入两个模型。lz.osg被用作演示地形，而glider.osg将会被放置在HUD相机之下。也就是，他对于观看查看器的用户总是可见的；而无论场景图的其他部分如何变化：</li>
+<li><p>由磁盘文件中载入两个模型。lz.osg被用作演示地形，而glider.osg将会被放置在HUD相机之下。也就是，他对于观看查看器的用户总是可见的；而无论场景图的其他部分如何变化：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;lz.osg&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;lz.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">hud_model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;glider.osg&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>HUD相机及其子节点必须在常规的场景完成在屏幕上的绘制之后才被渲染。他会覆盖所有当前的像素数据，而不论其位置与深度。这也正是我们使用GL_DEPTH_BUFFER_BIT来清除深度缓冲区的原因。在这里并没有设置GL_COLOR_BUFFER_BIT，以确保颜色缓冲区被正确保存。</li>
+<li><p>HUD相机及其子节点必须在常规的场景完成在屏幕上的绘制之后才被渲染。他会覆盖所有当前的像素数据，而不论其位置与深度。这也正是我们使用GL_DEPTH_BUFFER_BIT来清除深度缓冲区的原因。在这里并没有设置GL_COLOR_BUFFER_BIT，以确保颜色缓冲区被正确保存。</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">&gt;</span> <span class="n">camera</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">&gt;</span> <span class="n">camera</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="p">;</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setClearMask</span><span class="p">(</span> <span class="n">GL_DEPTH_BUFFER_BIT</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setRenderOrder</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">POST_RENDER</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>HUD相机不应被查看器或是其他的父节点所影响，所以他需要被变化到绝对引用帧，并且被设置为一个自定义固定的视图矩阵。滑翔机模式也被添加到相机节点，以作为要显示的内容：</li>
+<li><p>HUD相机不应被查看器或是其他的父节点所影响，所以他需要被变化到绝对引用帧，并且被设置为一个自定义固定的视图矩阵。滑翔机模式也被添加到相机节点，以作为要显示的内容：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setViewMatrixAsLookAt</span><span class="p">(</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">5.0f</span><span class="p">,</span><span class="mf">5.0f</span><span class="p">),</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(),</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span><span class="mf">1.0f</span><span class="p">,</span><span class="mf">1.0f</span><span class="p">)</span>
@@ -352,23 +354,23 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>我们向根节点添加HUD相机以及一个常规的载入模型：</li>
+<li><p>我们向根节点添加HUD相机以及一个常规的载入模型：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Group</span><span class="p">;</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">root</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">camera</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>现在，像通常一样启动查看器：</li>
+<li><p>现在，像通常一样启动查看器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>我们将会看到演示地形（常规场景）的渲染以及在用户控制下的操作。然而，滑翔机（后渲染的场景）总是位于所有其他场景对象之上，而其位置与方向不会受到鼠标或键盘输入的影响。</li>
+<li><p>我们将会看到演示地形（常规场景）的渲染以及在用户控制下的操作。然而，滑翔机（后渲染的场景）总是位于所有其他场景对象之上，而其位置与方向不会受到鼠标或键盘输入的影响。</p></li>
 </ol>
 <img alt="_images/osg_camera.png" src="_images/osg_camera.png" />
 </div>
@@ -376,7 +378,7 @@
 <h3>What just happened?<a class="headerlink" href="#what-just-happened" title="Permalink to this headline">¶</a></h3>
 <p>我们创建了一个包含滑翔机模型并作为子场景图进行渲染的额外相机。渲染顺序被设置为POST_RENDER，也就是，该相机将会在主相机已完成其场景渲染之后出现。换句话说，他总会在主相机的渲染结果的上面绘制其子场景图（颜色缓冲区与深度缓冲区）。</p>
 <p>额外相机的目的就是实现一个覆盖主场景的HUD场景。他清除了深度缓冲区来确保该相机所绘制的所有像素数据可以通过深度测试。然而，颜色缓冲区并没有被清除，保存屏幕上主场景未覆盖的像素数据。这也正是我们进行如下设置的原因：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setClearMask</span><span class="p">(</span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">);</span>  <span class="c1">// No color buffer bit</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setClearMask</span><span class="p">(</span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">);</span>  <span class="c1">// No color buffer bit</span>
 </pre></div>
 </div>
 </div>
@@ -394,7 +396,7 @@
 <h2>Digging into the simulation loop<a class="headerlink" href="#digging-into-the-simulation-loop" title="Permalink to this headline">¶</a></h2>
 <p>由run()方法所定义的模拟循环总是要执行三种类型的任务：指定主相机的操作吕在，设置相关联的图像环境，并在循环中渲染帧。</p>
 <p>操作器可以读取键盘与鼠标事件，并相应的调整主相机的视图矩阵来浏览场景图。他是通过使用setCameraManipulator()方法来设置的，其参数必须是一个osgGA::CameraManipulator()子类。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">viewer</span><span class="p">.</span><span class="n">setCameraManipulator</span><span class="p">(</span> <span class="k">new</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">TrackballManipulator</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span><span class="p">.</span><span class="n">setCameraManipulator</span><span class="p">(</span> <span class="k">new</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">TrackballManipulator</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>这会向查看器对象添加一个具有自由行为的经典轨迹球操作器。因为在查看器内部相机操作器是被作为智能指针保存的，我们可以在任何时候使用setCameraManipulator()方法赋值一个新的操作器。在osgGA名字空间中定义的一些内建操作器可以在下表中找到：</p>
@@ -402,14 +404,14 @@
 <p>这里要小心的是，要声明并使用一个操作器，我们必须添加osgGA库作为我们的工程依赖。这可以通过我们的工程属性或是通过使用CMake脚本来实现。</p>
 <p>查看器的图像环境以及可能的线程与资源都是在realize()方法被初始化的。他会在第一帧被渲染之前被自动调用。</p>
 <p>在这之后，查看器进入循环。每次他使用frame()方法来渲染一帧，并且检测渲染过程是否应使用done()方法停止并退出。该过程可以通过下面几行代码进行描述：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">viewer</span><span class="p">.</span><span class="n">done</span><span class="p">()</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">viewer</span><span class="p">.</span><span class="n">done</span><span class="p">()</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">viewer</span><span class="p">.</span><span class="n">frame</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>这是查看器类所使用的默认渲染模式。如果图形卡的vsync选项被打开，帧速率会与监视器的刷新速率同步以避免浪费系统资源。但是OSG支持另一种按需渲染模式。如下配置查看器变量：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">viewer</span><span class="p">.</span><span class="n">setRunFrameScheme</span><span class="p">(</span> <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">::</span><span class="n">ON_DEMAND</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span><span class="p">.</span><span class="n">setRunFrameScheme</span><span class="p">(</span> <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span><span class="o">::</span><span class="n">ON_DEMAND</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>现在，frame()方法将只会在场景图修改，更新或是用户输入事件时才会被调用，直到模式被改回默认值CONTINUOUS。</p>
@@ -420,32 +422,32 @@
 <p>但是run()方法实际上做了什么呢？是否能够添加某些帧前事件或帧后事件以用于特定目的呢？在这个示例中，我们将会使用C++ while语句来自定义模拟循环，同时显示每一个帧执行之后的帧数。</p>
 <p>注意，自定义的模拟循环并不会由即时渲染机制（on-demand rendering scheme）与最大帧速率设置中获益。只有在使用run()方法时他们才可用。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgGA/TrackballManipulator&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
-<span class="cp">#include &lt;iostream&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgGA/TrackballManipulator&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>载入模型并将其设置为查看器的场景数据：</li>
+<li><p>载入模型并将其设置为查看器的场景数据：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;lz.osg&quot;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span> <span class="s">&quot;lz.osg&quot;</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>我们需要为查看器设置操作器；否则，我们不能够浏览场景，包括缩放，旋转等控制操作。在这里，向查看器设置一个新的跟踪球操作器。他允许用户点击并拖拽屏幕上某一点，使得对象跟随其旋转。osgGA::TrackballManipulator是run()方法内部所用的默认操作器：</li>
+<li><p>我们需要为查看器设置操作器；否则，我们不能够浏览场景，包括缩放，旋转等控制操作。在这里，向查看器设置一个新的跟踪球操作器。他允许用户点击并拖拽屏幕上某一点，使得对象跟随其旋转。osgGA::TrackballManipulator是run()方法内部所用的默认操作器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">viewer</span><span class="p">.</span><span class="n">setCameraManipulator</span><span class="p">(</span> <span class="k">new</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">TrackballManipulator</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span><span class="p">.</span><span class="n">setCameraManipulator</span><span class="p">(</span> <span class="k">new</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">TrackballManipulator</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>然后我们在while循环中运行查看器。其条件会每次通过done()方法进行测试以检测查看器是否完成。循环体包含frame()方法，该方法会执行一帧来更新，裁剪并渲染场景图，而std::cout语句输出当前的帧号：</li>
+<li><p>然后我们在while循环中运行查看器。其条件会每次通过done()方法进行测试以检测查看器是否完成。循环体包含frame()方法，该方法会执行一帧来更新，裁剪并渲染场景图，而std::cout语句输出当前的帧号：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">viewer</span><span class="p">.</span><span class="n">done</span><span class="p">()</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">viewer</span><span class="p">.</span><span class="n">done</span><span class="p">()</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">viewer</span><span class="p">.</span><span class="n">frame</span><span class="p">();</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Frame number: &quot;</span> <span class="o">&lt;&lt;</span>
@@ -455,7 +457,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>启动查看器并查看控制台输出。我们将会在每一帧执行之后看到一个指示帧号的字符串列表。除此之外，run()方法与自定义的模拟循环之间并没有区别。</li>
+<li><p>启动查看器并查看控制台输出。我们将会在每一帧执行之后看到一个指示帧号的字符串列表。除此之外，run()方法与自定义的模拟循环之间并没有区别。</p></li>
 </ol>
 <img alt="_images/osg_viewer.png" src="_images/osg_viewer.png" />
 </div>
@@ -468,7 +470,7 @@
 <div class="section" id="have-a-go-hero-viewing-in-a-non-full-screen-window">
 <h3>Have a go hero - viewing in a non-full screen window<a class="headerlink" href="#have-a-go-hero-viewing-in-a-non-full-screen-window" title="Permalink to this headline">¶</a></h3>
 <p>osgViewer::Viewr类可以进行快速设置以工作在非全屏模式下。默认全屏显示实际上是一个覆盖整个屏幕的窗口。要生成具有特定左上坐标，宽度与调蓄的窗口，setUpViewInWindow()方法将会非常合适。另一个选项是环境变量OSG_WINDOW，该变量可以像下面这样定义（在UNIX系统下，请使用export命令）：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp"># set OSG_WINDOW=50 50 800 600</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp"># set OSG_WINDOW=50 50 800 600</span>
 </pre></div>
 </div>
 <p>这可以有四个或五个参数：前四个是所创建窗口的左上坐标与尺寸，而最后一个定义了在多屏幕环境下的工作屏幕。默认屏幕标号0表示第一个屏幕被用来包含渲染窗口。如果我们多个计算机监视器，可以尝试使用其他的无符号整数。</p>
@@ -480,7 +482,7 @@
 <p>尽管osgViewer::Viewer类仅管理一个场景图上的一个视图，还有一个osgViewer::CompositeViewer类，支持多个视图与多个场景。该类具有相同的方法，例如run()，frame()与done()，来管理渲染过程，但是还支持通过使用addView()与removeView()方法添加与删除独立场景视图，以及通过使用getView()方法获取指定索引处的视图对象。这里的视图对象是由osgViewer::View类定义的。</p>
 <p>osgViewer::View类是osgViewer::Viewer类的超类。他接受设置根节点作为场景数据，并添加相机操作器与事件处理器来使用用户事件。osgViewer::View与osgViewer::Viewer之间的区别在于前者不能被直接用作单个查看器，也就是，他没有run()或frame()方法。</p>
 <p>要向复合查看器添加创建的view对象，可以使用下面的代码：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">CompositeViewer</span> <span class="n">multiviewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">CompositeViewer</span> <span class="n">multiviewer</span><span class="p">;</span>
 <span class="n">multiviewer</span><span class="p">.</span><span class="n">addView</span><span class="p">(</span> <span class="n">view</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -488,16 +490,16 @@
 <h3>Time for action - rendering more scenes at one time<a class="headerlink" href="#time-for-action-rendering-more-scenes-at-one-time" title="Permalink to this headline">¶</a></h3>
 <p>多查看器在表示复杂场景时非常有用，例如，使用主视图渲染宽广区域，以及一个鹰眼区域，或是显示相同场景的前，侧，上及透视图。在这里我们将会创建三个单独的窗口，包含三个不同的模型，每一个都可以进行单独操作。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/CompositeViewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/CompositeViewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们设计一个函数来创建一个新的osgViewer::View对象并将其应用到已存在的节点。setUpViewInWindow()方法在这里被用来生成非全屏视图：</li>
+<li><p>我们设计一个函数来创建一个新的osgViewer::View对象并将其应用到已存在的节点。setUpViewInWindow()方法在这里被用来生成非全屏视图：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">createView</span><span class="p">(</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">w</span><span class="p">,</span> <span class="kt">int</span> <span class="n">h</span><span class="p">,</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">createView</span><span class="p">(</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">w</span><span class="p">,</span> <span class="kt">int</span> <span class="n">h</span><span class="p">,</span>
                              <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">*</span> <span class="n">scene</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">&gt;</span> <span class="n">view</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="p">;</span>
@@ -508,25 +510,25 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>接下来由磁盘文件读取三个模型。这些模型将会被添加到不同的视图并在不同的窗口中渲染：</li>
+<li><p>接下来由磁盘文件读取三个模型。这些模型将会被添加到不同的视图并在不同的窗口中渲染：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model1</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model2</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cow.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model3</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;glider.osg&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>在特定位置处的320x240窗口内创建三个视图：</li>
+<li><p>在特定位置处的320x240窗口内创建三个视图：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">view1</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="n">model1</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">view1</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="n">model1</span><span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">view2</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span><span class="mi">370</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="n">model2</span><span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">View</span><span class="o">*</span> <span class="n">view3</span> <span class="o">=</span> <span class="n">createView</span><span class="p">(</span><span class="mi">185</span><span class="p">,</span> <span class="mi">310</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="n">model3</span><span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>组合查看器的使用非常容易理解：将所有的视图添加到该查看器，并向单个查看一样启动循环。当然，在这个示例中while循环也是有用：</li>
+<li><p>组合查看器的使用非常容易理解：将所有的视图添加到该查看器，并向单个查看一样启动循环。当然，在这个示例中while循环也是有用：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">CompositeViewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">CompositeViewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addView</span><span class="p">(</span> <span class="n">view1</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addView</span><span class="p">(</span> <span class="n">view2</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">addView</span><span class="p">(</span> <span class="n">view3</span> <span class="p">);</span>
@@ -534,7 +536,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>现在我们有多个窗口，同时渲染多个场景。这些窗口中的每一个都可以通过点击右上角的关闭按钮来关闭。而我们也可以通过在键盘上按下Esc按键关闭所有的窗口并退出程序。</li>
+<li><p>现在我们有多个窗口，同时渲染多个场景。这些窗口中的每一个都可以通过点击右上角的关闭按钮来关闭。而我们也可以通过在键盘上按下Esc按键关闭所有的窗口并退出程序。</p></li>
 </ol>
 <img alt="_images/osg_composite_view.png" src="_images/osg_composite_view.png" />
 </div>
@@ -546,13 +548,13 @@
 <div class="section" id="have-a-go-hero-different-views-of-the-same-scene">
 <h3>Have a go hero - different views of the same scene<a class="headerlink" href="#have-a-go-hero-different-views-of-the-same-scene" title="Permalink to this headline">¶</a></h3>
 <p>在上面的示例中，我们向视图对象添加了三个不同的载入模型，因而渲染了不同的场景。然而，也可以将相同的根节点添加到所有视图。例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">view1</span><span class="o">-&gt;</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">view1</span><span class="o">-&gt;</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">view2</span><span class="o">-&gt;</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">view3</span><span class="o">-&gt;</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>毕竟，如果我们希望设计相同场景的前面，侧面，顶面，可以试着向每一个视图的主相机添加一个视图矩阵与一个投影矩阵，并确保操作器已被禁用，因为他会依据用户接口事件重置我们的矩阵配置：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">view1</span><span class="o">-&gt;</span><span class="n">getCamera</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setViewMatrix</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">view1</span><span class="o">-&gt;</span><span class="n">getCamera</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setViewMatrix</span><span class="p">();</span>
 <span class="n">view1</span><span class="o">-&gt;</span><span class="n">getCamera</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setProjectionMatrix</span><span class="p">();</span>
 <span class="n">view1</span><span class="o">-&gt;</span><span class="n">setCameraManipulator</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>  <span class="c1">// Set the manipulator to null!</span>
 <span class="c1">// Avoid using default manipulator, too!</span>
@@ -570,49 +572,49 @@
 <div class="section" id="changing-global-display-settings">
 <h2>Changing global display settings<a class="headerlink" href="#changing-global-display-settings" title="Permalink to this headline">¶</a></h2>
 <p>OSG管理一个为相机，查看器以及其他场景元素所需要全局显示设置集合。他通过osg::DisplaySettings类使用单例模式来声明所有这些元素的窗口的唯一实例。所以我们可以在程序中的任意获取显示设置实例：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">*</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">*</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>osg::DisplaySettings实例设置所有新创建的渲染设备所需要的属性，主要是渲染窗口的OpenGL图像环境。其特征包括：</p>
 <ol class="arabic simple">
-<li>使用setDoubleBuffer()方法设置双缓冲区或单缓冲。默认为打开。</li>
-<li>使用setDepthBuffer()方法设置是否使用深度缓冲区。默认为打开。</li>
-<li>通过一系列的方法，例如setMinimumNumAlphaBits()等，为OpenGL alpha缓冲区，stencil缓冲区与accumulation缓冲区设置位。默认全为0。</li>
-<li>通过setNumMultiSmaples()方法设置使用多样本缓冲区以及样本数量。默认为0。</li>
-<li>打开stereo渲染并配置stereo模式与eye映射参数。</li>
+<li><p>使用setDoubleBuffer()方法设置双缓冲区或单缓冲。默认为打开。</p></li>
+<li><p>使用setDepthBuffer()方法设置是否使用深度缓冲区。默认为打开。</p></li>
+<li><p>通过一系列的方法，例如setMinimumNumAlphaBits()等，为OpenGL alpha缓冲区，stencil缓冲区与accumulation缓冲区设置位。默认全为0。</p></li>
+<li><p>通过setNumMultiSmaples()方法设置使用多样本缓冲区以及样本数量。默认为0。</p></li>
+<li><p>打开stereo渲染并配置stereo模式与eye映射参数。</p></li>
 </ol>
 <p>在下面的章节中，我们将会了解到特定的特性结构，这些特性中的某些可以为不同的图像环境进行单独设置。然而，同时，我们将会首先关注于如何在场景查看器上使用全局显示设置。</p>
 <div class="section" id="time-for-action-enabling-global-multisampling">
 <h3>Time for action - enabling global multisampling<a class="headerlink" href="#time-for-action-enabling-global-multisampling" title="Permalink to this headline">¶</a></h3>
 <p>多重采样是一种反走样技术类型。他无需执行更多的处理就可以改善最终的结果质量。为了实现多重采样光栅化，用户程序应该设置一个采样数。注意，并不是所有的图形卡都支持多重采样扩展，所以该示例在某些系统与平台上会失败。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>设置多重采样数。依据特定的图形设备，可用值通常包括2，4与6：</li>
+<li><p>设置多重采样数。依据特定的图形设备，可用值通常包括2，4与6：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setNumMultiSamples</span><span class="p">(</span> <span class="mi">4</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setNumMultiSamples</span><span class="p">(</span> <span class="mi">4</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>载入模型并使用标准查看器进行渲染。由osg::DisplaySettings单例所管理的多重采样属性现在已经开始起作用了：</li>
+<li><p>载入模型并使用标准查看器进行渲染。由osg::DisplaySettings单例所管理的多重采样属性现在已经开始起作用了：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>Cessna模型推进器的近距离查看（没有应用setNumMultiSamples()方法）如下面的截图所示。我们可以很清楚的看到推进器边缘的走样错误：</li>
+<li><p>Cessna模型推进器的近距离查看（没有应用setNumMultiSamples()方法）如下面的截图所示。我们可以很清楚的看到推进器边缘的走样错误：</p></li>
 </ol>
 <img alt="_images/osg_multi_sample.png" src="_images/osg_multi_sample.png" />
 <ol class="arabic simple" start="5">
-<li>现在多重采样明显降低了渲染模型的变形，并且依据全局显示设置属性提高了最终结果的光滑水平。这会影响当前程序中所创建的所有查看器：</li>
+<li><p>现在多重采样明显降低了渲染模型的变形，并且依据全局显示设置属性提高了最终结果的光滑水平。这会影响当前程序中所创建的所有查看器：</p></li>
 </ol>
 <img alt="_images/osg_multi_sample2.png" src="_images/osg_multi_sample2.png" />
 </div>
@@ -627,7 +629,7 @@
 <div class="section" id="stereo-visualization">
 <h2>Stereo visualization<a class="headerlink" href="#stereo-visualization" title="Permalink to this headline">¶</a></h2>
 <p>我们已经体验到了立体3D电影与图像的魔力。一个很好的盒子就是James Cameron的Avatar，这为我们带来了超出想像的奇异世界。浮雕图像是表现立体可视化最简单与最流行的方法。其他实现包括NVIDIA的方块缓冲，水平或垂直分割，水平或垂直交织等。幸运的是，OSG支持大多数这些常见的立体技术，并且通过很少的命令就可以在查看器中立即实现其中的一个：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setStereoMode</span><span class="p">(</span> <span class="n">mode</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setStereoMode</span><span class="p">(</span> <span class="n">mode</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setStereo</span><span class="p">(</span> <span class="nb">true</span> <span class="p">);</span>
 </pre></div>
 </div>
@@ -639,31 +641,31 @@
 <img alt="_images/osg_3d_glass.png" src="_images/osg_3d_glass.png" />
 <p>在大多数情况下，眼镜的左眼是红色的，而右眼是青色的。这是最常用的浮雕效果，具有有限的颜色感知。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>我们直接操作全局显示设置。需要完成三个步骤：将立体模式切换为ANAGLYPHIC，使用setEyeSeparation()方法设置合适的眼分离（由左眼到右眼的距离），允许立体可视化：</li>
+<li><p>我们直接操作全局显示设置。需要完成三个步骤：将立体模式切换为ANAGLYPHIC，使用setEyeSeparation()方法设置合适的眼分离（由左眼到右眼的距离），允许立体可视化：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setStereoMode</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">ANAGLYPHIC</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setStereoMode</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">ANAGLYPHIC</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setEyeSeparation</span><span class="p">(</span> <span class="mf">0.05f</span> <span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">DisplaySettings</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setStereo</span><span class="p">(</span> <span class="nb">true</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>然后，我们可以像平时一样构建并渲染我们的场景图。在这里我们将会使用Cessna模型作为一个简单的示例：</li>
+<li><p>然后，我们可以像平时一样构建并渲染我们的场景图。在这里我们将会使用Cessna模型作为一个简单的示例：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;cessna.osg&quot;</span> <span class="p">);</span>
 <span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">return</span> <span class="n">viewer</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>最终的结果与前面的示例完全不同。现在戴上眼镜来看一下是否有尝试感知：</li>
+<li><p>最终的结果与前面的示例完全不同。现在戴上眼镜来看一下是否有尝试感知：</p></li>
 </ol>
 <img alt="_images/osg_stereo.png" src="_images/osg_stereo.png" />
 </div>
@@ -671,7 +673,7 @@
 <h3>What just happened?<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>在ANAGLYPHIC模式下，最终的渲染效果总是由两个颜色层构成，并有一个小的偏移来生成深度效果。眼镜的每只眼会看到略微不同的图片，而其组合则生成了一个立体图像，从而会被我们的大脑认为是三维场景。</p>
 <p>OSG通过二次渲染机制支持浮雕立体模式。第一次使用红通道颜色掩码渲染左眼图像，第二次使用青通道渲染右眼图像。颜色掩码是由渲染属性osg::ColorMask来定义的。他很容易通过使用下面的代码应用到状态集合与可绘制元素：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">ColorMask</span><span class="o">&gt;</span> <span class="n">colorMask</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">ColorMask</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">ColorMask</span><span class="o">&gt;</span> <span class="n">colorMask</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">ColorMask</span><span class="p">;</span>
 <span class="n">colorMask</span><span class="o">-&gt;</span><span class="n">setMask</span><span class="p">(</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span> <span class="p">);</span>
 <span class="n">stateset</span><span class="o">-&gt;</span><span class="n">setAttribute</span><span class="p">(</span> <span class="n">colorMask</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
@@ -684,13 +686,13 @@
 <p>渲染到纹理技术允许开发者其于已渲染场景的子场景外观创建纹理。然后这些纹理可以通过纹理映射应用到接下来的场景图中。他们可以被用来随时创建完美的特殊效果，或是可以被存储用于后续的延时阴影，多次渲染以及其他的高级渲染算法。</p>
 <p>要动态实现纹理应用，通常要遵循下面三个步骤：</p>
 <ol class="arabic simple">
-<li>为渲染纹理</li>
-<li>将场景渲染到纹理</li>
-<li>使用纹理</li>
+<li><p>为渲染纹理</p></li>
+<li><p>将场景渲染到纹理</p></li>
+<li><p>使用纹理</p></li>
 </ol>
 <p>我们在应用纹理之前需要创建一个空的纹理对象。OSG可以通过指定其大小来创建一个空的osg::Texture对象。setTextureSize()方法定义了2D纹理的宽度与高度，以及3D纹理的深度参数。</p>
 <p>将场景图渲染到一个新创建的纹理的关键是osg::Camera类的attach()方法。这会接受纹理对象作为参数，以及缓冲区组件参数，从而表明了帧缓冲区的哪一部分将会渲染到纹理。例如，要将一个相机的子场景的颜色缓冲区关联到纹理，我们可以使用：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">attach</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">COLOR_BUFFER</span><span class="p">,</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">attach</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">COLOR_BUFFER</span><span class="p">,</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>其他可用的缓冲区组件包括DEPTH_BUFFER，STENCIL_BUFFER与COLOR_BUFFER0到COLOR_BUFFER15（依据图形卡的多渲染目标输出）。</p>
@@ -702,11 +704,11 @@
 <p>另一个要关注的焦点是如何使得已渲染的缓冲区图像转换为纹理对象。一个直接的方法是使用glReadPixels()方法来由帧缓冲区返回像素数据，并将结果应用到glTexImage*()方法。这很容易理解与使用，但总会将数据拷贝到纹理对象，这是极其慢的。</p>
 <p>为了改善效率，glCopyTexSubImage()将会是更好的方法。然而，我们还可以优化该过程。直接将场景渲染到目标而不是缓冲区是一个好主意。为此有两种主要的解决方案：</p>
 <ol class="arabic simple">
-<li>像素缓冲区（简写为pbuffer）扩展可以使用像素格式描述符创建一个不可见的渲染缓冲区，这等同于一个窗口。他会在使用之后被销毁，就如同渲染窗口的操作一样。</li>
-<li>帧缓冲区对象（简写为FBO），在节省存储空间方面有时会优于像素缓冲区，可以添加程序创建的帧缓冲区并向其重定渲染输出。他可以输出到一个纹理对象或是一个渲染缓冲区对象，后者只是一个简单的数据存储对象。</li>
+<li><p>像素缓冲区（简写为pbuffer）扩展可以使用像素格式描述符创建一个不可见的渲染缓冲区，这等同于一个窗口。他会在使用之后被销毁，就如同渲染窗口的操作一样。</p></li>
+<li><p>帧缓冲区对象（简写为FBO），在节省存储空间方面有时会优于像素缓冲区，可以添加程序创建的帧缓冲区并向其重定渲染输出。他可以输出到一个纹理对象或是一个渲染缓冲区对象，后者只是一个简单的数据存储对象。</p></li>
 </ol>
 <p>OSG支持使用不同的渲染目标实现：直接由帧缓冲区拷贝，像素缓冲区或FBO。他使用osg::Camera类的setRenderTArgetImplementation()方法来从中选择一个解决方案，例如：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setRenderTargetImplementation</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">FRAME_BUFFER</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setRenderTargetImplementation</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">FRAME_BUFFER</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>这表明Camera的渲染结果将会使用glCopyTexSubImage()方法渲染到关联的纹理。事实上，这是所有相机节点的默认设置。</p>
@@ -715,21 +717,21 @@
 <h3>Time for action - drawing aircrafts on a loaded terrain<a class="headerlink" href="#time-for-action-drawing-aircrafts-on-a-loaded-terrain" title="Permalink to this headline">¶</a></h3>
 <p>在这一节中，我们将会整合我们在前面所学的内容来创建一个略微复杂的示例，该示例会使用osg::NodeVisitor实用程序标识场景图中的所有纹理对象，将其替换为新创建的共享纹理，并将新纹理绑定到渲染到纹理（render-to-texture）相机。我们希望纹理不仅显示一幅静态图像，从而自定义的模拟循环被用来在调用frame()方法之前使子场景图动起来。</p>
 <ol class="arabic simple">
-<li>包含必需的头文件：</li>
+<li><p>包含必需的头文件：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &lt;osg/Camera&gt;</span>
-<span class="cp">#include &lt;osg/Texture2D&gt;</span>
-<span class="cp">#include &lt;osgDB/ReadFile&gt;</span>
-<span class="cp">#include &lt;osgGA/TrackballManipulator&gt;</span>
-<span class="cp">#include &lt;osgViewer/Viewer&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;osg/Camera&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osg/Texture2D&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgDB/ReadFile&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgGA/TrackballManipulator&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;osgViewer/Viewer&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>第一个任务是查找被应用到载入模型的所有纹理。我们需要由osg::NodeVisitor基类派生一个FindTextureVisitor类。这会管理稍后被用于渲染到纹理操作的纹理对象。每次我们在场景图中找到一个已有的纹理，我们就使用所管理的纹理进行替换。该操作在replaceTexture()方法中实现：</li>
+<li><p>第一个任务是查找被应用到载入模型的所有纹理。我们需要由osg::NodeVisitor基类派生一个FindTextureVisitor类。这会管理稍后被用于渲染到纹理操作的纹理对象。每次我们在场景图中找到一个已有的纹理，我们就使用所管理的纹理进行替换。该操作在replaceTexture()方法中实现：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">FindTextureVisitor</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FindTextureVisitor</span> <span class="o">:</span> <span class="k">public</span> <span class="n">osg</span><span class="o">::</span><span class="n">NodeVisitor</span>
 <span class="p">{</span>
-<span class="nl">public:</span>
+<span class="k">public</span><span class="o">:</span>
     <span class="n">FindTextureVisitor</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">*</span> <span class="n">tex</span> <span class="p">)</span> <span class="o">:</span> <span class="n">_texture</span><span class="p">(</span><span class="n">tex</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="n">setTraversalMode</span><span class="p">(</span>
@@ -738,15 +740,15 @@
     <span class="k">virtual</span> <span class="kt">void</span> <span class="n">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="n">node</span> <span class="p">);</span>
     <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Geode</span><span class="o">&amp;</span> <span class="n">geode</span> <span class="p">);</span>
     <span class="kt">void</span> <span class="nf">replaceTexture</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">ss</span> <span class="p">);</span>
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
     <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture</span><span class="o">&gt;</span> <span class="n">_texture</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>在apply()方法中，在每一个节点与可绘制元素上调用replaceTexture()来检测是否有存储的纹理。不要忘记在每个方法体最后调用traverse()来在场景图中继续：</li>
+<li><p>在apply()方法中，在每一个节点与可绘制元素上调用replaceTexture()来检测是否有存储的纹理。不要忘记在每个方法体最后调用traverse()来在场景图中继续：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="n">FindTextureVisitor</span><span class="o">::</span><span class="n">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="n">node</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">FindTextureVisitor</span><span class="o">::</span><span class="n">apply</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&amp;</span> <span class="n">node</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">replaceTexture</span><span class="p">(</span> <span class="n">node</span><span class="p">.</span><span class="n">getStateSet</span><span class="p">()</span> <span class="p">);</span>
     <span class="n">traverse</span><span class="p">(</span> <span class="n">node</span> <span class="p">);</span>
@@ -763,9 +765,9 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>该用户方法使用getTextureAttribute()由输入状态集合获取单位为0的纹理，并使用所管理的纹理进行替换。因为状态集合是由节点或可绘制元素的getStateSet()方法获取的，而不是由一定会返回已有状态集合或是新创建状态集合的getOrCreateStateSet()方法获取的，这里的输入指针有可能为空：</li>
+<li><p>该用户方法使用getTextureAttribute()由输入状态集合获取单位为0的纹理，并使用所管理的纹理进行替换。因为状态集合是由节点或可绘制元素的getStateSet()方法获取的，而不是由一定会返回已有状态集合或是新创建状态集合的getOrCreateStateSet()方法获取的，这里的输入指针有可能为空：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">replaceTexture</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">ss</span> <span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">replaceTexture</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">StateSet</span><span class="o">*</span> <span class="n">ss</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="n">ss</span> <span class="p">)</span>
     <span class="p">{</span>
@@ -779,16 +781,16 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
-<li>载入两个模型作为场景图。lz.osg模型被作为主场景，而滑翔机被看作是将要渲染到纹理的子场景图，并绘制在主场景中的模型的表面上：</li>
+<li><p>载入两个模型作为场景图。lz.osg模型被作为主场景，而滑翔机被看作是将要渲染到纹理的子场景图，并绘制在主场景中的模型的表面上：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;lz.osg&quot;</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;lz.osg&quot;</span><span class="p">);</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">sub_model</span> <span class="o">=</span> <span class="n">osgDB</span><span class="o">::</span><span class="n">readNodeFile</span><span class="p">(</span><span class="s">&quot;glider.osg&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li>创建一个新的纹理对象。这不同于前面所创建的2D纹理并将图像应用于其中的示例。这次我们应指定纹理大小，内部格式以及其他属性：</li>
+<li><p>创建一个新的纹理对象。这不同于前面所创建的2D纹理并将图像应用于其中的示例。这次我们应指定纹理大小，内部格式以及其他属性：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">int</span> <span class="n">tex_width</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">tex_height</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">tex_width</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">tex_height</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">;</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="o">&gt;</span> <span class="n">texture</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Texture2D</span><span class="p">;</span>
 <span class="n">texture</span><span class="o">-&gt;</span><span class="n">setTextureSize</span><span class="p">(</span> <span class="n">tex_width</span><span class="p">,</span> <span class="n">tex_height</span> <span class="p">);</span>
 <span class="n">texture</span><span class="o">-&gt;</span><span class="n">setInternalFormat</span><span class="p">(</span> <span class="n">GL_RGBA</span> <span class="p">);</span>
@@ -797,53 +799,53 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li>使用FindTextureVisitor来定位lz.osg模型中的所有纹理，并使用新的空白纹理对象进行替换：</li>
+<li><p>使用FindTextureVisitor来定位lz.osg模型中的所有纹理，并使用新的空白纹理对象进行替换：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">FindTextureVisitor</span> <span class="nf">ftv</span><span class="p">(</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">FindTextureVisitor</span> <span class="nf">ftv</span><span class="p">(</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span> <span class="n">model</span><span class="p">.</span><span class="n">valid</span><span class="p">()</span> <span class="p">)</span> <span class="n">model</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span> <span class="n">ftv</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>现在是创建渲染到纹理相机的时候了。我们设置其具有与所指定的纹理大小相同的视口，并在开始渲染子场景之时清除背景颜色与缓冲区：</li>
+<li><p>现在是创建渲染到纹理相机的时候了。我们设置其具有与所指定的纹理大小相同的视口，并在开始渲染子场景之时清除背景颜色与缓冲区：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">&gt;</span> <span class="n">camera</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">&gt;</span> <span class="n">camera</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="p">;</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setViewport</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tex_width</span><span class="p">,</span> <span class="n">tex_height</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setClearColor</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec4</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">)</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setClearMask</span><span class="p">(</span> <span class="n">GL_COLOR_BUFFER_BIT</span><span class="o">|</span><span class="n">GL_DEPTH_BUFFER_BIT</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="9">
-<li>强制相机在主场景之前渲染，并且使用高效的FBO来实现渲染到纹理技术。这个示例中的关键语句是将颜色缓冲区与纹理对象绑定的语句，这会引起纹理对象的持续更新，一次次重新绘制子场景图：</li>
+<li><p>强制相机在主场景之前渲染，并且使用高效的FBO来实现渲染到纹理技术。这个示例中的关键语句是将颜色缓冲区与纹理对象绑定的语句，这会引起纹理对象的持续更新，一次次重新绘制子场景图：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setRenderOrder</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">PRE_RENDER</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setRenderOrder</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">PRE_RENDER</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setRenderTargetImplementation</span><span class="p">(</span><span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">FRAME_BUFFER_OBJECT</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">attach</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">COLOR_BUFFER</span><span class="p">,</span> <span class="n">texture</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="10">
-<li>设置相机到绝对位置，并将载入的滑翔机模型设置到其子场景图：</li>
+<li><p>设置相机到绝对位置，并将载入的滑翔机模型设置到其子场景图：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">-&gt;</span><span class="n">setReferenceFrame</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">ABSOLUTE_RF</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">addChild</span><span class="p">(</span> <span class="n">sub_model</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="11">
-<li>初始化查看器并向其设置一个默认操作器：</li>
+<li><p>初始化查看器并向其设置一个默认操作器：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osgViewer</span><span class="o">::</span><span class="n">Viewer</span> <span class="n">viewer</span><span class="p">;</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setSceneData</span><span class="p">(</span> <span class="n">root</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="n">viewer</span><span class="p">.</span><span class="n">setCameraManipulator</span><span class="p">(</span> <span class="k">new</span> <span class="n">osgGA</span><span class="o">::</span><span class="n">TrackballManipulator</span> <span class="p">);</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="12">
-<li>最后一步是设置滑翔机动画。我们还没有学习任何OSG中的动画功能，但是我们已经知道模拟循环可以进行自定义来添加某些帧前与帧后事件。我们将会在每一帧中简单修改渲染到纹理相机的视图矩阵，就如同使得滑翔机滑翔一样。这是通过修改查看视图矩阵的上方面来完成的：</li>
+<li><p>最后一步是设置滑翔机动画。我们还没有学习任何OSG中的动画功能，但是我们已经知道模拟循环可以进行自定义来添加某些帧前与帧后事件。我们将会在每一帧中简单修改渲染到纹理相机的视图矩阵，就如同使得滑翔机滑翔一样。这是通过修改查看视图矩阵的上方面来完成的：</p></li>
 </ol>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="kt">float</span> <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
 <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span> <span class="n">eye</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span><span class="o">-</span><span class="mf">5.0f</span><span class="p">,</span> <span class="mf">5.0f</span><span class="p">);</span>
 <span class="k">while</span> <span class="p">(</span> <span class="o">!</span><span class="n">viewer</span><span class="p">.</span><span class="n">done</span><span class="p">()</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="n">bias</span><span class="o">&lt;-</span><span class="mf">1.0f</span> <span class="p">)</span> <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.1f</span><span class="p">;</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="n">bias</span><span class="o">&gt;</span><span class="mf">1.0f</span> <span class="p">)</span> <span class="n">delta</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1f</span><span class="p">;</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span> <span class="n">bias</span><span class="o">&gt;</span><span class="mf">1.0f</span> <span class="p">)</span> <span class="n">delta</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1f</span><span class="p">;</span>
     <span class="n">bias</span> <span class="o">+=</span> <span class="n">delta</span><span class="p">;</span>
     <span class="n">camera</span><span class="o">-&gt;</span><span class="n">setViewMatrixAsLookAt</span><span class="p">(</span> <span class="n">eye</span><span class="p">,</span> <span class="n">osg</span><span class="o">::</span><span class="n">Vec3</span><span class="p">(),</span>
 
@@ -853,11 +855,11 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="13">
-<li>现在让我们执行该程序。一个具有黑色背景的巨大滑翔机显示在地形表面上，配合一些小的滑翔机。所有的滑翔机可以快速向左右旋转，这是将父camera节点子场景图渲染为共享纹理的结果：</li>
+<li><p>现在让我们执行该程序。一个具有黑色背景的巨大滑翔机显示在地形表面上，配合一些小的滑翔机。所有的滑翔机可以快速向左右旋转，这是将父camera节点子场景图渲染为共享纹理的结果：</p></li>
 </ol>
 <img alt="_images/osg_render_to_texture.png" src="_images/osg_render_to_texture.png" />
 <ol class="arabic simple" start="14">
-<li>如果我们忘记原始场景是什么样的，下面的图会有助于我们回想起来。我们将会看到地形背景与树纹理都已为纹理关联的子场景的颜色缓冲区所替换。这也是非凡的场景被生成作为该示例最终结果的原因：</li>
+<li><p>如果我们忘记原始场景是什么样的，下面的图会有助于我们回想起来。我们将会看到地形背景与树纹理都已为纹理关联的子场景的颜色缓冲区所替换。这也是非凡的场景被生成作为该示例最终结果的原因：</p></li>
 </ol>
 <img alt="_images/osg_render_to_texture_origin.png" src="_images/osg_render_to_texture_origin.png" />
 </div>
@@ -869,7 +871,7 @@
 <div class="section" id="have-a-go-hero-saving-scene-to-an-image-file">
 <h3>Have a go hero - saving scene to an image file<a class="headerlink" href="#have-a-go-hero-saving-scene-to-an-image-file" title="Permalink to this headline">¶</a></h3>
 <p>无论是否相信，OSG也可以将osg::Image对象关联到相机，并将帧缓冲区数据保存到图像对象的data()指针中。然后，我们可以通过与osgDB::readImageFile()方法相对应的osgDB::writeImageFile()方法将图像数据保存到磁盘文件：</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">osg</span><span class="o">::</span><span class="n">ref_ptr</span><span class="o">&lt;</span><span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">image</span> <span class="o">=</span> <span class="k">new</span> <span class="n">osg</span><span class="o">::</span><span class="n">Image</span><span class="p">;</span>
 <span class="n">image</span><span class="o">-&gt;</span><span class="n">allocateImage</span><span class="p">(</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">GL_RGBA</span><span class="p">,</span> <span class="n">GL_UNSIGNED_BYTE</span> <span class="p">);</span>
 <span class="n">camera</span><span class="o">-&gt;</span><span class="n">attach</span><span class="p">(</span> <span class="n">osg</span><span class="o">::</span><span class="n">Camera</span><span class="o">::</span><span class="n">COLOR_BUFFER</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="p">);</span>
 <span class="c1">// After running for a while</span>
@@ -884,10 +886,10 @@
 <p>本章主要关于借助于osg::Camera类观察与变换3D世界。在本章中，我们同时介绍了如何使用osgViewer::Viewer与osgViewer::CompositeViewer，这两个类封装了相机，操作器以及使其联合工作的立体支持。</p>
 <p>在本章中，我们特别探讨了：</p>
 <ul class="simple">
-<li>如果设置视口，视图以及相机节点的投影矩阵，如何通过使用osg::Camera定义相机的渲染顺序。</li>
-<li>通过使用osgViewer::Viewer与osgViewer::CompositeViewer的单个查看器与组合查看器的实现。</li>
-<li>通过使用osg::DisplaySettings对全局显示设置以及立体可视化的管理。</li>
-<li>通过使用帧缓冲区，像素缓冲区与FBO实现缓冲到纹理技术的不同方法。</li>
+<li><p>如果设置视口，视图以及相机节点的投影矩阵，如何通过使用osg::Camera定义相机的渲染顺序。</p></li>
+<li><p>通过使用osgViewer::Viewer与osgViewer::CompositeViewer的单个查看器与组合查看器的实现。</p></li>
+<li><p>通过使用osg::DisplaySettings对全局显示设置以及立体可视化的管理。</p></li>
+<li><p>通过使用帧缓冲区，像素缓冲区与FBO实现缓冲到纹理技术的不同方法。</p></li>
 </ul>
 </div>
 </div>
@@ -949,7 +951,7 @@
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'',
+            URL_ROOT:'./',
             VERSION:'0.01',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -959,6 +961,7 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
 
   
 
